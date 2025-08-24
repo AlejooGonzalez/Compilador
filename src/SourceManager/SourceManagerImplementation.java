@@ -1,9 +1,9 @@
-package sourcemanager;
+package SourceManager;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-public class SourceManagerImpl implements SourceManager{
+public class SourceManagerImplementation implements SourceManagerInterface{
     private BufferedReader reader;
     private String currentLine;
     private int lineNumber;
@@ -11,7 +11,7 @@ public class SourceManagerImpl implements SourceManager{
     private boolean mustReadNextLine;
 
 
-    public SourceManagerImpl() {
+    public SourceManagerImplementation() {
         currentLine = "";
         lineNumber = 0;
         lineIndexNumber = 0;

@@ -25,14 +25,14 @@ public class Token{
     }
 
     public void setTipoToken(String token){
-        return tipoToken = token;
+        tipoToken = token;
     }
 
     public void setLexema(String lex){
-        return lexema = lex;
+        lexema = lex;
     }
 
     public void setNroLinea(int line){
-        return nroLinea = line;
+        nroLinea = line;
     }
 }

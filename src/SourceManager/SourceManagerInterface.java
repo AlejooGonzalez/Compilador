@@ -1,9 +1,9 @@
-package sourcemanager;
+package SourceManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public interface SourceManager {
+public interface SourceManagerInterface {
     void open(String filePath) throws FileNotFoundException;
 
     void close() throws IOException;

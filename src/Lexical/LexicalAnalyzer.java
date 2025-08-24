@@ -1,22 +1,24 @@
 package Lexical;
 
-import SourceManager.SoruceManagerImplementation;
+import java.io.IOException;
+
+import SourceManager.SourceManagerImplementation;
 
 public class LexicalAnalyzer {
     String lexema;
     char caracterActual;
-    SoruceManagerImplementation SourceManager
+    SourceManagerImplementation SourceManager;
 
-    public Token proximoToken(){
+    public Token proximoToken() throws IOException{
         lexema = "";
         return e0();
     }
 
-    public void actualizarCaracterActual() {
+    public void actualizarCaracterActual() throws IOException {
         caracterActual = SourceManager.getNextChar();
     }
 
-    public Token e0(){
+    public Token e0() throws IOException{
         switch(caracterActual){
 
             case ' ':
@@ -30,6 +32,6 @@ public class LexicalAnalyzer {
 
                 }
             }
+        return null;
         }
     }
-}

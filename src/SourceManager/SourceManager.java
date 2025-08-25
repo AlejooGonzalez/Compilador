@@ -3,7 +3,7 @@ package SourceManager;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public interface SourceManagerInterface {
+public interface SourceManager {
     void open(String filePath) throws FileNotFoundException;
 
     void close() throws IOException;

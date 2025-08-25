@@ -3,7 +3,7 @@ package SourceManager;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-public class SourceManagerImplementation implements SourceManagerInterface{
+public class SourceManagerImplementation implements SourceManager{
     private BufferedReader reader;
     private String currentLine;
     private int lineNumber;

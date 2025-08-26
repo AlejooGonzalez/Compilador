@@ -7,6 +7,7 @@ public class SourceManagerImplementation implements SourceManager{
     private BufferedReader reader;
     private String currentLine;
     private int lineNumber;
+    private int columnNumber;
     private int lineIndexNumber;
     private boolean mustReadNextLine;
 
@@ -14,6 +15,7 @@ public class SourceManagerImplementation implements SourceManager{
     public SourceManagerImplementation() {
         currentLine = "";
         lineNumber = 0;
+        columnNumber = 0;
         lineIndexNumber = 0;
         mustReadNextLine = true;
     }
@@ -58,5 +60,13 @@ public class SourceManagerImplementation implements SourceManager{
     @Override
     public int getLineNumber() {
         return lineNumber;
+    }
+
+    public int getColumnNumber(){
+        return columnNumber;
+    }
+
+    public String getCurrentLine() {
+        return currentLine;
     }
 }

@@ -2,14 +2,16 @@ import Exceptions.LexicalException;
 import Lexical.LexicalAnalyzer;
 import Lexical.Token;
 import SourceManager.SourceManagerImplementation;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException, LexicalException {
-        boolean hayError = false;
+        boolean thereIsError = false;
         SourceManagerImplementation sourceManager = new SourceManagerImplementation();
+        Token token = new Token("", "", 1);
+
         try {
             sourceManager.open(args[0]);
         } catch (FileNotFoundException e) {
@@ -17,18 +19,18 @@ public class Main {
         }
         LexicalAnalyzer lexer = new LexicalAnalyzer(sourceManager);
 
-        //falta el while
+        do {
             try {
-                Token token = lexer.proximoToken();
-                System.out.print("(" + token.getTipoToken() + "," + token.getLexema() + "," + token.getNroLinea() + ")");
+                token = lexer.nextToken();
+                System.out.println("(" + token.getTokenType() + "," + token.getLexeme() + "," + token.getLineNumber() + ")");
             } catch (LexicalException e) {
                 e.errorElegante();
-                hayError = true;
+                thereIsError = true;
             }
+        } while (!Objects.equals(token.getTokenType(), "EOF"));
 
-            if(!hayError){
-                System.out.println("[SinErrores]");
-            }
-
+        if (!thereIsError) {
+            System.out.println("[SinErrores]");
+        }
     }
 }

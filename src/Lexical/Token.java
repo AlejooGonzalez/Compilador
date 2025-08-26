@@ -1,38 +1,24 @@
 package Lexical;
 
 public class Token{
+    String tokenType;
+    String lexeme;
+    int lineNumber;
 
-    String tipoToken;
-    String lexema;
-    int nroLinea;
-
-    public Token(String tipoToken, String lexema, int nroLinea){
-        this.tipoToken = tipoToken;
-        this.lexema = lexema;
-        this.nroLinea = nroLinea;
+    public Token(String tokenType, String lexeme, int lineNumber){
+        this.tokenType = tokenType;
+        this.lexeme = lexeme;
+        this.lineNumber = lineNumber;
+    }
+    public String getTokenType(){
+        return tokenType;
     }
 
-    public String getTipoToken(){
-        return tipoToken;
+    public String getLexeme(){
+        return lexeme;
     }
 
-    public String getLexema(){
-        return lexema;
-    }
-
-    public int getNroLinea(){
-        return nroLinea;
-    }
-
-    public void setTipoToken(String token){
-        tipoToken = token;
-    }
-
-    public void setLexema(String lex){
-        lexema = lex;
-    }
-
-    public void setNroLinea(int line){
-        nroLinea = line;
+    public int getLineNumber(){
+        return lineNumber;
     }
 }

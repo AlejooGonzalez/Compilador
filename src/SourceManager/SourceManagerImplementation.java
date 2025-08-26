@@ -11,7 +11,6 @@ public class SourceManagerImplementation implements SourceManager{
     private int lineIndexNumber;
     private boolean mustReadNextLine;
 
-
     public SourceManagerImplementation() {
         currentLine = "";
         lineNumber = 0;
@@ -24,7 +23,6 @@ public class SourceManagerImplementation implements SourceManager{
     public void open(String filePath) throws FileNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(filePath);
         InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
-
         reader = new BufferedReader(inputStreamReader);
     }
 
@@ -42,10 +40,12 @@ public class SourceManagerImplementation implements SourceManager{
             lineNumber++;
             lineIndexNumber = 0;
             mustReadNextLine = false;
+            columnNumber = 0;
         }
 
         if(lineIndexNumber < currentLine.length()) {
             currentChar = currentLine.charAt(lineIndexNumber);
+            columnNumber++;
             lineIndexNumber++;
         } else if (reader.ready()) {
             currentChar = '\n';
@@ -53,7 +53,6 @@ public class SourceManagerImplementation implements SourceManager{
         } else {
             currentChar = END_OF_FILE;
         }
-
         return currentChar;
     }
 
@@ -70,7 +69,7 @@ public class SourceManagerImplementation implements SourceManager{
         return currentLine;
     }
 
-    public boolean esEOF(char parametro){
+    public boolean isEOF(char parametro){
         return parametro == END_OF_FILE;
     }
 }

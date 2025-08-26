@@ -3,9 +3,8 @@ package Lexical;
 import java.util.*;
 
 public class ReservedWords {
-    Map<String,String> mapeo = new HashMap<String, String>();
-
-        public ReservedWords(){
+        private static final Map<String,String> mapeo = new HashMap<String, String>();
+         static {
             mapeo.put("class", "pr_class");
             mapeo.put("interface", "pr_interface");
             mapeo.put("extends", "pr_extends");
@@ -27,5 +26,9 @@ public class ReservedWords {
             mapeo.put("null", "pr_null");
             mapeo.put("true", "pr_true");
             mapeo.put("false", "pr_false");
+    }
+
+    public static String reservedWord(String lexema){
+        return mapeo.get(lexema);
     }
 }

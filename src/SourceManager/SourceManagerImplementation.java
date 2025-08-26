@@ -69,4 +69,8 @@ public class SourceManagerImplementation implements SourceManager{
     public String getCurrentLine() {
         return currentLine;
     }
+
+    public boolean esEOF(char parametro){
+        return parametro == END_OF_FILE;
+    }
 }

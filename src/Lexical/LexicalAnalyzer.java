@@ -1,28 +1,29 @@
 package Lexical;
 
 import java.io.IOException;
+import Exceptions.LexicalException;
 import SourceManager.SourceManagerImplementation;
 
 public class LexicalAnalyzer {
     String lexema;
     char caracterActual;
-    SourceManagerImplementation SourceManager;
+    SourceManagerImplementation sourceManager;
 
     public LexicalAnalyzer(SourceManagerImplementation sourceManager) throws IOException {
-        this.SourceManager = sourceManager;
+        this.sourceManager = sourceManager;
         actualizarCaracterActual();
     }
 
-    public Token proximoToken() throws IOException{
+    public Token proximoToken() throws IOException, LexicalException {
         lexema = "";
         return e0();
     }
 
     private void actualizarCaracterActual() throws IOException {
-        caracterActual = SourceManager.getNextChar();
+        caracterActual = sourceManager.getNextChar();
     }
 
-    private Token e0() throws IOException{
+    private Token e0() throws IOException, LexicalException {
 
         if (Character.isDigit(caracterActual)) {
             actualizarLexema();
@@ -42,7 +43,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        switch(caracterActual){
+        switch(caracterActual) {
             //Espacios en blanco
             case ' ':
             case '\n':
@@ -53,65 +54,65 @@ public class LexicalAnalyzer {
             }
 
             //Operadores
-            case '>':{
+            case '>': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e1();
-                }
+            }
 
-            case '<':{
+            case '<': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e2();
-                }
+            }
 
-            case '!':{
+            case '!': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e3();
-                }
+            }
 
-            case '=':{
+            case '=': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e4();
-                }
+            }
 
-            case '&':{
+            case '&': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e5();
-                }
+            }
 
-            case '|':{
+            case '|': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e6();
-                }
+            }
 
-            case '%':{
+            case '%': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e7();
-                }
+            }
 
-            case '+':{
+            case '+': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e8();
-                }
+            }
 
-            case '-':{
+            case '-': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e9();
-                }
+            }
 
-            case '*':{
+            case '*': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e10();
-                }
+            }
 
             /*case '/':{
                 //actualizarLexema();
@@ -120,65 +121,70 @@ public class LexicalAnalyzer {
                 }*/
 
             //Puntuacion
-            case '(':{
+            case '(': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e12();
-                }
+            }
 
-            case ')':{
+            case ')': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e13();
-                }
+            }
 
-            case '{':{
+            case '{': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e14();
-                }
+            }
 
-            case '}':{
+            case '}': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e15();
-                }
+            }
 
-            case ';':{
+            case ';': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e16();
-                }
+            }
 
-            case ',':{
+            case ',': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e17();
-                }
+            }
 
-            case '.':{
+            case '.': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e18();
-                }
+            }
 
-            case ':':{
+            case ':': {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e19();
-                }
             }
+        }
 
-        return null;
+            if(sourceManager.esEOF(caracterActual)){
+                return e22_EOF();
+            } else {
+                actualizarLexema();
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexema, sourceManager);
+            }
         }
 
         private Token e1() throws IOException{
             if(caracterActual == '='){
                 actualizarLexema();
                 actualizarCaracterActual();
-                return new Token("op_mayorIgual",lexema, SourceManager.getLineNumber());
+                return new Token("op_mayorIgual",lexema, sourceManager.getLineNumber());
             } else {
-                return new Token("op_mayor", lexema, SourceManager.getLineNumber());
+                return new Token("op_mayor", lexema, sourceManager.getLineNumber());
             }
         }
 
@@ -186,9 +192,9 @@ public class LexicalAnalyzer {
             if(caracterActual == '='){
                 actualizarLexema();
                 actualizarCaracterActual();
-                return new Token("op_menorIgual",lexema, SourceManager.getLineNumber());
+                return new Token("op_menorIgual",lexema, sourceManager.getLineNumber());
             } else {
-                return new Token("op_menor", lexema, SourceManager.getLineNumber());
+                return new Token("op_menor", lexema, sourceManager.getLineNumber());
             }
         }
 
@@ -196,9 +202,9 @@ public class LexicalAnalyzer {
             if(caracterActual == '='){
                 actualizarLexema();
                 actualizarCaracterActual();
-                return new Token("op_distinto",lexema, SourceManager.getLineNumber());
+                return new Token("op_distinto",lexema, sourceManager.getLineNumber());
             } else {
-                return new Token("op_negacion", lexema, SourceManager.getLineNumber());
+                return new Token("op_negacion", lexema, sourceManager.getLineNumber());
             }
         }
 
@@ -206,19 +212,19 @@ public class LexicalAnalyzer {
             if(caracterActual == '='){
                 actualizarLexema();
                 actualizarCaracterActual();
-                return new Token("op_igual",lexema, SourceManager.getLineNumber());
+                return new Token("op_igual",lexema, sourceManager.getLineNumber());
             } else {
-                return new Token("op_asignacion", lexema, SourceManager.getLineNumber());
+                return new Token("op_asignacion", lexema, sourceManager.getLineNumber());
             }
         }
 
-        private Token e5() throws IOException{
+        private Token e5() throws IOException, LexicalException {
             if(caracterActual == '&'){
                 actualizarLexema();
                 actualizarCaracterActual();
-                return new Token("op_and",lexema, SourceManager.getLineNumber());
+                return new Token("op_and",lexema, sourceManager.getLineNumber());
             } else {
-                return new Token("op_asignacion", lexema, SourceManager.getLineNumber()); //MAL, duda para consultar
+                throw new LexicalException(sourceManager.getColumnNumber(),sourceManager.getLineNumber(), lexema, sourceManager);
             }
         }
 
@@ -226,23 +232,23 @@ public class LexicalAnalyzer {
             if(caracterActual == '|'){
                 actualizarLexema();
                 actualizarCaracterActual();
-                return new Token("op_or",lexema, SourceManager.getLineNumber());
+                return new Token("op_or",lexema, sourceManager.getLineNumber());
             } else {
-                return new Token("op_asignacion", lexema, SourceManager.getLineNumber()); //MAL, duda para consultar
+                return new Token("op_asignacion", lexema, sourceManager.getLineNumber()); //MAL, duda para consultar
             }
         }
 
         private Token e7() throws IOException{
-            return new Token("op_modulo",lexema, SourceManager.getLineNumber());
+            return new Token("op_modulo",lexema, sourceManager.getLineNumber());
         }
 
         private Token e8() throws IOException{
             if(caracterActual == '+'){
                 actualizarLexema();
                 actualizarCaracterActual();
-                return new Token("op_incremento",lexema, SourceManager.getLineNumber());
+                return new Token("op_incremento",lexema, sourceManager.getLineNumber());
             } else {
-                return new Token("op_suma", lexema, SourceManager.getLineNumber()); 
+                return new Token("op_suma", lexema, sourceManager.getLineNumber());
             }
         }
 
@@ -250,14 +256,14 @@ public class LexicalAnalyzer {
             if(caracterActual == '-'){
                 actualizarLexema();
                 actualizarCaracterActual();
-                return new Token("op_decremento",lexema, SourceManager.getLineNumber());
+                return new Token("op_decremento",lexema, sourceManager.getLineNumber());
             } else {
-                return new Token("op_resta", lexema, SourceManager.getLineNumber()); 
+                return new Token("op_resta", lexema, sourceManager.getLineNumber());
             }
         }
 
         private Token e10() throws IOException{
-            return new Token("op_multiplicacion", lexema, SourceManager.getLineNumber()); 
+            return new Token("op_multiplicacion", lexema, sourceManager.getLineNumber());
         }
         
         /*private Token e11() throws IOException{
@@ -277,50 +283,49 @@ public class LexicalAnalyzer {
 
         //Puntacion
         private Token e12() throws IOException{
-            return new Token("pnt_parentesisIzquierdo", lexema, SourceManager.getLineNumber()); 
+            return new Token("pnt_parentesisIzquierdo", lexema, sourceManager.getLineNumber());
         }
 
         private Token e13() throws IOException{
-            return new Token("pnt_parentesisDerecho", lexema, SourceManager.getLineNumber()); 
+            return new Token("pnt_parentesisDerecho", lexema, sourceManager.getLineNumber());
         }
 
         private Token e14() throws IOException{
-            return new Token("pnt_llaveIzquierda", lexema, SourceManager.getLineNumber()); 
+            return new Token("pnt_llaveIzquierda", lexema, sourceManager.getLineNumber());
         }
 
         private Token e15() throws IOException{
-            return new Token("pnt_llaveDerecha", lexema, SourceManager.getLineNumber());
+            return new Token("pnt_llaveDerecha", lexema, sourceManager.getLineNumber());
         }
 
         private Token e16() throws IOException{
-            return new Token("pnt_puntoYComa", lexema, SourceManager.getLineNumber()); 
+            return new Token("pnt_puntoYComa", lexema, sourceManager.getLineNumber());
         }
 
         private Token e17() throws IOException{
-            return new Token("pnt_coma", lexema, SourceManager.getLineNumber()); 
+            return new Token("pnt_coma", lexema, sourceManager.getLineNumber());
         }
 
         private Token e18() throws IOException{
-            return new Token("pnt_punto", lexema, SourceManager.getLineNumber()); 
+            return new Token("pnt_punto", lexema, sourceManager.getLineNumber());
         }
 
         private Token e19() throws IOException{
-            return new Token("pnt_dosPuntos", lexema, SourceManager.getLineNumber()); 
+            return new Token("pnt_dosPuntos", lexema, sourceManager.getLineNumber());
         }
 
-        private Token e20_digit() throws IOException {
+        private Token e20_digit() throws IOException, LexicalException {
             if (Character.isDigit(caracterActual)) {
                 actualizarLexema();
                 actualizarCaracterActual();
                 return e20_digit();
             } else {
                 if(lexema.length() <= 9){
-                    return new Token("entero", lexema, SourceManager.getLineNumber());
+                    return new Token("entero", lexema, sourceManager.getLineNumber());
                 } else {
-                    // Excepcion porque el numero supera los 9 digitos
+                    throw new LexicalException(sourceManager.getColumnNumber(),sourceManager.getLineNumber(), lexema, sourceManager);
                 }
             }
-            return null;
         }
 
         private Token e21_capitalLetter() throws IOException {
@@ -329,19 +334,28 @@ public class LexicalAnalyzer {
                 actualizarCaracterActual();
                 return e21_capitalLetter();
             } else {
-                return new Token("idClase", lexema, SourceManager.getLineNumber());
+                return new Token("idClase", lexema, sourceManager.getLineNumber());
             }
         }
 
-    private Token e21_lowerLetter() throws IOException {
-        if (Character.isLetter(caracterActual) || Character.isDigit(caracterActual) || caracterActual == '_') {
-            actualizarLexema();
-            actualizarCaracterActual();
-            return e21_capitalLetter();
-        } else {
-            return new Token("idClase", lexema, SourceManager.getLineNumber());
+        private Token e21_lowerLetter() throws IOException {
+            if (Character.isLetter(caracterActual) || Character.isDigit(caracterActual) || caracterActual == '_') {
+                actualizarLexema();
+                actualizarCaracterActual();
+                return e21_lowerLetter();
+            } else {
+                String esPalabraReservada = ReservedWords.reservedWord(lexema);
+                if(esPalabraReservada != null) {
+                    return new Token(esPalabraReservada, lexema, sourceManager.getLineNumber());
+                } else {
+                    return new Token("idClase", lexema, sourceManager.getLineNumber());
+                }
+            }
         }
-    }
+
+        private Token e22_EOF() throws IOException{
+            return new Token("EOF", lexema, sourceManager.getLineNumber());
+        }
 
         private void actualizarLexema() {
             lexema += caracterActual;

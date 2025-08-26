@@ -1,5 +1,6 @@
 package Lexical;
 
+import java.util.Objects;
 import java.io.IOException;
 import Exceptions.LexicalException;
 import SourceManager.SourceManagerImplementation;
@@ -269,7 +270,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e7() throws IOException{
+        private Token e7() {
             return new Token("op_modulo", lexeme, sourceManager.getLineNumber());
         }
 
@@ -293,7 +294,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e10() throws IOException{
+        private Token e10(){
             return new Token("op_multiplicacion", lexeme, sourceManager.getLineNumber());
         }
         
@@ -322,35 +323,35 @@ public class LexicalAnalyzer {
         }
 
         //Puntacion
-        private Token e12() throws IOException{
+        private Token e12(){
             return new Token("pnt_parentesisIzquierdo", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e13() throws IOException{
+        private Token e13(){
             return new Token("pnt_parentesisDerecho", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e14() throws IOException{
+        private Token e14(){
             return new Token("pnt_llaveIzquierda", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e15() throws IOException{
+        private Token e15(){
             return new Token("pnt_llaveDerecha", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e16() throws IOException{
+        private Token e16(){
             return new Token("pnt_puntoYComa", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e17() throws IOException{
+        private Token e17(){
             return new Token("pnt_coma", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e18() throws IOException{
+        private Token e18(){
             return new Token("pnt_punto", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e19() throws IOException{
+        private Token e19(){
             return new Token("pnt_dosPuntos", lexeme, sourceManager.getLineNumber());
         }
 
@@ -384,16 +385,16 @@ public class LexicalAnalyzer {
                 updateCurrentCharacter();
                 return e21_lowerLetter();
             } else {
-                String esPalabraReservada = ReservedWords.reservedWord(lexeme);
-                if(esPalabraReservada != null) {
-                    return new Token(esPalabraReservada, lexeme, sourceManager.getLineNumber());
+                String isReservedWord = ReservedWords.reservedWord(lexeme);
+                if(Objects.nonNull(isReservedWord)) {
+                    return new Token(isReservedWord, lexeme, sourceManager.getLineNumber());
                 } else {
                     return new Token("idMetVar", lexeme, sourceManager.getLineNumber());
                 }
             }
         }
 
-        private Token e22_EOF() throws IOException{
+        private Token e22_EOF(){
             return new Token("EOF", lexeme, sourceManager.getLineNumber());
         }
     }

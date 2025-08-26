@@ -3,7 +3,7 @@ package Lexical;
 import java.util.*;
 
 public class ReservedWords {
-        private static final Map<String,String> map = new HashMap<String, String>();
+        private static final Map<String,String> map = new HashMap<>();
          static {
             map.put("class", "pr_class");
             map.put("interface", "pr_interface");
@@ -28,7 +28,7 @@ public class ReservedWords {
             map.put("false", "pr_false");
     }
 
-    public static String reservedWord(String lexema){
-        return map.get(lexema);
+    public static String reservedWord(String lexeme){
+        return map.get(lexeme);
     }
 }

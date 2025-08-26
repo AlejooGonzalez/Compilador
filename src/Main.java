@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Main {
-    public static void main(String[] args) throws IOException, LexicalException {
+    public static void main(String[] args) throws IOException{
         boolean thereIsError = false;
         SourceManagerImplementation sourceManager = new SourceManagerImplementation();
         Token token = new Token("", "", 1);

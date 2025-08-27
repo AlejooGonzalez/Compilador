@@ -3,25 +3,25 @@ package Exceptions;
 import SourceManager.SourceManager;
 
 public class LexicalException extends Exception{
-    private final int nroColumna;
-    private final int nroFila;
-    private final String lexema;
+    private final int columnNumber;
+    private final int rowNumber;
+    private final String lexeme;
     private final SourceManager sourceManager;
 
-    public LexicalException(int nroColumna, int nroFila, String lexema, SourceManager sourceManager){
-        this.nroColumna = nroColumna;
-        this.nroFila = nroFila;
-        this.lexema = lexema;
+    public LexicalException(int columnNumber, int rowNumber, String lexeme, SourceManager sourceManager){
+        this.columnNumber = columnNumber;
+        this.rowNumber = rowNumber;
+        this.lexeme = lexeme;
         this.sourceManager = sourceManager;
     }
 
-    public void errorElegante(){
-        String lineaActual = sourceManager.getCurrentLine();
-        System.out.print("Error Léxico en linea "+nroFila+": "+lexema+" no es un símbolo valido\nDetalle: "+lineaActual+"\n       ");
-        for(int i = 0; i < nroColumna; i++){
+    public void elegantError(){
+        String actualRow = sourceManager.getCurrentLine();
+        System.out.print("Error Léxico en linea "+ rowNumber +": "+ lexeme +" no es un símbolo valido\nDetalle: "+actualRow+"\n       ");
+        for(int i = 0; i < columnNumber; i++){
             System.out.print(" ");
         }
         System.out.println("^");
-        System.out.println("Error:"+lexema+"|"+nroFila+"\n");
+        System.out.println("Error:"+ lexeme +"|"+ rowNumber +"\n");
     }
 }

@@ -24,7 +24,7 @@ public class Main {
                 token = lexer.nextToken();
                 System.out.println("(" + token.getTokenType() + "," + token.getLexeme() + "," + token.getLineNumber() + ")");
             } catch (LexicalException e) {
-                e.errorElegante();
+                e.elegantError();
                 thereIsError = true;
             }
         } while (!Objects.equals(token.getTokenType(), "EOF"));

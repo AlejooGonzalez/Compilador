@@ -48,7 +48,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        switch(currentCharacter) {
+        switch (currentCharacter) {
 
             //Spaces
             case ' ':
@@ -63,125 +63,131 @@ public class LexicalAnalyzer {
             case '>': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e1();
+                return e1_greaterThan();
             }
 
             case '<': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e2();
+                return e2_lessThan();
             }
 
             case '!': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e3();
+                return e3_exclamationMark();
             }
 
             case '=': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e4();
+                return e4_equals();
             }
 
             case '&': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e5();
+                return e5_ampersand();
             }
 
             case '|': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e6();
+                return e6_pipe();
             }
 
             case '%': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e7();
+                return e7_percentSign();
             }
 
             case '+': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e8();
+                return e8_plusSign();
             }
 
             case '-': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e9();
+                return e9_minusSign();
             }
 
             case '*': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e10();
+                return e10_asterisk();
             }
 
-            case '/':{
-                return e11();
-                }
+            case '/': {
+                return e11_forwardSlash();
+            }
 
             //punctuation
             case '(': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e12();
+                return e12_leftParenthesis();
             }
 
             case ')': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e13();
+                return e13_rightParenthesis();
             }
 
             case '{': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e14();
+                return e14_leftBrace();
             }
 
             case '}': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e15();
+                return e15_rightBrace();
             }
 
             case ';': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e16();
+                return e16_semiColon();
             }
 
             case ',': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e17();
+                return e17_comma();
             }
 
             case '.': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e18();
+                return e18_period();
             }
 
             case ':': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e19();
+                return e19_colon();
             }
 
-            case '"':{
+            case '"': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e99();
+                return e22_doubleQuote();
             }
+        /*
+            case '\\': {
+                updateLexeme();
+                updateCurrentCharacter();
+                return e25();
+            }*/
         }
 
-            if(sourceManager.isEOF(currentCharacter)){
-                return e22_EOF();
+            if (sourceManager.isEOF(currentCharacter)) {
+                return e23_EOF();
             } else {
                 updateLexeme();
                 updateCurrentCharacter();
@@ -189,28 +195,60 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e99() throws IOException, LexicalException {
+        /*
+        private Token e25() throws IOException, LexicalException {
+            if(currentCharacter == 'u' || currentCharacter == 'U'){
+                updateLexeme();
+                updateCurrentCharacter();
+                return e25_unicode();
+            } else {
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
+            }
+        }
+        */
+
+        /*
+        private Token e25_unicode() throws IOException, LexicalException {
+            for(int i = 0; i <= 4; i++) {
+                if(Character.isDigit(currentCharacter) || currentCharacter=='A' || currentCharacter == 'B' || currentCharacter == 'C' ||currentCharacter == 'D' ||currentCharacter == 'E' || currentCharacter == 'F' || currentCharacter == 'a' || currentCharacter == 'b' || currentCharacter == 'c' || currentCharacter == 'd' || currentCharacter == 'e' || currentCharacter == 'f'){
+                    updateLexeme();
+                    updateCurrentCharacter();
+                } else {
+                    updateLexeme();
+                    throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
+                }
+            }
+            return null;
+        } */
+
+        private Token e22_doubleQuote() throws IOException, LexicalException {
             if (currentCharacter == '\n') {
                 throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
             } else {
                 if (Character.isLetterOrDigit(currentCharacter)) {
                     updateLexeme();
                     updateCurrentCharacter();
-                    return e99();
+                    return e22_doubleQuote();
                 } else {
-                    if(currentCharacter == '"') {
+                    if (currentCharacter == '"') {
                         updateLexeme();
                         updateCurrentCharacter();
                         return new Token("op_StringLiteral", lexeme, sourceManager.getLineNumber());
-                    }
-                    else {
-                        throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
+                    } /* else {
+                        if (currentCharacter == '\\') {
+                            updateLexeme();
+                            updateCurrentCharacter();
+                            return e25_unicode();
+                        } else {
+                            throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
+                        }*/
                     }
                 }
+            return null;
             }
-        }
 
-        private Token e1() throws IOException{
+
+        private Token e1_greaterThan() throws IOException{
             if(currentCharacter == '='){
                 updateLexeme();
                 updateCurrentCharacter();
@@ -220,7 +258,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e2() throws IOException{
+        private Token e2_lessThan() throws IOException{
             if(currentCharacter == '='){
                 updateLexeme();
                 updateCurrentCharacter();
@@ -230,7 +268,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e3() throws IOException{
+        private Token e3_exclamationMark() throws IOException{
             if(currentCharacter == '='){
                 updateLexeme();
                 updateCurrentCharacter();
@@ -240,7 +278,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e4() throws IOException{
+        private Token e4_equals() throws IOException{
             if(currentCharacter == '='){
                 updateLexeme();
                 updateCurrentCharacter();
@@ -250,7 +288,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e5() throws IOException, LexicalException {
+        private Token e5_ampersand() throws IOException, LexicalException {
             if(currentCharacter == '&'){
                 updateLexeme();
                 updateCurrentCharacter();
@@ -260,7 +298,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e6() throws IOException{
+        private Token e6_pipe() throws IOException{
             if(currentCharacter == '|'){
                 updateLexeme();
                 updateCurrentCharacter();
@@ -270,11 +308,11 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e7() {
+        private Token e7_percentSign() {
             return new Token("op_modulo", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e8() throws IOException{
+        private Token e8_plusSign() throws IOException{
             if(currentCharacter == '+'){
                 updateLexeme();
                 updateCurrentCharacter();
@@ -284,7 +322,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e9() throws IOException{
+        private Token e9_minusSign() throws IOException{
             if(currentCharacter == '-'){
                 updateLexeme();
                 updateCurrentCharacter();
@@ -294,64 +332,81 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e10(){
+        private Token e10_asterisk(){
             return new Token("op_multiplicacion", lexeme, sourceManager.getLineNumber());
         }
         
-        private Token e11() throws IOException, LexicalException {
+        private Token e11_forwardSlash() throws IOException, LexicalException {
             updateCurrentCharacter();
-            if(currentCharacter == '/'){ //Comentario
-                return e11_comentario();
-            }
-            else {
-                /*if (caracterActual == '*') { //comentarioMultilinea
-                    //
-                    return e11_comentarioMultiLinea();
-                } else {*/
+            if (currentCharacter == '/') { //Comentario
+                return e11_comment();
+            } else {
+                if (currentCharacter == '*') { //comentarioMultilinea
+                    return e11_multilineComment();
+                } else {
                     return new Token("op_division", lexeme, sourceManager.getLineNumber());
                 }
             }
+        }
 
+        private Token e11_multilineComment() throws IOException, LexicalException {
+            updateCurrentCharacter();
+            if(currentCharacter != '*'){
+                return e11_multilineComment();
+            } else{
+                return e11_multilineCommentEnd();
+            }
+        }
 
-        private Token e11_comentario() throws IOException, LexicalException {
+        private Token e11_multilineCommentEnd() throws IOException, LexicalException {
+            updateCurrentCharacter();
+            if(currentCharacter != '/'){
+                return e11_multilineComment();
+            } else{
+                updateCurrentCharacter();
+                return e0();
+            }
+        }
+
+        private Token e11_comment() throws IOException, LexicalException {
             if(currentCharacter != '\n'){
                 updateCurrentCharacter();
-                return e11_comentario();
+                return e11_comment();
             } else{
                 return e0();
             }
         }
 
         //Puntacion
-        private Token e12(){
+        private Token e12_leftParenthesis(){
             return new Token("pnt_parentesisIzquierdo", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e13(){
+        private Token e13_rightParenthesis(){
             return new Token("pnt_parentesisDerecho", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e14(){
+        private Token e14_leftBrace(){
             return new Token("pnt_llaveIzquierda", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e15(){
+        private Token e15_rightBrace(){
             return new Token("pnt_llaveDerecha", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e16(){
+        private Token e16_semiColon(){
             return new Token("pnt_puntoYComa", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e17(){
+        private Token e17_comma(){
             return new Token("pnt_coma", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e18(){
+        private Token e18_period(){
             return new Token("pnt_punto", lexeme, sourceManager.getLineNumber());
         }
 
-        private Token e19(){
+        private Token e19_colon(){
             return new Token("pnt_dosPuntos", lexeme, sourceManager.getLineNumber());
         }
 
@@ -394,7 +449,7 @@ public class LexicalAnalyzer {
             }
         }
 
-        private Token e22_EOF(){
+        private Token e23_EOF(){
             return new Token("EOF", lexeme, sourceManager.getLineNumber());
         }
     }

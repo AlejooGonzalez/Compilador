@@ -69,7 +69,7 @@ public class SourceManagerImplementation implements SourceManager{
         return currentLine;
     }
 
-    public boolean isEOF(char parametro){
-        return parametro == END_OF_FILE;
+    public boolean isEOF(char parameter){
+        return parameter == END_OF_FILE;
     }
 }

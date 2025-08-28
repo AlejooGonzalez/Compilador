@@ -29,7 +29,6 @@ public class LexicalAnalyzer {
     }
 
     private Token e0() throws IOException, LexicalException {
-
         if (Character.isDigit(currentCharacter)) {
             updateLexeme();
             updateCurrentCharacter();
@@ -174,79 +173,97 @@ public class LexicalAnalyzer {
             }
 
             case '"': {
-                updateLexeme();
-                updateCurrentCharacter();
                 return e22_doubleQuote();
             }
-        /*
-            case '\\': {
+
+            case '\'': {
                 updateLexeme();
                 updateCurrentCharacter();
-                return e25();
-            }*/
+                return e23_quote();
+            }
         }
-
             if (sourceManager.isEOF(currentCharacter)) {
                 return e23_EOF();
             } else {
                 updateLexeme();
                 updateCurrentCharacter();
-                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "No es un caracter valido");
             }
         }
 
-        /*
-        private Token e25() throws IOException, LexicalException {
+        private Token e23_quote() throws IOException, LexicalException {
+            if (Character.isLetter(currentCharacter)) {
+                updateLexeme();
+                updateCurrentCharacter();
+                return e23_quoteCharacter();
+            } else {
+                if (currentCharacter == '\\') {
+                    updateLexeme();
+                    updateCurrentCharacter();
+                    return e23_quoteUnicode();
+                } else {
+                    throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no valido");
+                }
+            }
+        }
+
+        private Token e23_quoteCharacter() throws IOException, LexicalException {
+            if (currentCharacter == '\'') {
+                updateLexeme();
+                updateCurrentCharacter();
+                return new Token("character", lexeme, sourceManager.getLineNumber());
+            } else {
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no cerrado");
+            }
+        }
+
+        private Token e23_quoteUnicode() throws IOException, LexicalException {
             if(currentCharacter == 'u' || currentCharacter == 'U'){
                 updateLexeme();
                 updateCurrentCharacter();
-                return e25_unicode();
+                return e23_quoteUnicodeCheck();
             } else {
-                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no valido");
             }
         }
-        */
 
-        /*
-        private Token e25_unicode() throws IOException, LexicalException {
-            for(int i = 0; i <= 4; i++) {
-                if(Character.isDigit(currentCharacter) || currentCharacter=='A' || currentCharacter == 'B' || currentCharacter == 'C' ||currentCharacter == 'D' ||currentCharacter == 'E' || currentCharacter == 'F' || currentCharacter == 'a' || currentCharacter == 'b' || currentCharacter == 'c' || currentCharacter == 'd' || currentCharacter == 'e' || currentCharacter == 'f'){
+        private Token e23_quoteUnicodeCheck() throws IOException, LexicalException {
+            for (int i = 0; i <= 3; i++) {
+                if (Character.isDigit(currentCharacter) || currentCharacter == 'A' || currentCharacter == 'B' || currentCharacter == 'C' || currentCharacter == 'D' || currentCharacter == 'E' || currentCharacter == 'F' || currentCharacter == 'a' || currentCharacter == 'b' || currentCharacter == 'c' || currentCharacter == 'd' || currentCharacter == 'e' || currentCharacter == 'f') {
                     updateLexeme();
                     updateCurrentCharacter();
                 } else {
-                    updateLexeme();
-                    throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
+                    throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter UNICODE no valido");
                 }
             }
-            return null;
-        } */
+            return e23_finalQuoteUnicodeCheck();
+            }
+
+        private Token e23_finalQuoteUnicodeCheck() throws IOException, LexicalException {
+            if (currentCharacter == '\'') {
+                updateLexeme();
+                updateCurrentCharacter();
+                return new Token("unicode", lexeme, sourceManager.getLineNumber());
+            } else {
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no cerrado");
+            }
+        }
 
         private Token e22_doubleQuote() throws IOException, LexicalException {
-            if (currentCharacter == '\n') {
-                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
+            updateLexeme();
+            updateCurrentCharacter();
+            if (currentCharacter == '\n' || sourceManager.isEOF(currentCharacter) ) {
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "String no cerrado");
             } else {
-                if (Character.isLetterOrDigit(currentCharacter)) {
-                    updateLexeme();
-                    updateCurrentCharacter();
-                    return e22_doubleQuote();
-                } else {
                     if (currentCharacter == '"') {
                         updateLexeme();
                         updateCurrentCharacter();
-                        return new Token("op_StringLiteral", lexeme, sourceManager.getLineNumber());
-                    } /* else {
-                        if (currentCharacter == '\\') {
-                            updateLexeme();
-                            updateCurrentCharacter();
-                            return e25_unicode();
-                        } else {
-                            throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager);
-                        }*/
+                        return new Token("StringLiteral", lexeme, sourceManager.getLineNumber());
+                    } else {
+                        return e22_doubleQuote();
                     }
                 }
-            return null;
-            }
-
+        }
 
         private Token e1_greaterThan() throws IOException{
             if(currentCharacter == '='){
@@ -294,17 +311,17 @@ public class LexicalAnalyzer {
                 updateCurrentCharacter();
                 return new Token("op_and", lexeme, sourceManager.getLineNumber());
             } else {
-                throw new LexicalException(sourceManager.getColumnNumber(),sourceManager.getLineNumber(), lexeme, sourceManager);
+                throw new LexicalException(sourceManager.getColumnNumber(),sourceManager.getLineNumber(), lexeme, sourceManager, "Operador no valido");
             }
         }
 
-        private Token e6_pipe() throws IOException{
+        private Token e6_pipe() throws IOException, LexicalException {
             if(currentCharacter == '|'){
                 updateLexeme();
                 updateCurrentCharacter();
                 return new Token("op_or", lexeme, sourceManager.getLineNumber());
             } else {
-                return new Token("op_asignacion", lexeme, sourceManager.getLineNumber()); //MAL, duda para consultar
+                throw new LexicalException(sourceManager.getColumnNumber(),sourceManager.getLineNumber(), lexeme, sourceManager, "Operador no valido");
             }
         }
 
@@ -351,10 +368,14 @@ public class LexicalAnalyzer {
 
         private Token e11_multilineComment() throws IOException, LexicalException {
             updateCurrentCharacter();
-            if(currentCharacter != '*'){
-                return e11_multilineComment();
-            } else{
-                return e11_multilineCommentEnd();
+            if (sourceManager.isEOF(currentCharacter)) {
+                throw new LexicalException(sourceManager.getColumnNumber(),sourceManager.getLineNumber(), lexeme, sourceManager, "comentario multilinea no cerrado");
+            } else {
+                if(currentCharacter != '*'){
+                    return e11_multilineComment();
+            } else {
+                    return e11_multilineCommentEnd();
+                }
             }
         }
 
@@ -369,11 +390,11 @@ public class LexicalAnalyzer {
         }
 
         private Token e11_comment() throws IOException, LexicalException {
-            if(currentCharacter != '\n'){
-                updateCurrentCharacter();
-                return e11_comment();
-            } else{
+            updateCurrentCharacter();
+            if(currentCharacter == '\n' || sourceManager.isEOF(currentCharacter)){
                 return e0();
+            } else{
+                return e11_comment();
             }
         }
 
@@ -419,7 +440,7 @@ public class LexicalAnalyzer {
                 if(lexeme.length() <= 9){
                     return new Token("entero", lexeme, sourceManager.getLineNumber());
                 } else {
-                    throw new LexicalException(sourceManager.getColumnNumber(),sourceManager.getLineNumber(), lexeme, sourceManager);
+                    throw new LexicalException(sourceManager.getColumnNumber(),sourceManager.getLineNumber(), lexeme, sourceManager, "Digito mayor a 9 caracteres");
                 }
             }
         }

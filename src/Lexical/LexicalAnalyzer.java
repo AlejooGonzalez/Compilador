@@ -192,17 +192,23 @@ public class LexicalAnalyzer {
         }
 
         private Token e23_quote() throws IOException, LexicalException {
-            if (Character.isLetter(currentCharacter)) {
-                updateLexeme();
-                updateCurrentCharacter();
-                return e23_quoteCharacter();
+            if (currentCharacter == '\n' || sourceManager.isEOF(currentCharacter)) {
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no valido");
             } else {
-                if (currentCharacter == '\\') {
+                if (currentCharacter == '\'') {
                     updateLexeme();
                     updateCurrentCharacter();
-                    return e23_quoteUnicode();
+                    throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "no válido (no hay carácter)");
                 } else {
-                    throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no valido");
+                    if (currentCharacter == '\\') {
+                        updateLexeme();
+                        updateCurrentCharacter();
+                        return e23_quoteUnicode();
+                    } else {
+                        updateLexeme();
+                        updateCurrentCharacter();
+                        return e23_quoteCharacter();
+                    }
                 }
             }
         }
@@ -213,7 +219,27 @@ public class LexicalAnalyzer {
                 updateCurrentCharacter();
                 return new Token("character", lexeme, sourceManager.getLineNumber());
             } else {
-                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no cerrado");
+                if(currentCharacter == '\n' || sourceManager.isEOF(currentCharacter)) {
+                    throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no cerrado");
+                } else{
+                    return e23_consumeQuoteCharacter();
+                }
+            }
+        }
+
+        private Token e23_consumeQuoteCharacter() throws IOException, LexicalException { //CONSULTAR
+            if (currentCharacter == '\'') {
+                updateLexeme();
+                updateCurrentCharacter();
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter mal hecho");
+            } else {
+                if (currentCharacter == '\n' || sourceManager.isEOF(currentCharacter)) {
+                    throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no cerrado");
+                } else {
+                    updateLexeme();
+                    updateCurrentCharacter();
+                    return e23_consumeQuoteCharacter();
+                }
             }
         }
 
@@ -233,11 +259,23 @@ public class LexicalAnalyzer {
                     updateLexeme();
                     updateCurrentCharacter();
                 } else {
-                    throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter UNICODE no valido");
+                    return e23_consumeUnicodeCharacter();
                 }
             }
             return e23_finalQuoteUnicodeCheck();
+        }
+
+        private Token e23_consumeUnicodeCharacter() throws IOException, LexicalException {
+            if (currentCharacter == '\'') {
+                updateLexeme();
+                updateCurrentCharacter();
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter UNICODE no valido");
+            } else {
+                updateLexeme();
+                updateCurrentCharacter();
+                return e23_consumeUnicodeCharacter();
             }
+        }
 
         private Token e23_finalQuoteUnicodeCheck() throws IOException, LexicalException {
             if (currentCharacter == '\'') {

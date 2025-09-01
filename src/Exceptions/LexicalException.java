@@ -19,11 +19,11 @@ public class LexicalException extends Exception{
 
     public void elegantError(){
         String actualRow = sourceManager.getCurrentLine();
-        System.out.print("Error Léxico en linea "+ rowNumber +": "+ lexeme +" - "+errorMsg+"\nDetalle: "+actualRow+"\n       ");
+        System.out.print("Error Léxico en linea "+ rowNumber +", columna "+columnNumber+": "+ lexeme +" - "+errorMsg+"\nDetalle: "+actualRow+"\n        ");
         for(int i = 0; i < columnNumber; i++){
             System.out.print(" ");
         }
         System.out.println("^");
-        System.out.println("Error:"+ lexeme +"|"+ rowNumber +"|"+columnNumber+"\n");
+        System.out.println("[Error:"+ lexeme +"|"+ rowNumber +"]\n");
     }
 }

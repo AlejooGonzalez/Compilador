@@ -1,5 +1,3 @@
-package minijavaCompiler;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
@@ -12,9 +10,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-
 
 @RunWith(Parameterized.class)
 public class TesterDeCasosSinErrores {

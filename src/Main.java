@@ -2,22 +2,22 @@ import Exceptions.LexicalException;
 import Lexical.LexicalAnalyzer;
 import Lexical.Token;
 import SourceManager.SourceManagerImplementation;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args){
         boolean thereIsError = false;
         SourceManagerImplementation sourceManager = new SourceManagerImplementation();
         Token token = new Token("", "", 1);
+        LexicalAnalyzer lexer = null;
 
         try {
             sourceManager.open(args[0]);
-        } catch (FileNotFoundException e) {
+            lexer = new LexicalAnalyzer(sourceManager);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        LexicalAnalyzer lexer = new LexicalAnalyzer(sourceManager);
 
         do {
             try {

@@ -1,2 +1,2 @@
-//[SinErrores]
-'abhsbas'+->>>>=+++-"hla"'&''class'"class"
+///[SinErrores]
+{

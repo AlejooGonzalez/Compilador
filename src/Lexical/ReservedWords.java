@@ -6,16 +6,15 @@ public class ReservedWords {
         private static final Map<String,String> map = new HashMap<>();
          static {
             map.put("class", "pr_class");
-            map.put("interface", "pr_interface");
             map.put("extends", "pr_extends");
-            map.put("implements", "pr_implements");
             map.put("public", "pr_public");
-            map.put("private", "pr_private");
             map.put("static", "pr_static");
             map.put("void", "pr_void");
             map.put("boolean", "pr_boolean");
             map.put("char", "pr_char");
             map.put("int", "pr_int");
+            map.put("abstract", "pr_abstract");
+            map.put("final", "pr_final");
             map.put("if", "pr_if");
             map.put("else", "pr_else");
             map.put("while", "pr_while");

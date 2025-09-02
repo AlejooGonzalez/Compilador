@@ -45,8 +45,8 @@ public class SourceManagerImplementation implements SourceManager{
 
         if(lineIndexNumber < currentLine.length()) {
             currentChar = currentLine.charAt(lineIndexNumber);
-            columnNumber++;
             lineIndexNumber++;
+            columnNumber++;
         } else if (reader.ready()) {
             currentChar = '\n';
             mustReadNextLine = true;

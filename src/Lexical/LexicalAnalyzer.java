@@ -189,9 +189,10 @@ public class LexicalAnalyzer {
             if (sourceManager.isEOF(currentCharacter)) {
                 return e23_EOF();
             } else {
+                int errorColumn = sourceManager.getColumnNumber();
                 updateLexeme();
                 updateCurrentCharacter();
-                throw new LexicalException(sourceManager.getColumnNumber()-1, sourceManager.getLineNumber(), lexeme, sourceManager, "No es un simbolo valido");
+                throw new LexicalException(errorColumn, sourceManager.getLineNumber(), lexeme, sourceManager, "No es un simbolo valido");
             }
         }
 

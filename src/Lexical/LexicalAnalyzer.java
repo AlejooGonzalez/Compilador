@@ -196,13 +196,13 @@ public class LexicalAnalyzer {
         }
 
         private Token e23_quote() throws LexicalException {
-            if (currentCharacter == '\n' || sourceManager.isEOF(currentCharacter)) {
+            if (currentCharacter == '\n' || sourceManager.isEOF(currentCharacter) || currentCharacter == '\r') {
                 throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no valido");
             } else {
                 if (currentCharacter == '\'') {
                     updateLexeme();
                     updateCurrentCharacter();
-                        throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "No válido (no hay carácter)");
+                        throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter vacio no valido");
                 } else {
                     if (currentCharacter == '\\') {
                         updateLexeme();
@@ -225,7 +225,7 @@ public class LexicalAnalyzer {
             } else {
                 if(currentCharacter == '\n' || sourceManager.isEOF(currentCharacter)) {
                     throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "Caracter no cerrado");
-                } else{
+                } else {
                     return e23_consumeQuoteCharacter();
                 }
             }
@@ -279,7 +279,7 @@ public class LexicalAnalyzer {
                     updateLexeme();
                     updateCurrentCharacter();
                 } else {
-                    return e23_consumeUnicodeCharacter();
+                    return e23_consumeUnicodeCharacter(); //Unicode mal realizado
                 }
             }
             return e23_finalQuoteUnicodeCheck();
@@ -310,9 +310,14 @@ public class LexicalAnalyzer {
         private Token e22_doubleQuote() throws LexicalException {
             updateLexeme();
             updateCurrentCharacter();
-            if (currentCharacter == '\n' || sourceManager.isEOF(currentCharacter) ) {
+            if (currentCharacter == '\n' || sourceManager.isEOF(currentCharacter) || currentCharacter == '\r') {
                 throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "String no cerrado");
             } else {
+                if (currentCharacter == '\\') {
+                    updateLexeme();
+                    updateCurrentCharacter();
+                    return e22_doubleQuoteBackslash();
+                } else {
                     if (currentCharacter == '"') {
                         updateLexeme();
                         updateCurrentCharacter();
@@ -321,6 +326,15 @@ public class LexicalAnalyzer {
                         return e22_doubleQuote();
                     }
                 }
+            }
+        }
+
+        private Token e22_doubleQuoteBackslash() throws LexicalException {
+            if (currentCharacter == '\n' || sourceManager.isEOF(currentCharacter) || currentCharacter == '\r') {
+                throw new LexicalException(sourceManager.getColumnNumber(), sourceManager.getLineNumber(), lexeme, sourceManager, "String no cerrado");
+            } else {
+                return e22_doubleQuote();
+            }
         }
 
         private Token e1_greaterThan(){
@@ -449,7 +463,7 @@ public class LexicalAnalyzer {
 
         private Token e11_comment() throws LexicalException {
             updateCurrentCharacter();
-            if(currentCharacter == '\n' || sourceManager.isEOF(currentCharacter)){
+            if(currentCharacter == '\n' || sourceManager.isEOF(currentCharacter) || currentCharacter == '\r'){
                 return e0();
             } else{
                 return e11_comment();
@@ -496,7 +510,7 @@ public class LexicalAnalyzer {
                 return e20_digit();
             } else {
                 if(lexeme.length() <= 9){
-                    return new Token("entero", lexeme, sourceManager.getLineNumber());
+                    return new Token("intLiteral", lexeme, sourceManager.getLineNumber());
                 } else {
                     throw new LexicalException(sourceManager.getColumnNumber(),sourceManager.getLineNumber(), lexeme, sourceManager, "Digito mayor a 9 caracteres");
                 }

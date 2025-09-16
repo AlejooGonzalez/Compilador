@@ -23,7 +23,7 @@ public class MainSyntactic {
 
 
         try {
-            syntacticAnalyzer.startAnalysis();
+            syntacticAnalyzer.start();
         } catch (SyntacticException e) { e.printError(); noMistakes = false;
         } catch (LexicalException | IOException ignored) { }
 

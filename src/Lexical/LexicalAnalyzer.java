@@ -322,7 +322,7 @@ public class LexicalAnalyzer {
                     if (currentCharacter == '"') {
                         updateLexeme();
                         updateCurrentCharacter();
-                        return new Token("StringLiteral", lexeme, sourceManager.getLineNumber());
+                        return new Token("stringLiteral", lexeme, sourceManager.getLineNumber());
                     } else {
                         return e22_doubleQuote();
                     }

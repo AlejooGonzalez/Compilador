@@ -16,15 +16,7 @@ public class SyntacticAnalyzer {
     public SyntacticAnalyzer(LexicalAnalyzer lexicalAnalyzer) throws LexicalException, IOException {
         this.lexicalAnalyzer = lexicalAnalyzer;
         firsts = new Firsts();
-    }
-
-    public void startAnalysis() throws SyntacticException, LexicalException, IOException {
-        try {
-            actualToken = lexicalAnalyzer.nextToken();
-        } catch (LexicalException e) {
-            e.elegantError();
-        }
-        start();
+        nextToken();
     }
 
     public void start() throws SyntacticException, LexicalException, IOException {
@@ -132,7 +124,6 @@ public class SyntacticAnalyzer {
         }
     }
 
-    //DUDA
     private void constructor() throws LexicalException, SyntacticException, IOException {
         match("pr_public");
         match("idClase");
@@ -140,7 +131,6 @@ public class SyntacticAnalyzer {
         bloque();
     }
 
-    //CONTROLAR
     private void tipoMetodo() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("Tipo", actualToken.getTokenType())) {
             tipo();
@@ -165,10 +155,10 @@ public class SyntacticAnalyzer {
 
     private void tipoPrimitivo() throws LexicalException, SyntacticException, IOException {
         switch (actualToken.getTokenType()) {
-            case "pr_boolean": match("pr_boolean"); break;
-            case "pr_char": match("pr_char"); break;
-            case "pr_int": match("pr_int"); break;
-            default: { }
+            case "pr_boolean" -> match("pr_boolean");
+            case "pr_char" -> match("pr_char");
+            case "pr_int" -> match("pr_int");
+            default -> { }
         }
     }
 
@@ -214,7 +204,6 @@ public class SyntacticAnalyzer {
         }
     }
 
-    //DUDA ---------------------------------
     private void bloqueOpcional() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("Bloque", actualToken.getTokenType())){
             bloque();
@@ -276,7 +265,7 @@ public class SyntacticAnalyzer {
     private void varLocal() throws LexicalException, SyntacticException, IOException {
         match("pr_var");
         match("idMetVar");
-        match("op_igual");
+        match("op_asignacion");
         expresionCompuesta();
     }
 

@@ -62,10 +62,10 @@ public class Firsts {
         firsts.put("ListaSentencias", new ArrayList<>(firsts.get("Sentencia")));
         firsts.put("Clase", new ArrayList<>(concat(List.of("pr_class"), firsts.get("ModificadorOpcional"))));
         firsts.put("ListaClases", new ArrayList<>(concat(List.of("€"), firsts.get("Clase"))));
-        firsts.put("Inicial", new ArrayList<>(concat(List.of("EOF"), firsts.get("ListaClases"))));
+        firsts.put("Inicial", new ArrayList<>(firsts.get("ListaClases")));
         firsts.put("ListaMiembros", new ArrayList<>(concat(List.of("€"), firsts.get("Miembro"))));
         firsts.put("TipoMetodo", new ArrayList<>(concat(List.of("pr_void"), firsts.get("Tipo"))));
-        firsts.put("ReferenciaTerminal", new ArrayList<>(concat(List.of("pnt_punto"), List.of("EOF"))));
+        firsts.put("ReferenciaTerminal", new ArrayList<>(concat(List.of("pnt_punto"), List.of("€"))));
     }
 
     public boolean isFirst(String production, String token){

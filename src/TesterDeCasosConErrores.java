@@ -13,8 +13,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class TesterDeCasosConErrores {
 
-    //TODO: el tipo de esta variable init tiene que ser la clase que tiene el main
-    private static final Main init = null;
+    private static final MainSyntactic init = null;
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;

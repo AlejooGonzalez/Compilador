@@ -1,4 +1,0 @@
-///[SinErrores]
-/*
-hola como estas?
- */

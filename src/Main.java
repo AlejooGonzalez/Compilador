@@ -1,7 +1,7 @@
 import Exceptions.LexicalException;
 import Lexical.LexicalAnalyzer;
 import Lexical.Token;
-import SourceManager.SourceManagerImplementation;
+import SourceManager.*;
 import java.io.IOException;
 import java.util.Objects;
 

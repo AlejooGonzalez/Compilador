@@ -242,6 +242,8 @@ public class SyntacticAnalyzer {
             match("pnt_puntoYComa");
         } else if (firsts.isFirst("If", actualToken.getTokenType())) {
             ifPrincipal();
+        } else if (firsts.isFirst("For", actualToken.getTokenType())) {
+            forPrincipal();
         } else if (firsts.isFirst("While", actualToken.getTokenType())) {
             whilePrincipal();
         } else if (firsts.isFirst("Bloque", actualToken.getTokenType())) {
@@ -497,9 +499,53 @@ public class SyntacticAnalyzer {
     }
 
     private void encadenadoVarMetodo() throws LexicalException, SyntacticException, IOException {
-        if (Objects.equals(actualToken.getTokenType(), "pnt_parentesisIzquierdo")) {
+        if (firsts.isFirst("ArgsActuales", actualToken.getTokenType())) {
             argsActuales();
         } else { }
+    }
+
+    private void forPrincipal() throws LexicalException, SyntacticException, IOException {
+        if(firsts.isFirst("For", actualToken.getTokenType())) {
+            match("pr_for");
+            match("pnt_parentesisIzquierdo");
+            forAux();
+            match("pnt_parentesisDerecho");
+            sentencia();
+        }
+    }
+
+    private void forAux() throws LexicalException, SyntacticException, IOException {
+        if (firsts.isFirst("VarLocal", actualToken.getTokenType())) {
+            varLocal();
+            forTipo();
+        } else if (firsts.isFirst("Expresion", actualToken.getTokenType())) {
+            expresion();
+            forEstandar();
+        } else {
+            throw new SyntacticException("ForAux", actualToken);
+        }
+    }
+
+    private void forEstandar() throws LexicalException, SyntacticException, IOException {
+        match("pnt_puntoYComa");
+        expresionOpcional();
+        match("pnt_puntoYComa");
+        expresionOpcional();
+    }
+
+    private void forTipo() throws LexicalException, SyntacticException, IOException {
+        if (Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")) {
+            forEstandar();
+        } else if (Objects.equals(actualToken.getTokenType(), "pnt_dosPuntos")) {
+            forIterador();
+        } else {
+            throw new SyntacticException("ForTipo", actualToken);
+        }
+    }
+
+    private void forIterador() throws LexicalException, SyntacticException, IOException {
+        match("pnt_dosPuntos");
+        expresion();
     }
 }
 

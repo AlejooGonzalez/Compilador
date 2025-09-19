@@ -25,6 +25,7 @@ public class ReservedWords {
             map.put("null", "pr_null");
             map.put("true", "pr_true");
             map.put("false", "pr_false");
+            map.put("for", "pr_for");
     }
 
     public static String reservedWord(String lexeme){

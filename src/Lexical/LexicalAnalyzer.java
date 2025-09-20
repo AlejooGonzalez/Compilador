@@ -81,6 +81,12 @@ public class LexicalAnalyzer {
                 return e3_exclamationMark();
             }
 
+            case '?': {
+                updateLexeme();
+                updateCurrentCharacter();
+                return e3_questionMark();
+            }
+
             case '=': {
                 updateLexeme();
                 updateCurrentCharacter();
@@ -366,6 +372,10 @@ public class LexicalAnalyzer {
             } else {
                 return new Token("op_negacion", lexeme, sourceManager.getLineNumber());
             }
+        }
+
+        private Token e3_questionMark(){
+                return new Token("op_ternario", lexeme, sourceManager.getLineNumber());
         }
 
         private Token e4_equals(){

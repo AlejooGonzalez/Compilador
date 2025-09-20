@@ -340,7 +340,16 @@ public class SyntacticAnalyzer {
             OperadorBinario();
             expresionBasica();
             expresionCompuestaTerminal();
-        } else { }
+        } else {
+            if (actualToken.getTokenType().equals("op_ternario")) {
+                match("op_ternario");
+                expresion();
+                match("pnt_dosPuntos");
+                expresion();
+            } else {
+
+            }
+        }
     }
 
     private void OperadorBinario() throws SyntacticException, LexicalException, IOException {

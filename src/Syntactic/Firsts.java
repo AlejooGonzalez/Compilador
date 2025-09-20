@@ -49,7 +49,7 @@ public class Firsts {
         firsts.put("ListaArgsFormalesTerminal", new ArrayList<>(concat(List.of("pnt_coma"), List.of("€"))));
         firsts.put("BloqueOpcional", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("Bloque"))));
         firsts.put("ExpresionAux", new ArrayList<>(concat(List.of("€"), firsts.get("OperadorAsignacion"))));
-        firsts.put("ExpresionCompuestaTerminal", new ArrayList<>(concat(List.of("€"), firsts.get("OperadorBinario"))));
+        firsts.put("ExpresionCompuestaTerminal", new ArrayList<>(concat(List.of("€", "op_ternario"), firsts.get("OperadorBinario"))));
         firsts.put("ExpresionOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));
         firsts.put("ListaExps", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));
         firsts.put("ListaExpsOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));

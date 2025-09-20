@@ -94,7 +94,7 @@ public class SyntacticAnalyzer {
         } else if (firsts.isFirst("Tipo", actualToken.getTokenType())) {
             tipo();
             match("idMetVar");
-            miembroMetodo();
+            miembroAtributoAux();
         } else if (firsts.isFirst("ModificadorOpcionalMiembros", actualToken.getTokenType())) {
             modificadorOpcionalMiembros();
             tipoMetodo();
@@ -109,6 +109,22 @@ public class SyntacticAnalyzer {
         } else {
             throw new SyntacticException("Miembro", actualToken);
         }
+    }
+
+    private void miembroAtributoAux() throws LexicalException, SyntacticException, IOException {
+        if (firsts.isFirst("AtributosInicializados", actualToken.getTokenType())) {
+            atributosInicializados();
+        } else if (firsts.isFirst("MiembroMetodo", actualToken.getTokenType())) {
+            miembroMetodo();
+        } else { }
+    }
+
+    private void atributosInicializados() throws LexicalException, SyntacticException, IOException {
+        if (Objects.equals(actualToken.getTokenType(), "op_asignacion")) {
+            match("op_asignacion");
+            expresion();
+            match("pnt_puntoYComa");
+        } else  { }
     }
 
     private void miembroMetodo() throws LexicalException, SyntacticException, IOException {

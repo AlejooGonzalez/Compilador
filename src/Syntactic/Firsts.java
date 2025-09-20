@@ -46,6 +46,7 @@ public class Firsts {
         firsts.put("Expresion", new ArrayList<>(firsts.get("ExpresionCompuesta")));
 
         firsts.put("ListaArgsFormalesOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("ListaArgsFormales"))));
+        firsts.put("AtributosInicializados", new ArrayList<>(concat(List.of("op_asignacion"), List.of("€"))));
         firsts.put("ListaArgsFormalesTerminal", new ArrayList<>(concat(List.of("pnt_coma"), List.of("€"))));
         firsts.put("BloqueOpcional", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("Bloque"))));
         firsts.put("ExpresionAux", new ArrayList<>(concat(List.of("€"), firsts.get("OperadorAsignacion"))));

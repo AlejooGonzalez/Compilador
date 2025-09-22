@@ -40,10 +40,15 @@ public class SyntacticAnalyzer {
     }
 
     private void listaClases() throws LexicalException, SyntacticException, IOException {
-        if(firsts.isFirst("Clase", actualToken.getTokenType())) {
+        if (firsts.isFirst("Clase", actualToken.getTokenType())) {
             clase();
             listaClases();
-        } else { }
+        } else {
+            if (firsts.isFirst("Interfaz", actualToken.getTokenType())) {
+                interfaz();
+                listaClases();
+            } else { }
+        }
     }
 
     private void clase() throws LexicalException, SyntacticException, IOException {
@@ -56,9 +61,41 @@ public class SyntacticAnalyzer {
             match("pnt_llaveDerecha");
     }
 
+    private void interfaz() throws LexicalException, SyntacticException, IOException {
+        match("pr_interface");
+        match("idClase");
+        herenciaOpcionalInterfaz();
+        match("pnt_llaveIzquierda");
+        listaMiembrosInterfaz();
+        match("pnt_llaveDerecha");
+    }
+
+    private void listaMiembrosInterfaz() throws LexicalException, SyntacticException, IOException {
+        if (firsts.isFirst("MiembroInterfaz", actualToken.getTokenType())) {
+            miembroInterfaz();
+            listaMiembrosInterfaz();
+        } else { }
+    }
+
+    private void miembroInterfaz() throws LexicalException, SyntacticException, IOException {
+        if (firsts.isFirst("TipoMetodo", actualToken.getTokenType())) {
+            tipoMetodo();
+            match("idMetVar");
+            argsFormales();
+            match("pnt_puntoYComa");
+        }
+    }
+
     private void modificadorOpcional() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("ModificadorOpcionalMiembros", actualToken.getTokenType())) {
             modificadorOpcionalMiembros();
+        } else { }
+    }
+
+    private void herenciaOpcionalInterfaz() throws LexicalException, SyntacticException, IOException {
+        if (actualToken.getTokenType().equals("pr_extends")) {
+            match("pr_extends");
+            match("idClase");
         } else { }
     }
 
@@ -66,7 +103,12 @@ public class SyntacticAnalyzer {
         if (actualToken.getTokenType().equals("pr_extends")) {
             match("pr_extends");
             match("idClase");
-        } else { }
+        } else {
+            if(actualToken.getTokenType().equals("pr_implements")){
+                match("pr_implements");
+                match("idClase");
+            } else { }
+        }
     }
 
     private void listaMiembros() throws LexicalException, SyntacticException, IOException {
@@ -84,7 +126,7 @@ public class SyntacticAnalyzer {
         } else if (actualToken.getTokenType().equals("pr_final")) {
             match("pr_final");
         } else {
-            throw new SyntacticException("abstract | static | final", actualToken);
+            throw new SyntacticException("ModificadorOpcionalMiembros", actualToken);
         }
     }
 
@@ -109,22 +151,6 @@ public class SyntacticAnalyzer {
         } else {
             throw new SyntacticException("Miembro", actualToken);
         }
-    }
-
-    private void miembroAtributoAux() throws LexicalException, SyntacticException, IOException {
-        if (firsts.isFirst("AtributosInicializados", actualToken.getTokenType())) {
-            atributosInicializados();
-        } else if (firsts.isFirst("MiembroMetodo", actualToken.getTokenType())) {
-            miembroMetodo();
-        } else { }
-    }
-
-    private void atributosInicializados() throws LexicalException, SyntacticException, IOException {
-        if (Objects.equals(actualToken.getTokenType(), "op_asignacion")) {
-            match("op_asignacion");
-            expresion();
-            match("pnt_puntoYComa");
-        } else  { }
     }
 
     private void miembroMetodo() throws LexicalException, SyntacticException, IOException {
@@ -175,6 +201,18 @@ public class SyntacticAnalyzer {
             case "pr_char" -> match("pr_char");
             case "pr_int" -> match("pr_int");
             default -> { }
+        }
+    }
+
+    private void miembroAtributoAux() throws LexicalException, SyntacticException, IOException {
+        if (Objects.equals(actualToken.getTokenType(), "op_asignacion")) {
+            match("op_asignacion");
+            expresionCompuesta();
+            match("pnt_puntoYComa");
+        } else if (firsts.isFirst("MiembroMetodo", actualToken.getTokenType())) {
+            miembroMetodo();
+        } else {
+            throw new SyntacticException("MiembroAtributoAux", actualToken);
         }
     }
 
@@ -250,6 +288,9 @@ public class SyntacticAnalyzer {
     private void sentencia() throws LexicalException, SyntacticException, IOException {
         if (Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")) {
             match("pnt_puntoYComa");
+        }else if (firsts.isFirst("AsignacionLlamada", actualToken.getTokenType())) {
+            asignacionLlamada();
+            match("pnt_puntoYComa");
         } else if (firsts.isFirst("VarLocal", actualToken.getTokenType())) {
             varLocal();
             match("pnt_puntoYComa");
@@ -264,10 +305,7 @@ public class SyntacticAnalyzer {
             whilePrincipal();
         } else if (firsts.isFirst("Bloque", actualToken.getTokenType())) {
             bloque();
-        } else if (firsts.isFirst("AsignacionLlamada", actualToken.getTokenType())) {
-            asignacionLlamada();
-            match("pnt_puntoYComa");
-        } else {
+        }  else {
             throw new SyntacticException("Sentencia", actualToken);
         }
     }
@@ -338,8 +376,55 @@ public class SyntacticAnalyzer {
         } else { }
     }
 
-    private void operadorAsignacion() throws LexicalException, SyntacticException, IOException {
-        match("op_asignacion");
+    private void forPrincipal() throws LexicalException, SyntacticException, IOException {
+        if(firsts.isFirst("For", actualToken.getTokenType())) {
+            match("pr_for");
+            match("pnt_parentesisIzquierdo");
+            forAux();
+            match("pnt_parentesisDerecho");
+            sentencia();
+        }
+    }
+
+    private void forAux() throws LexicalException, SyntacticException, IOException {
+        if (firsts.isFirst("DeclaracionVar", actualToken.getTokenType())) {
+            declaracionVar();
+            forTipo();
+        } else if (firsts.isFirst("Expresion", actualToken.getTokenType())) {
+            expresion();
+            forEstandar();
+        } else {
+            throw new SyntacticException("ForAux", actualToken);
+        }
+    }
+
+    private void declaracionVar() throws LexicalException, SyntacticException, IOException {
+        match("pr_var");
+        match("idMetVar");
+    }
+
+    private void forEstandar() throws LexicalException, SyntacticException, IOException {
+        match("pnt_puntoYComa");
+        expresionOpcional();
+        match("pnt_puntoYComa");
+        expresionOpcional();
+    }
+
+    private void forTipo() throws LexicalException, SyntacticException, IOException {
+        if (Objects.equals(actualToken.getTokenType(), "op_asignacion")) {
+            match("op_asignacion");
+            expresionCompuesta();
+            forEstandar();
+        } else if (Objects.equals(actualToken.getTokenType(), "pnt_dosPuntos")) {
+            forEach();
+        } else {
+            throw new SyntacticException("ForTipo", actualToken);
+        }
+    }
+
+    private void forEach() throws LexicalException, SyntacticException, IOException {
+        match("pnt_dosPuntos");
+        expresion();
     }
 
     private void expresionCompuesta() throws LexicalException, SyntacticException, IOException {
@@ -388,6 +473,9 @@ public class SyntacticAnalyzer {
         }
     }
 
+    private void operadorAsignacion() throws LexicalException, SyntacticException, IOException {
+        match("op_asignacion");
+    }
 
     private void expresionBasica() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("OperadorUnario", actualToken.getTokenType())) {
@@ -491,6 +579,7 @@ public class SyntacticAnalyzer {
         match("pnt_parentesisDerecho");
     }
 
+
     private void llamadaMetodoEstatico() throws LexicalException, SyntacticException, IOException {
         if (Objects.equals(actualToken.getTokenType(), "idClase")) {
             match("idClase");
@@ -511,15 +600,15 @@ public class SyntacticAnalyzer {
     private void listaExpsOpcional() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("Expresion", actualToken.getTokenType())) {
             expresion();
-            listaExps();
+            listaExpsAux();
         } else { }
     }
 
-    private void listaExps() throws LexicalException, SyntacticException, IOException {
+    private void listaExpsAux() throws LexicalException, SyntacticException, IOException {
         if (Objects.equals(actualToken.getTokenType(), "pnt_coma")) {
             match("pnt_coma");
             expresion();
-            listaExps();
+            listaExpsAux();
         } else { }
     }
 
@@ -527,50 +616,6 @@ public class SyntacticAnalyzer {
         if (firsts.isFirst("ArgsActuales", actualToken.getTokenType())) {
             argsActuales();
         } else { }
-    }
-
-    private void forPrincipal() throws LexicalException, SyntacticException, IOException {
-        if(firsts.isFirst("For", actualToken.getTokenType())) {
-            match("pr_for");
-            match("pnt_parentesisIzquierdo");
-            forAux();
-            match("pnt_parentesisDerecho");
-            sentencia();
-        }
-    }
-
-    private void forAux() throws LexicalException, SyntacticException, IOException {
-        if (firsts.isFirst("VarLocal", actualToken.getTokenType())) {
-            varLocal();
-            forTipo();
-        } else if (firsts.isFirst("Expresion", actualToken.getTokenType())) {
-            expresion();
-            forEstandar();
-        } else {
-            throw new SyntacticException("ForAux", actualToken);
-        }
-    }
-
-    private void forEstandar() throws LexicalException, SyntacticException, IOException {
-        match("pnt_puntoYComa");
-        expresionOpcional();
-        match("pnt_puntoYComa");
-        expresionOpcional();
-    }
-
-    private void forTipo() throws LexicalException, SyntacticException, IOException {
-        if (Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")) {
-            forEstandar();
-        } else if (Objects.equals(actualToken.getTokenType(), "pnt_dosPuntos")) {
-            forIterador();
-        } else {
-            throw new SyntacticException("ForTipo", actualToken);
-        }
-    }
-
-    private void forIterador() throws LexicalException, SyntacticException, IOException {
-        match("pnt_dosPuntos");
-        expresion();
     }
 }
 

@@ -31,8 +31,9 @@ public class Firsts {
         firsts.put("ArgsActuales", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
         firsts.put("HerenciaOpcional", new ArrayList<>(Arrays.asList("pr_extends", "€")));
         firsts.put("ArgsFormales", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
-        firsts.put("ForIterador", new ArrayList<>(List.of("pnt_dosPuntos")));
+        firsts.put("ForEach", new ArrayList<>(List.of("pnt_dosPuntos")));
         firsts.put("ForEstandar", new ArrayList<>(List.of("pnt_puntoYComa")));
+        firsts.put("DeclaracionVar", new ArrayList<>(List.of("pr_var")));
 
         firsts.put("Tipo", new ArrayList<>(concat(List.of("idClase"), firsts.get("TipoPrimitivo"))));
         firsts.put("ModificadorOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("ModificadorOpcionalMiembros"))));
@@ -52,7 +53,7 @@ public class Firsts {
         firsts.put("ExpresionAux", new ArrayList<>(concat(List.of("€"), firsts.get("OperadorAsignacion"))));
         firsts.put("ExpresionCompuestaTerminal", new ArrayList<>(concat(List.of("€", "op_ternario"), firsts.get("OperadorBinario"))));
         firsts.put("ExpresionOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));
-        firsts.put("ListaExps", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));
+        firsts.put("ListaExpsAux", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));
         firsts.put("ListaExpsOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));
         firsts.put("EncadenadoVarMetodo", new ArrayList<>(concat(List.of("€"), firsts.get("ArgsActuales"))));
         firsts.put("ArgsAux", new ArrayList<>(concat(List.of("€"), firsts.get("ArgsActuales"))));
@@ -63,6 +64,7 @@ public class Firsts {
         firsts.put("Sentencia", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("AsignacionLlamada"), firsts.get("VarLocal"), firsts.get("Return"), firsts.get("If"), firsts.get("While"), firsts.get("Bloque"), firsts.get("For"))));
         firsts.put("ListaSentencias", new ArrayList<>(firsts.get("Sentencia")));
         firsts.put("Clase", new ArrayList<>(concat(List.of("pr_class"), firsts.get("ModificadorOpcional"))));
+        firsts.put("Interfaz", new ArrayList<>(List.of("pr_interface")));
         firsts.put("ListaClases", new ArrayList<>(concat(List.of("€"), firsts.get("Clase"))));
         firsts.put("Inicial", new ArrayList<>(firsts.get("ListaClases")));
         firsts.put("ListaMiembros", new ArrayList<>(concat(List.of("€"), firsts.get("Miembro"))));
@@ -70,6 +72,7 @@ public class Firsts {
         firsts.put("ReferenciaTerminal", new ArrayList<>(concat(List.of("pnt_punto"), List.of("€"))));
         firsts.put("ForAux", new ArrayList<>(concat(firsts.get("VarLocal"), firsts.get("Expresion"))));
         firsts.put("ForTipo", new ArrayList<>(concat(firsts.get("ForEstandar"), List.of("pnt_dosPuntos"))));
+        firsts.put("MiembroInterfaz", new ArrayList<>(concat(List.of("€"), firsts.get("TipoMetodo"))));
     }
 
     public boolean isFirst(String production, String token){

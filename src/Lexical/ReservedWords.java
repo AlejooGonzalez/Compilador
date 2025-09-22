@@ -6,6 +6,7 @@ public class ReservedWords {
         private static final Map<String,String> map = new HashMap<>();
          static {
             map.put("class", "pr_class");
+            map.put("interface", "pr_interface");
             map.put("extends", "pr_extends");
             map.put("public", "pr_public");
             map.put("static", "pr_static");
@@ -26,6 +27,7 @@ public class ReservedWords {
             map.put("true", "pr_true");
             map.put("false", "pr_false");
             map.put("for", "pr_for");
+            map.put("implements", "pr_implements");
     }
 
     public static String reservedWord(String lexeme){

@@ -21,15 +21,12 @@ public class MainSyntactic {
             syntacticAnalyzer = new SyntacticAnalyzer(lexer);
         } catch (LexicalException | IOException e) { throw new RuntimeException(e); }
 
-
         try {
             syntacticAnalyzer.start();
-        } catch (SyntacticException e) { e.printError(); noMistakes = false;
+        } catch (SyntacticException e) { e.getErrorMessage(); noMistakes = false;
         } catch (LexicalException | IOException ignored) { }
 
         if (noMistakes) {
-            System.out.println("Compilacion Exitosa");
-            System.out.println();
             System.out.println("[SinErrores]");
         }
 

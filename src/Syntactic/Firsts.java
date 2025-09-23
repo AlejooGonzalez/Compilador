@@ -1,78 +1,75 @@
 package Syntactic;
 
-import Lexical.Token;
-
 import java.util.*;
-
 
 public class Firsts {
 
     Map<String, ArrayList<String>> firsts = new HashMap<>();
 
     public Firsts() {
-        firsts.put("TipoPrimitivo", new ArrayList<>(Arrays.asList("pr_boolean", "pr_char", "pr_int")));
-        firsts.put("ModificadorOpcionalMiembros", new ArrayList<>(Arrays.asList("pr_abstract", "pr_static", "pr_final")));
-        firsts.put("Constructor", new ArrayList<>(List.of("pr_public")));
-        firsts.put("Bloque", new ArrayList<>(List.of("pnt_llaveIzquierda")));
-        firsts.put("VarLocal", new ArrayList<>(List.of("pr_var")));
-        firsts.put("Return", new ArrayList<>(List.of("pr_return")));
-        firsts.put("If", new ArrayList<>(List.of("pr_if")));
-        firsts.put("IfAux", new ArrayList<>(List.of("pr_else")));
-        firsts.put("While", new ArrayList<>(List.of("pr_while")));
-        firsts.put("For", new ArrayList<>(List.of("pr_for")));
-        firsts.put("OperadorAsignacion", new ArrayList<>(List.of("op_asignacion")));
-        firsts.put("OperadorBinario", new ArrayList<>(Arrays.asList("op_or", "op_and", "op_igual", "op_distinto", "op_menor", "op_mayor", "op_menorIgual", "op_mayorIgual", "op_suma", "op_resta", "op_multiplicacion", "op_division", "op_modulo")));
-        firsts.put("OperadorUnario", new ArrayList<>(Arrays.asList("op_suma", "op_incremento", "op_resta", "op_decremento", "op_negacion")));
-        firsts.put("Primitivo", new ArrayList<>(Arrays.asList("pr_true", "pr_false", "intLiteral", "charLiteral", "pr_null")));
-        firsts.put("AccesoVarMetodo", new ArrayList<>(List.of("idMetVar")));
-        firsts.put("LlamadaConstructor", new ArrayList<>(List.of("pr_new")));
-        firsts.put("ExpresionParentizada", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
-        firsts.put("LlamadaMetodoEstatico", new ArrayList<>(List.of("idClase")));
-        firsts.put("ArgsActuales", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
-        firsts.put("HerenciaOpcional", new ArrayList<>(Arrays.asList("pr_extends", "€")));
-        firsts.put("ArgsFormales", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
-        firsts.put("ForEach", new ArrayList<>(List.of("pnt_dosPuntos")));
-        firsts.put("ForEstandar", new ArrayList<>(List.of("pnt_puntoYComa")));
-        firsts.put("DeclaracionVar", new ArrayList<>(List.of("pr_var")));
+        firsts.put("tipoPrimitivo", new ArrayList<>(Arrays.asList("pr_boolean", "pr_char", "pr_int")));
+        firsts.put("modificadorOpcionalMiembros", new ArrayList<>(Arrays.asList("pr_abstract", "pr_static", "pr_final")));
+        firsts.put("constructor", new ArrayList<>(List.of("pr_public")));
+        firsts.put("bloque", new ArrayList<>(List.of("pnt_llaveIzquierda")));
+        firsts.put("varLocal", new ArrayList<>(List.of("pr_var")));
+        firsts.put("return", new ArrayList<>(List.of("pr_return")));
+        firsts.put("if", new ArrayList<>(List.of("pr_if")));
+        firsts.put("ifAux", new ArrayList<>(List.of("pr_else")));
+        firsts.put("while", new ArrayList<>(List.of("pr_while")));
+        firsts.put("for", new ArrayList<>(List.of("pr_for")));
+        firsts.put("operadorAsignacion", new ArrayList<>(List.of("op_asignacion")));
+        firsts.put("operadorBinario", new ArrayList<>(Arrays.asList("op_or", "op_and", "op_igual", "op_distinto", "op_menor", "op_mayor", "op_menorIgual", "op_mayorIgual", "op_suma", "op_resta", "op_multiplicacion", "op_division", "op_modulo")));
+        firsts.put("operadorUnario", new ArrayList<>(Arrays.asList("op_suma", "op_incremento", "op_resta", "op_decremento", "op_negacion")));
+        firsts.put("primitivo", new ArrayList<>(Arrays.asList("pr_true", "pr_false", "intLiteral", "charLiteral", "pr_null")));
+        firsts.put("accesoVarMetodo", new ArrayList<>(List.of("idMetVar")));
+        firsts.put("llamadaConstructor", new ArrayList<>(List.of("pr_new")));
+        firsts.put("expresionParentizada", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
+        firsts.put("llamadaMetodoEstatico", new ArrayList<>(List.of("idClase")));
+        firsts.put("argsActuales", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
+        firsts.put("herenciaOpcional", new ArrayList<>(Arrays.asList("pr_extends", "€")));
+        firsts.put("argsFormales", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
+        firsts.put("forEach", new ArrayList<>(List.of("pnt_dosPuntos")));
+        firsts.put("forEstandar", new ArrayList<>(List.of("pnt_puntoYComa")));
+        firsts.put("declaracionVar", new ArrayList<>(List.of("pr_var")));
 
-        firsts.put("Tipo", new ArrayList<>(concat(List.of("idClase"), firsts.get("TipoPrimitivo"))));
-        firsts.put("ModificadorOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("ModificadorOpcionalMiembros"))));
-        firsts.put("ArgFormal", new ArrayList<>(firsts.get("Tipo")));
-        firsts.put("ListaArgsFormales", new ArrayList<>(firsts.get("ArgFormal")));
-        firsts.put("Primario", new ArrayList<>(concat(Arrays.asList("pr_this", "stringLiteral"), firsts.get("AccesoVarMetodo"), firsts.get("LlamadaConstructor"), firsts.get("LlamadaMetodoEstatico"), firsts.get("ExpresionParentizada"))));
-        firsts.put("Referencia", new ArrayList<>(firsts.get("Primario")));
-        firsts.put("Operando", new ArrayList<>(concat(firsts.get("Primitivo"), firsts.get("Referencia"))));
-        firsts.put("ExpresionBasica", new ArrayList<>(concat(firsts.get("OperadorUnario"), firsts.get("Operando"))));
-        firsts.put("ExpresionCompuesta", new ArrayList<>(firsts.get("ExpresionBasica")));
-        firsts.put("Expresion", new ArrayList<>(firsts.get("ExpresionCompuesta")));
+        firsts.put("tipo", new ArrayList<>(concat(List.of("idClase"), firsts.get("tipoPrimitivo"))));
+        firsts.put("modificadorOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("modificadorOpcionalMiembros"))));
+        firsts.put("argFormal", new ArrayList<>(firsts.get("tipo")));
+        firsts.put("listaArgsFormales", new ArrayList<>(firsts.get("argFormal")));
+        firsts.put("primario", new ArrayList<>(concat(Arrays.asList("pr_this", "stringLiteral"), firsts.get("accesoVarMetodo"), firsts.get("llamadaConstructor"), firsts.get("llamadaMetodoEstatico"), firsts.get("expresionParentizada"))));
+        firsts.put("referencia", new ArrayList<>(firsts.get("primario")));
+        firsts.put("operando", new ArrayList<>(concat(firsts.get("primitivo"), firsts.get("referencia"))));
+        firsts.put("expresionBasica", new ArrayList<>(concat(firsts.get("operadorUnario"), firsts.get("operando"))));
+        firsts.put("expresionCompuesta", new ArrayList<>(firsts.get("expresionBasica")));
+        firsts.put("expresion", new ArrayList<>(firsts.get("expresionCompuesta")));
 
-        firsts.put("ListaArgsFormalesOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("ListaArgsFormales"))));
-        firsts.put("AtributosInicializados", new ArrayList<>(concat(List.of("op_asignacion"), List.of("€"))));
-        firsts.put("ListaArgsFormalesTerminal", new ArrayList<>(concat(List.of("pnt_coma"), List.of("€"))));
-        firsts.put("BloqueOpcional", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("Bloque"))));
-        firsts.put("ExpresionAux", new ArrayList<>(concat(List.of("€"), firsts.get("OperadorAsignacion"))));
-        firsts.put("ExpresionCompuestaTerminal", new ArrayList<>(concat(List.of("€", "op_ternario"), firsts.get("OperadorBinario"))));
-        firsts.put("ExpresionOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));
-        firsts.put("ListaExpsAux", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));
-        firsts.put("ListaExpsOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("Expresion"))));
-        firsts.put("EncadenadoVarMetodo", new ArrayList<>(concat(List.of("€"), firsts.get("ArgsActuales"))));
-        firsts.put("ArgsAux", new ArrayList<>(concat(List.of("€"), firsts.get("ArgsActuales"))));
+        firsts.put("listaArgsFormalesOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("listaArgsFormales"))));
+        firsts.put("atributosInicializados", new ArrayList<>(concat(List.of("op_asignacion"), List.of("€"))));
+        firsts.put("listaArgsFormalesTerminal", new ArrayList<>(concat(List.of("pnt_coma"), List.of("€"))));
+        firsts.put("bloqueOpcional", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("bloque"))));
+        firsts.put("expresionAux", new ArrayList<>(concat(List.of("€"), firsts.get("operadorAsignacion"))));
+        firsts.put("expresionCompuestaTerminal", new ArrayList<>(concat(List.of("€", "op_ternario"), firsts.get("operadorBinario"))));
+        firsts.put("expresionOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("expresion"))));
+        firsts.put("listaExpsAux", new ArrayList<>(concat(List.of("€"), firsts.get("expresion"))));
+        firsts.put("listaExpsOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("expresion"))));
+        firsts.put("encadenadoVarMetodo", new ArrayList<>(concat(List.of("€"), firsts.get("argsActuales"))));
+        firsts.put("argsAux", new ArrayList<>(concat(List.of("€"), firsts.get("argsActuales"))));
 
-        firsts.put("AsignacionLlamada", new ArrayList<>(firsts.get("Expresion")));
-        firsts.put("Miembro", new ArrayList<>(concat(List.of("pr_void"), firsts.get("Constructor"), firsts.get("Tipo"), firsts.get("ModificadorOpcionalMiembros"))));
-        firsts.put("MiembroMetodo", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("ArgsFormales"))));
-        firsts.put("Sentencia", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("AsignacionLlamada"), firsts.get("VarLocal"), firsts.get("Return"), firsts.get("If"), firsts.get("While"), firsts.get("Bloque"), firsts.get("For"))));
-        firsts.put("ListaSentencias", new ArrayList<>(firsts.get("Sentencia")));
-        firsts.put("Clase", new ArrayList<>(concat(List.of("pr_class"), firsts.get("ModificadorOpcional"))));
-        firsts.put("Interfaz", new ArrayList<>(List.of("pr_interface")));
-        firsts.put("ListaClases", new ArrayList<>(concat(List.of("€"), firsts.get("Clase"))));
-        firsts.put("Inicial", new ArrayList<>(firsts.get("ListaClases")));
-        firsts.put("ListaMiembros", new ArrayList<>(concat(List.of("€"), firsts.get("Miembro"))));
-        firsts.put("TipoMetodo", new ArrayList<>(concat(List.of("pr_void"), firsts.get("Tipo"))));
-        firsts.put("ReferenciaTerminal", new ArrayList<>(concat(List.of("pnt_punto"), List.of("€"))));
-        firsts.put("ForAux", new ArrayList<>(concat(firsts.get("VarLocal"), firsts.get("Expresion"))));
-        firsts.put("ForTipo", new ArrayList<>(concat(firsts.get("ForEstandar"), List.of("pnt_dosPuntos"))));
-        firsts.put("MiembroInterfaz", new ArrayList<>(concat(List.of("€"), firsts.get("TipoMetodo"))));
+        firsts.put("asignacionLlamada", new ArrayList<>(firsts.get("expresion")));
+        firsts.put("miembro", new ArrayList<>(concat(List.of("pr_void"), firsts.get("constructor"), firsts.get("tipo"), firsts.get("modificadorOpcionalMiembros"))));
+        firsts.put("miembroMetodo", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("argsFormales"))));
+        firsts.put("sentencia", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("asignacionLlamada"), firsts.get("varLocal"), firsts.get("return"), firsts.get("if"), firsts.get("while"), firsts.get("bloque"), firsts.get("for"))));
+        firsts.put("listaSentencias", new ArrayList<>(firsts.get("sentencia")));
+        firsts.put("clase", new ArrayList<>(concat(List.of("pr_class"), firsts.get("modificadorOpcional"))));
+        firsts.put("interfaz", new ArrayList<>(List.of("pr_interface")));
+        firsts.put("listaClases", new ArrayList<>(concat(List.of("€"), firsts.get("clase"))));
+        firsts.put("inicial", new ArrayList<>(firsts.get("listaClases")));
+        firsts.put("listaMiembros", new ArrayList<>(concat(List.of("€"), firsts.get("miembro"))));
+        firsts.put("tipoMetodo", new ArrayList<>(concat(List.of("pr_void"), firsts.get("tipo"))));
+        firsts.put("referenciaTerminal", new ArrayList<>(concat(List.of("pnt_punto"), List.of("€"))));
+        firsts.put("forAux", new ArrayList<>(concat(firsts.get("varLocal"), firsts.get("expresion"))));
+        firsts.put("forTipo", new ArrayList<>(concat(firsts.get("forEstandar"), List.of("pnt_dosPuntos"))));
+        firsts.put("miembroInterfaz", new ArrayList<>(concat(List.of("€"), firsts.get("tipoMetodo"))));
     }
 
     public boolean isFirst(String production, String token){

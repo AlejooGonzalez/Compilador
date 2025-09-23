@@ -3,7 +3,6 @@ package Exceptions;
 import Lexical.Token;
 
 public class SyntacticException extends Exception{
-
     String expectedToken;
     Token actualToken;
 
@@ -12,9 +11,8 @@ public class SyntacticException extends Exception{
         this.actualToken = actualToken;
     }
 
-    public void printError() {
-        System.out.println("Se esperaba un "+expectedToken+" pero se encontro "+actualToken.getLexeme());
-        System.out.println();
-        System.out.println("[Error:" + actualToken.getLexeme() + "|" + actualToken.getLineNumber() + "]");
+    public void getErrorMessage() {
+        System.out.println("Se esperaba "+expectedToken+" pero se encontro "+actualToken.getLexeme());
+        System.out.println("\n[Error:" + actualToken.getLexeme() + "|" + actualToken.getLineNumber() + "]");
     }
 }

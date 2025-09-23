@@ -133,30 +133,18 @@ public class SyntacticAnalyzer {
     private void miembro() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("constructor", actualToken.getTokenType())) {
             constructor();
-        } else if (firsts.isFirst("tipo", actualToken.getTokenType())) {
-            tipo();
-            match("idMetVar");
-            miembroAtributoAux();
-        } else if (firsts.isFirst("modificadorOpcionalMiembros", actualToken.getTokenType())) {
-            modificadorOpcionalMiembros();
-            tipoMetodo();
-            match("idMetVar");
-            argsFormales();
-            bloqueOpcional();
-        } else if (actualToken.getTokenType().equals("pr_void")) {
-            match("pr_void");
-            match("idMetVar");
-            argsFormales();
-            bloqueOpcional();
+        } else if (firsts.isFirst("metodoAtributo", actualToken.getTokenType())) {
+            metodoAtributo();
+        } else if (firsts.isFirst("metodoModificador", actualToken.getTokenType())) {
+            metodoModificador();
         } else {
             throw new SyntacticException("miembro", actualToken);
         }
     }
 
     private void miembroMetodo() throws LexicalException, SyntacticException, IOException {
-        if (firsts.isFirst("argsFormales", actualToken.getTokenType())) {
-            argsFormales();
-            bloqueOpcional();
+        if (firsts.isFirst("argBloque", actualToken.getTokenType())) {
+            argBloque();
         } else {
             if (Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")) {
                 match("pnt_puntoYComa");
@@ -214,6 +202,32 @@ public class SyntacticAnalyzer {
         } else {
             throw new SyntacticException("miembroAtributoAux", actualToken);
         }
+    }
+
+    private void metodoAtributo() throws LexicalException, SyntacticException, IOException {
+        if (firsts.isFirst("tipo", actualToken.getTokenType())) {
+            tipo();
+            match("idMetVar");
+            miembroAtributoAux();
+        } else if (actualToken.getTokenType().equals("pr_void")) {
+            match("pr_void");
+            match("idMetVar");
+            argBloque();
+        } else {
+            throw new SyntacticException("metodoAtributo", actualToken);
+        }
+    }
+
+    private void metodoModificador() throws LexicalException, SyntacticException, IOException {
+        modificadorOpcionalMiembros();
+        tipoMetodo();
+        match("idMetVar");
+        argBloque();
+    }
+
+    private void argBloque() throws LexicalException, SyntacticException, IOException {
+        argsFormales();
+        bloqueOpcional();
     }
 
     private void argsFormales() throws LexicalException, SyntacticException, IOException {

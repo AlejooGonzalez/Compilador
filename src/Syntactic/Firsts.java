@@ -70,6 +70,10 @@ public class Firsts {
         firsts.put("forAux", new ArrayList<>(concat(firsts.get("varLocal"), firsts.get("expresion"))));
         firsts.put("forTipo", new ArrayList<>(concat(firsts.get("forEstandar"), List.of("pnt_dosPuntos"))));
         firsts.put("miembroInterfaz", new ArrayList<>(concat(List.of("€"), firsts.get("tipoMetodo"))));
+        firsts.put("metodoAtributo", new ArrayList<>(concat(List.of("pr_void"), firsts.get("tipo"))));
+        firsts.put("metodoModificador", new ArrayList<>(firsts.get("modificadorOpcionalMiembros")));
+        firsts.put("argBloque", new ArrayList<>(firsts.get("argsFormales")));
+        firsts.put("MiembroAtributoAux", new ArrayList<>(concat(List.of("op_asignacion"), firsts.get("miembroMetodo"))));
     }
 
     public boolean isFirst(String production, String token){

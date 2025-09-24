@@ -1,4 +1,4 @@
-///[Error:else|7]
+///[Error:else|6]
 class Error04{
     static  void metodo(){
         if(a>b){

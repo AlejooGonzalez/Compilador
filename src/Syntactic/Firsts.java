@@ -26,10 +26,10 @@ public class Firsts {
         firsts.put("expresionParentizada", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
         firsts.put("llamadaMetodoEstatico", new ArrayList<>(List.of("idClase")));
         firsts.put("argsActuales", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
-        firsts.put("herenciaOpcional", new ArrayList<>(Arrays.asList("pr_extends", "€")));
+        firsts.put("herenciaOpcional", new ArrayList<>(Arrays.asList("pr_extends", "€", "pr_implements")));
         firsts.put("argsFormales", new ArrayList<>(List.of("pnt_parentesisIzquierdo")));
         firsts.put("forEach", new ArrayList<>(List.of("pnt_dosPuntos")));
-        firsts.put("forEstandar", new ArrayList<>(List.of("pnt_puntoYComa")));
+        firsts.put("forElemental", new ArrayList<>(List.of("pnt_puntoYComa")));
         firsts.put("declaracionVar", new ArrayList<>(List.of("pr_var")));
 
         firsts.put("tipo", new ArrayList<>(concat(List.of("idClase"), firsts.get("tipoPrimitivo"))));
@@ -68,7 +68,7 @@ public class Firsts {
         firsts.put("tipoMetodo", new ArrayList<>(concat(List.of("pr_void"), firsts.get("tipo"))));
         firsts.put("referenciaTerminal", new ArrayList<>(concat(List.of("pnt_punto"), List.of("€"))));
         firsts.put("forAux", new ArrayList<>(concat(firsts.get("varLocal"), firsts.get("expresion"))));
-        firsts.put("forTipo", new ArrayList<>(concat(firsts.get("forEstandar"), List.of("pnt_dosPuntos"))));
+        firsts.put("forTipo", new ArrayList<>(concat(firsts.get("forElemental"), List.of("pnt_dosPuntos"))));
         firsts.put("miembroInterfaz", new ArrayList<>(concat(List.of("€"), firsts.get("tipoMetodo"))));
         firsts.put("metodoAtributo", new ArrayList<>(concat(List.of("pr_void"), firsts.get("tipo"))));
         firsts.put("metodoModificador", new ArrayList<>(firsts.get("modificadorOpcionalMiembros")));

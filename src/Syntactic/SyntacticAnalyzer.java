@@ -188,7 +188,6 @@ public class SyntacticAnalyzer {
             case "pr_boolean" -> match("pr_boolean");
             case "pr_char" -> match("pr_char");
             case "pr_int" -> match("pr_int");
-            default -> { }
         }
     }
 
@@ -404,7 +403,7 @@ public class SyntacticAnalyzer {
             forTipo();
         } else if (firsts.isFirst("expresion", actualToken.getTokenType())) {
             expresion();
-            forEstandar();
+            forElemental();
         } else {
             throw new SyntacticException("forAux", actualToken);
         }
@@ -415,18 +414,18 @@ public class SyntacticAnalyzer {
         match("idMetVar");
     }
 
-    private void forEstandar() throws LexicalException, SyntacticException, IOException {
+    private void forElemental() throws LexicalException, SyntacticException, IOException {
         match("pnt_puntoYComa");
-        expresionOpcional();
+        expresion();
         match("pnt_puntoYComa");
-        expresionOpcional();
+        expresion();
     }
 
     private void forTipo() throws LexicalException, SyntacticException, IOException {
         if (Objects.equals(actualToken.getTokenType(), "op_asignacion")) {
             match("op_asignacion");
             expresionCompuesta();
-            forEstandar();
+            forElemental();
         } else if (Objects.equals(actualToken.getTokenType(), "pnt_dosPuntos")) {
             forEach();
         } else {

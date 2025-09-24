@@ -31,6 +31,7 @@ public class Firsts {
         firsts.put("forEach", new ArrayList<>(List.of("pnt_dosPuntos")));
         firsts.put("forElemental", new ArrayList<>(List.of("pnt_puntoYComa")));
         firsts.put("declaracionVar", new ArrayList<>(List.of("pr_var")));
+        firsts.put("interfaz", new ArrayList<>(List.of("pr_interface")));
 
         firsts.put("tipo", new ArrayList<>(concat(List.of("idClase"), firsts.get("tipoPrimitivo"))));
         firsts.put("modificadorOpcional", new ArrayList<>(concat(List.of("€"), firsts.get("modificadorOpcionalMiembros"))));
@@ -55,25 +56,25 @@ public class Firsts {
         firsts.put("encadenadoVarMetodo", new ArrayList<>(concat(List.of("€"), firsts.get("argsActuales"))));
         firsts.put("argsAux", new ArrayList<>(concat(List.of("€"), firsts.get("argsActuales"))));
 
+        firsts.put("metodoAtributo", new ArrayList<>(concat(List.of("pr_void"), firsts.get("tipo"))));
+        firsts.put("metodoModificador", new ArrayList<>(firsts.get("modificadorOpcionalMiembros")));
         firsts.put("asignacionLlamada", new ArrayList<>(firsts.get("expresion")));
-        firsts.put("miembro", new ArrayList<>(concat(List.of("pr_void"), firsts.get("constructor"), firsts.get("tipo"), firsts.get("modificadorOpcionalMiembros"))));
+        firsts.put("miembro", new ArrayList<>(concat(firsts.get("metodoAtributo"), firsts.get("metodoModificador"), firsts.get("constructor"))));
         firsts.put("miembroMetodo", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("argsFormales"))));
         firsts.put("sentencia", new ArrayList<>(concat(List.of("pnt_puntoYComa"), firsts.get("asignacionLlamada"), firsts.get("varLocal"), firsts.get("return"), firsts.get("if"), firsts.get("while"), firsts.get("bloque"), firsts.get("for"))));
         firsts.put("listaSentencias", new ArrayList<>(firsts.get("sentencia")));
         firsts.put("clase", new ArrayList<>(concat(List.of("pr_class"), firsts.get("modificadorOpcional"))));
-        firsts.put("interfaz", new ArrayList<>(List.of("pr_interface")));
-        firsts.put("listaClases", new ArrayList<>(concat(List.of("€"), firsts.get("clase"))));
-        firsts.put("inicial", new ArrayList<>(firsts.get("listaClases")));
+        firsts.put("listaClasesInterface", new ArrayList<>(concat(List.of("€"), firsts.get("clase"), firsts.get("interfaz"))));
+        firsts.put("inicial", new ArrayList<>(firsts.get("listaClasesInterface")));
         firsts.put("listaMiembros", new ArrayList<>(concat(List.of("€"), firsts.get("miembro"))));
         firsts.put("tipoMetodo", new ArrayList<>(concat(List.of("pr_void"), firsts.get("tipo"))));
         firsts.put("referenciaTerminal", new ArrayList<>(concat(List.of("pnt_punto"), List.of("€"))));
         firsts.put("forAux", new ArrayList<>(concat(firsts.get("varLocal"), firsts.get("expresion"))));
         firsts.put("forTipo", new ArrayList<>(concat(firsts.get("forElemental"), List.of("pnt_dosPuntos"))));
-        firsts.put("miembroInterfaz", new ArrayList<>(concat(List.of("€"), firsts.get("tipoMetodo"))));
-        firsts.put("metodoAtributo", new ArrayList<>(concat(List.of("pr_void"), firsts.get("tipo"))));
-        firsts.put("metodoModificador", new ArrayList<>(firsts.get("modificadorOpcionalMiembros")));
+        firsts.put("miembroInterfaz", new ArrayList<>(firsts.get("tipoMetodo")));
         firsts.put("argBloque", new ArrayList<>(firsts.get("argsFormales")));
-        firsts.put("MiembroAtributoAux", new ArrayList<>(concat(List.of("op_asignacion"), firsts.get("miembroMetodo"))));
+        firsts.put("miembroAtributoAux", new ArrayList<>(concat(List.of("op_asignacion"), firsts.get("miembroMetodo"))));
+        firsts.put("listaMiembrosInterfaz", new ArrayList<>(concat(List.of("€"), firsts.get("miembroInterfaz"))));
     }
 
     public boolean isFirst(String production, String token){
@@ -84,6 +85,14 @@ public class Firsts {
         List<String> returnList = new ArrayList<>();
         if (a != null) returnList.addAll(a);
         if (b != null) returnList.addAll(b);
+        return returnList;
+    }
+
+    private List<String> concat(List<String> a, List<String> b, List<String> c) {
+        List<String> returnList = new ArrayList<>();
+        if (a != null) returnList.addAll(a);
+        if (b != null) returnList.addAll(b);
+        if  (c != null) returnList.addAll(c);
         return returnList;
     }
 

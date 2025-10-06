@@ -20,22 +20,24 @@ public class TesterDeCasosSinErrores {
     private static final String msgExito = "[SinErrores]";
     private static final String testFilesDirectoryPath = "resources/sinErrores/";
 
-    private static final MainSyntactic init = null;
-
+    //TODO: el tipo de esta variable init tiene que ser la clase que tiene el main
+    private static final Main init = null;
+   
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     private boolean fullCompilerOuputPrintingInEachTest = true;
+
 
     @Before
     public  void setUpClass() {
         System.setOut(new PrintStream(outContent));
     }
-
+    
     @After
     public  void tearDownClass() {
         System.setOut(originalOut);
     }
-
+    
     @Parameters(name = "{0}")
     public static Iterable<? extends Object> data() {
         File folder = new File(testFilesDirectoryPath);
@@ -45,31 +47,40 @@ public class TesterDeCasosSinErrores {
         }
         names.sort(String::compareTo);
         return names;
-
+        
     }
-
+    
     private String input;
-
+    
     public TesterDeCasosSinErrores(String input){
         this.input = input;
     }
 
+       
+        
     @Test
     public void testIterado() {
         probarExito(input);
     }
 
+     
     void probarExito(String name){
-        String path = testFilesDirectoryPath+name;
-        String[] args = {path};
-        init.main(args);
+            String path = testFilesDirectoryPath+name;
+            String[] args = {path};
+            init.main(args);
 
-        if(fullCompilerOuputPrintingInEachTest){
-            System.setOut(originalOut);
-            System.out.println(outContent.toString());
-        }
+            if(fullCompilerOuputPrintingInEachTest){
+                System.setOut(originalOut);
+                System.out.println(outContent.toString());
+            }
 
-        assertThat("Mensaje Incorrecto en: " + path,  outContent.toString(), CoreMatchers.containsString(msgExito));
-
+            assertThat("Mensaje Incorrecto en: " + path,  outContent.toString(), CoreMatchers.containsString(msgExito));
+           
     }
+    
+     
+    
+    
+    
+    
 }

@@ -1,6 +1,0 @@
-///[SinErrores]
-class A {
-    int run() {
-        return (1 < 2 ? 3 : 4);
-    }
-}

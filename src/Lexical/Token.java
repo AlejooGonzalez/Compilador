@@ -10,6 +10,7 @@ public class Token{
         this.lexeme = lexeme;
         this.lineNumber = lineNumber;
     }
+
     public String getTokenType(){
         return tokenType;
     }

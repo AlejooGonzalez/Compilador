@@ -3,7 +3,6 @@ package Semantic;
 import Lexical.Token;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class Constructor{
     private Token token;
@@ -14,7 +13,7 @@ public class Constructor{
         parameters = new HashMap<>();
     }
 
-    /*
+
     public void setParameters(HashMap<String, Parameter> parameters) {
         this.parameters = parameters;
     }
@@ -25,7 +24,7 @@ public class Constructor{
 
     public void setParameter(String parameterName, Parameter parameter){
         parameters.put(parameterName, parameter);
-    } */
+    }
 
     public String getName(){
         return token.getLexeme();
@@ -39,6 +38,7 @@ public class Constructor{
         return parameters;
     }
 
-
-
+    public Token getToken() {
+        return token;
+    }
 }

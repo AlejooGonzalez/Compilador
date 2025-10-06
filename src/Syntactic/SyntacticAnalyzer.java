@@ -4,6 +4,10 @@ import Exceptions.LexicalException;
 import Exceptions.SyntacticException;
 import Lexical.LexicalAnalyzer;
 import Lexical.Token;
+import Semantic.ConcreteClass;
+import Semantic.Constructor;
+import Semantic.Method;
+import Semantic.SymbolTable;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -54,11 +58,32 @@ public class SyntacticAnalyzer {
     private void clase() throws LexicalException, SyntacticException, IOException {
             modificadorOpcional();
             match("pr_class");
+            Token name = actualToken;
             match("idClase");
+            ConcreteClass c = new ConcreteClass(name);
+            SymbolTable.setCurrentClass(c);
+            Token ancestorName = herencia();
+            SymbolTable.getCurrentClass().setInheritance(ancestorName);
             herenciaOpcional();
             match("pnt_llaveIzquierda");
             listaMiembros();
             match("pnt_llaveDerecha");
+            SymbolTable.insertClass(name.getLexeme(), SymbolTable.getCurrentClass());
+    }
+
+    private Token herencia() throws LexicalException, SyntacticException, IOException {
+        if(actualToken.getTokenType().equals("pr_extends")){
+            match("pr_extends");
+            Token nom = actualToken;
+            match("idClase");
+            return nom;
+        } else {
+            if(actualToken.getTokenType().equals("pnt_llaveIzquierda")){
+                return new Token("idClase", "Object", 0);
+            } else {
+                throw new SyntacticException(actualToken.getTokenType(), actualToken);
+            }
+        }
     }
 
     private void interfaz() throws LexicalException, SyntacticException, IOException {
@@ -154,11 +179,12 @@ public class SyntacticAnalyzer {
         }
     }
 
-    private void constructor() throws LexicalException, SyntacticException, IOException {
+    private Constructor constructor() throws LexicalException, SyntacticException, IOException {
         match("pr_public");
         match("idClase");
         argsFormales();
         bloque();
+        return null;
     }
 
     private void tipoMetodo() throws LexicalException, SyntacticException, IOException {

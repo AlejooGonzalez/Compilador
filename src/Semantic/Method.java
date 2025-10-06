@@ -1,5 +1,6 @@
 package Semantic;
 
+import Exceptions.SyntacticException;
 import Lexical.Token;
 
 import java.util.HashMap;
@@ -17,7 +18,7 @@ public class Method {
         parameters =  new HashMap<>();
     }
 
-    /*
+
     public HashMap<String,Parameter> getParameters() {
         return parameters;
     }
@@ -34,14 +35,13 @@ public class Method {
         this.returnType = returnType;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void addParameters(Parameter parameters) throws SyntacticException {
+        if(!this.parameters.containsKey(parameters.getName())) {
+            this.parameters.put(parameters.getName(), parameters);
+        } else {
+            throw new SyntacticException("Error", parameters.getToken());
+        }
     }
-
-    public void setParameters(HashMap<String,Parameter> parameters) {
-        this.parameters = parameters;
-    }
-     */
 
     public String getName() {
         return token.getLexeme();
@@ -62,6 +62,4 @@ public class Method {
     public Token getToken() {
         return token;
     }
-
-
 }

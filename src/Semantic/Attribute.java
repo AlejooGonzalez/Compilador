@@ -1,6 +1,4 @@
 package Semantic;
-
-
 import Lexical.Token;
 
 public class Attribute {

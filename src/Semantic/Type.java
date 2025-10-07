@@ -7,4 +7,5 @@ public interface Type {
     public void setToken(Token tokenType);
     public String getName();
     public void setName(String name);
+    public boolean isPrimitive();
 }

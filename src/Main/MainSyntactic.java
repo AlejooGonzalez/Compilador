@@ -12,7 +12,7 @@ import java.io.IOException;
 public class MainSyntactic {
     public static SymbolTable ST;
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         SourceManagerImplementation sourceManager = new SourceManagerImplementation();
         LexicalAnalyzer lexer =  null;
         boolean noMistakes = true;
@@ -35,7 +35,20 @@ public class MainSyntactic {
         try {
             syntacticAnalyzer.start();
         } catch (SyntacticException e) { e.getErrorMessage(); noMistakes = false;
-        } catch (LexicalException | IOException ignored) { } catch (SemanticException e) {throw new RuntimeException(e);}
+        } catch (LexicalException | IOException ignored) {
+        } catch (SemanticException e) {
+            e.getErrorMessage();
+            noMistakes = false;
+        }
+
+        if (noMistakes) {
+            try {
+                ST.itIsWellStated();
+            } catch (SemanticException e) {
+                e.getErrorMessage();
+                noMistakes = false;
+            }
+        }
 
         if (noMistakes) {
             System.out.println("[SinErrores]");

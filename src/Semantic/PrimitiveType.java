@@ -26,4 +26,8 @@ public class PrimitiveType implements Type{
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean isPrimitive(){
+        return true;
+    }
 }

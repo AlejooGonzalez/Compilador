@@ -30,7 +30,13 @@ public class Constructor {
         if (parameters.get(param.getName()) == null) {
             parameters.put(param.getName(), param);
         } else {
-            throw new SemanticException("Error",param.getToken());
+            throw new SemanticException("El metodo"+param.getToken()+"ya existe", param.getToken(), param.getToken().getLineNumber());
+        }
+    }
+
+    public void itIsWellStated() throws SemanticException {
+        for(Parameter p : parameters.values()){
+            p.itIsWellStated();
         }
     }
 }

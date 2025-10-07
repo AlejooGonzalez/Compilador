@@ -26,4 +26,8 @@ public class ReferenceType implements Type{
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean isPrimitive() {
+        return false;
+    }
 }

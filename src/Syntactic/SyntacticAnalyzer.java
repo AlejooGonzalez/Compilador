@@ -50,18 +50,18 @@ public class SyntacticAnalyzer {
             listaClasesInterfaces();
         } else {
             if (firsts.isFirst("interfaz", actualToken.getTokenType())) {
-                interfaz();
+                //interfaz();
                 listaClasesInterfaces();
             } else { }
         }
     }
 
     private void clase() throws LexicalException, SyntacticException, IOException, SemanticException {
-            modificadorOpcional();
+            Token modificador = modificadorOpcional();
             match("pr_class");
             Token name = actualToken;
             match("idClase");
-            ConcreteClass c = new ConcreteClass(name);
+            ConcreteClass c = new ConcreteClass(name, modificador);
             MainSyntactic.ST.setCurrentClass(c);
             Token ancestorName = herenciaOpcional();
             MainSyntactic.ST.getCurrentClass().setInheritance(ancestorName);
@@ -86,6 +86,7 @@ public class SyntacticAnalyzer {
         }
     }
 
+    /*
     private void interfaz() throws LexicalException, SyntacticException, IOException {
         match("pr_interface");
         Token name = actualToken;
@@ -98,7 +99,7 @@ public class SyntacticAnalyzer {
         match("pnt_llaveDerecha");
         MainSyntactic.ST.insertClass(MainSyntactic.ST.getCurrentClass());
     }
-
+*/
     private void listaMiembrosInterfaz() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("miembroInterfaz", actualToken.getTokenType())) {
             miembroInterfaz();
@@ -266,13 +267,13 @@ public class SyntacticAnalyzer {
             match("pr_void");
             Token methodName = actualToken;
             match("idMetVar");
-            Method method = new Method(methodName,modifier,null);
+            Method method = new Method(methodName,modifier,null); //PREGUNTAR A GOTTI
             MainSyntactic.ST.setCurrentMethod(method);
             List<Parameter> params = argsFormales();
             for (Parameter p : params) {
                 method.addParameters(p);
             }
-            bloqueOpcional();
+            MainSyntactic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
             MainSyntactic.ST.getCurrentClass().addMethod(method);
         } else {
             throw new SyntacticException("metodoAtributo", actualToken);
@@ -290,7 +291,7 @@ public class SyntacticAnalyzer {
         for (Parameter p : params) {
             method.addParameters(p);
         }
-        bloqueOpcional();
+        MainSyntactic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
         MainSyntactic.ST.getCurrentClass().addMethod(method);
     }
 

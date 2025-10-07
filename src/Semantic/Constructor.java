@@ -1,10 +1,11 @@
 package Semantic;
 
+import Exceptions.SemanticException;
 import Lexical.Token;
 
 import java.util.HashMap;
 
-public class Constructor{
+public class Constructor {
     private Token token;
     private HashMap<String, Parameter> parameters;
 
@@ -13,25 +14,8 @@ public class Constructor{
         parameters = new HashMap<>();
     }
 
-
-    public void setParameters(HashMap<String, Parameter> parameters) {
-        this.parameters = parameters;
-    }
-
-    public Parameter getParameter(String parameterName){
-        return parameters.get(parameterName);
-    }
-
-    public void setParameter(String parameterName, Parameter parameter){
-        parameters.put(parameterName, parameter);
-    }
-
-    public String getName(){
+    public String getName() {
         return token.getLexeme();
-    }
-
-    public int getLine(){
-        return token.getLineNumber();
     }
 
     public HashMap<String, Parameter> getParameters() {
@@ -40,5 +24,13 @@ public class Constructor{
 
     public Token getToken() {
         return token;
+    }
+
+    public void addParameter(Parameter param) throws SemanticException {
+        if (parameters.get(param.getName()) == null) {
+            parameters.put(param.getName(), param);
+        } else {
+            throw new SemanticException("Error",param.getToken());
+        }
     }
 }

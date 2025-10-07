@@ -7,10 +7,10 @@ import Lexical.Token;
 import java.util.HashMap;
 
 public class SymbolTable {
-     public static HashMap<String, ConcreteClass> classes;
-     private static Method currentMethod;
-     private static ConcreteClass currentClass;
-     private static Constructor currentConstructor;
+     private  HashMap<String, ConcreteClass> classes;
+     private  Method currentMethod;
+     private  ConcreteClass currentClass;
+     private  Constructor currentConstructor;
 
     public SymbolTable() throws SyntacticException, SemanticException {
         classes = new HashMap<>();
@@ -79,7 +79,7 @@ public class SymbolTable {
         classes.put("System", systemClass);
     }
 
-    public static void setCurrentClass(ConcreteClass c) throws SyntacticException {
+    public void setCurrentClass(ConcreteClass c) throws SyntacticException {
         if(!classes.containsKey(c.getName())){
             currentClass = c;
         } else {
@@ -87,28 +87,27 @@ public class SymbolTable {
         }
     }
 
-    public static ConcreteClass getCurrentClass() {
+    public ConcreteClass getCurrentClass() {
         return currentClass;
     }
 
-    public static void setCurrentMethod(Method m) {
+    public void setCurrentMethod(Method m) {
         currentMethod = m;
     }
 
-    public static Method getCurrentMethod() {
+    public  Method getCurrentMethod() {
         return currentMethod;
     }
 
-    public static void setCurrentConstructor(Constructor cons) {
+    public void setCurrentConstructor(Constructor cons) {
         currentConstructor = cons;
     }
 
-    public static Constructor getCurrentConstructor() {
+    public Constructor getCurrentConstructor() {
         return currentConstructor;
     }
 
-
-    public static void insertClass(String lexeme, ConcreteClass currentClass) {
-        classes.put(lexeme, currentClass);
+    public void insertClass(ConcreteClass currentClass) {
+        classes.put(currentClass.getName(), currentClass);
     }
 }

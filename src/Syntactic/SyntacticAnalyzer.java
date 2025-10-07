@@ -1,15 +1,16 @@
 package Syntactic;
 
 import Exceptions.LexicalException;
+import Exceptions.SemanticException;
 import Exceptions.SyntacticException;
 import Lexical.LexicalAnalyzer;
 import Lexical.Token;
-import Semantic.ConcreteClass;
-import Semantic.Constructor;
-import Semantic.Method;
-import Semantic.SymbolTable;
+import Main.MainSyntactic;
+import Semantic.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SyntacticAnalyzer {
@@ -23,7 +24,7 @@ public class SyntacticAnalyzer {
         nextToken();
     }
 
-    public void start() throws SyntacticException, LexicalException, IOException {
+    public void start() throws SyntacticException, LexicalException, IOException, SemanticException {
         inicial();
     }
 
@@ -38,12 +39,12 @@ public class SyntacticAnalyzer {
         actualToken = lexicalAnalyzer.nextToken();
     }
 
-    private void inicial() throws LexicalException, SyntacticException, IOException {
+    private void inicial() throws LexicalException, SyntacticException, IOException, SemanticException {
         listaClasesInterfaces();
         match("EOF");
     }
 
-    private void listaClasesInterfaces() throws LexicalException, SyntacticException, IOException {
+    private void listaClasesInterfaces() throws LexicalException, SyntacticException, IOException, SemanticException {
         if (firsts.isFirst("clase", actualToken.getTokenType())) {
             clase();
             listaClasesInterfaces();
@@ -55,23 +56,22 @@ public class SyntacticAnalyzer {
         }
     }
 
-    private void clase() throws LexicalException, SyntacticException, IOException {
+    private void clase() throws LexicalException, SyntacticException, IOException, SemanticException {
             modificadorOpcional();
             match("pr_class");
             Token name = actualToken;
             match("idClase");
             ConcreteClass c = new ConcreteClass(name);
-            SymbolTable.setCurrentClass(c);
-            Token ancestorName = herencia();
-            SymbolTable.getCurrentClass().setInheritance(ancestorName);
-            herenciaOpcional();
+            MainSyntactic.ST.setCurrentClass(c);
+            Token ancestorName = herenciaOpcional();
+            MainSyntactic.ST.getCurrentClass().setInheritance(ancestorName);
             match("pnt_llaveIzquierda");
             listaMiembros();
             match("pnt_llaveDerecha");
-            SymbolTable.insertClass(name.getLexeme(), SymbolTable.getCurrentClass());
+            MainSyntactic.ST.insertClass(MainSyntactic.ST.getCurrentClass());
     }
 
-    private Token herencia() throws LexicalException, SyntacticException, IOException {
+    private Token herenciaOpcional() throws LexicalException, SyntacticException, IOException {
         if(actualToken.getTokenType().equals("pr_extends")){
             match("pr_extends");
             Token nom = actualToken;
@@ -88,11 +88,15 @@ public class SyntacticAnalyzer {
 
     private void interfaz() throws LexicalException, SyntacticException, IOException {
         match("pr_interface");
+        Token name = actualToken;
         match("idClase");
+        ConcreteClass i = new ConcreteClass(name);
+        MainSyntactic.ST.setCurrentClass(i);
         herenciaOpcionalInterfaz();
         match("pnt_llaveIzquierda");
         listaMiembrosInterfaz();
         match("pnt_llaveDerecha");
+        MainSyntactic.ST.insertClass(MainSyntactic.ST.getCurrentClass());
     }
 
     private void listaMiembrosInterfaz() throws LexicalException, SyntacticException, IOException {
@@ -111,10 +115,12 @@ public class SyntacticAnalyzer {
         }
     }
 
-    private void modificadorOpcional() throws LexicalException, SyntacticException, IOException {
+    private Token modificadorOpcional() throws LexicalException, SyntacticException, IOException {
+        Token retorno = null;
         if (firsts.isFirst("modificadorOpcionalMiembros", actualToken.getTokenType())) {
-            modificadorOpcionalMiembros();
+            retorno = modificadorOpcionalMiembros();
         } else { }
+        return retorno;
     }
 
     private void herenciaOpcionalInterfaz() throws LexicalException, SyntacticException, IOException {
@@ -124,38 +130,31 @@ public class SyntacticAnalyzer {
         } else { }
     }
 
-    private void herenciaOpcional() throws LexicalException, SyntacticException, IOException {
-        if (actualToken.getTokenType().equals("pr_extends")) {
-            match("pr_extends");
-            match("idClase");
-        } else {
-            if(actualToken.getTokenType().equals("pr_implements")){
-                match("pr_implements");
-                match("idClase");
-            } else { }
-        }
-    }
-
-    private void listaMiembros() throws LexicalException, SyntacticException, IOException {
+    private void listaMiembros() throws LexicalException, SyntacticException, IOException, SemanticException {
         if (firsts.isFirst("miembro", actualToken.getTokenType())) {
             miembro();
             listaMiembros();
         } else { }
     }
 
-    private void modificadorOpcionalMiembros() throws LexicalException, SyntacticException, IOException {
+    private Token modificadorOpcionalMiembros() throws LexicalException, SyntacticException, IOException {
+        Token retorno = null;
         if (actualToken.getTokenType().equals("pr_abstract")) {
+            retorno = actualToken;
             match("pr_abstract");
         } else if (actualToken.getTokenType().equals("pr_static")) {
+            retorno = actualToken;
             match("pr_static");
         } else if (actualToken.getTokenType().equals("pr_final")) {
+            retorno = actualToken;
             match("pr_final");
         } else {
             throw new SyntacticException("modificadorOpcionalMiembros", actualToken);
         }
+        return retorno;
     }
 
-    private void miembro() throws LexicalException, SyntacticException, IOException {
+    private void miembro() throws LexicalException, SyntacticException, IOException, SemanticException {
         if (firsts.isFirst("constructor", actualToken.getTokenType())) {
             constructor();
         } else if (firsts.isFirst("metodoAtributo", actualToken.getTokenType())) {
@@ -167,46 +166,71 @@ public class SyntacticAnalyzer {
         }
     }
 
-    private void miembroMetodo() throws LexicalException, SyntacticException, IOException {
-        if (firsts.isFirst("argBloque", actualToken.getTokenType())) {
-            argBloque();
+    private void miembroMetodo(Token token, Type type) throws LexicalException, SyntacticException, IOException, SemanticException {
+        if (firsts.isFirst("argsFormales", actualToken.getTokenType())) {
+            Token modifier = modificadorOpcional();
+            Method method = new Method(token, modifier ,type);
+            MainSyntactic.ST.setCurrentMethod(method);
+            List<Parameter> params = argsFormales();
+            for (Parameter p : params) {
+                MainSyntactic.ST.getCurrentMethod().addParameters(p);
+            }
+            MainSyntactic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
+            MainSyntactic.ST.getCurrentClass().addMethod(method);
         } else {
             if (Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")) {
+                Attribute attribute = new Attribute(token,type);
                 match("pnt_puntoYComa");
+                MainSyntactic.ST.getCurrentClass().addAttributes(attribute);
             } else {
                 throw new SyntacticException("miembroMetodo", actualToken);
             }
         }
     }
 
-    private Constructor constructor() throws LexicalException, SyntacticException, IOException {
+    private void constructor() throws LexicalException, SyntacticException, IOException, SemanticException {
         match("pr_public");
+        Token token = actualToken;
         match("idClase");
-        argsFormales();
+        Constructor cons = new Constructor(token);
+        MainSyntactic.ST.setCurrentConstructor(cons);
+        List<Parameter> params = argsFormales();
+        for (Parameter p : params) {
+            cons.addParameter(p);
+        }
         bloque();
-        return null;
+        MainSyntactic.ST.getCurrentClass().addConstructor(cons);
     }
 
-    private void tipoMetodo() throws LexicalException, SyntacticException, IOException {
+    private Type tipoMetodo() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("tipo", actualToken.getTokenType())) {
-            tipo();
+            return tipo();
         } else {
             if(Objects.equals(actualToken.getTokenType(), "pr_void")) {
+                Token token = actualToken;
                 match("pr_void");
+                return new PrimitiveType(token);
             } else {
                 throw new SyntacticException("tipoMetodo", actualToken);
             }
         }
     }
 
-    private void tipo() throws LexicalException, SyntacticException, IOException {
+    private Type tipo() throws LexicalException, SyntacticException, IOException {
+        Type type;
+        Token token;
         if (firsts.isFirst("tipoPrimitivo", actualToken.getTokenType())) {
+            token =  actualToken;
             tipoPrimitivo();
+            type = new PrimitiveType(token);
         } else if (Objects.equals(actualToken.getTokenType(), "idClase")) {
+            token =  actualToken;
             match("idClase");
+            type = new ReferenceType(token);
         } else {
             throw new SyntacticException("tipo", actualToken);
         }
+        return type;
     }
 
     private void tipoPrimitivo() throws LexicalException, SyntacticException, IOException {
@@ -217,37 +241,57 @@ public class SyntacticAnalyzer {
         }
     }
 
-    private void miembroAtributoAux() throws LexicalException, SyntacticException, IOException {
+    private void miembroAtributoAux(Token token, Type type) throws LexicalException, SyntacticException, IOException, SemanticException {
         if (Objects.equals(actualToken.getTokenType(), "op_asignacion")) {
+            Attribute attribute = new Attribute(token, type);
             match("op_asignacion");
             expresionCompuesta();
             match("pnt_puntoYComa");
+            MainSyntactic.ST.getCurrentClass().addAttributes(attribute);
         } else if (firsts.isFirst("miembroMetodo", actualToken.getTokenType())) {
-            miembroMetodo();
+            miembroMetodo(token,type);
         } else {
             throw new SyntacticException("miembroAtributoAux", actualToken);
         }
     }
 
-    private void metodoAtributo() throws LexicalException, SyntacticException, IOException {
+    private void metodoAtributo() throws LexicalException, SyntacticException, IOException, SemanticException {
         if (firsts.isFirst("tipo", actualToken.getTokenType())) {
-            tipo();
+            Type type = tipo();
+            Token token = actualToken;
             match("idMetVar");
-            miembroAtributoAux();
+            miembroAtributoAux(token, type);
         } else if (actualToken.getTokenType().equals("pr_void")) {
+            Token modifier = modificadorOpcional();
             match("pr_void");
+            Token methodName = actualToken;
             match("idMetVar");
-            argBloque();
+            Method method = new Method(methodName,modifier,null);
+            MainSyntactic.ST.setCurrentMethod(method);
+            List<Parameter> params = argsFormales();
+            for (Parameter p : params) {
+                method.addParameters(p);
+            }
+            bloqueOpcional();
+            MainSyntactic.ST.getCurrentClass().addMethod(method);
         } else {
             throw new SyntacticException("metodoAtributo", actualToken);
         }
     }
 
-    private void metodoModificador() throws LexicalException, SyntacticException, IOException {
-        modificadorOpcionalMiembros();
-        tipoMetodo();
+    private void metodoModificador() throws LexicalException, SyntacticException, IOException, SemanticException {
+        Token modifier = modificadorOpcionalMiembros();
+        Type type = tipoMetodo();
+        Token name = actualToken;
         match("idMetVar");
-        argBloque();
+        Method method = new Method(name, modifier, type);
+        MainSyntactic.ST.setCurrentMethod(method);
+        List<Parameter> params = argsFormales();
+        for (Parameter p : params) {
+            method.addParameters(p);
+        }
+        bloqueOpcional();
+        MainSyntactic.ST.getCurrentClass().addMethod(method);
     }
 
     private void argBloque() throws LexicalException, SyntacticException, IOException {
@@ -255,54 +299,64 @@ public class SyntacticAnalyzer {
         bloqueOpcional();
     }
 
-    private void argsFormales() throws LexicalException, SyntacticException, IOException {
-        if (Objects.equals(actualToken.getTokenType(), "pnt_parentesisIzquierdo")) {
+    private List<Parameter> argsFormales() throws LexicalException, SyntacticException, IOException {
+            List<Parameter> args = new ArrayList<>();
             match("pnt_parentesisIzquierdo");
-            listaArgsFormalesOpcional();
+            args = listaArgsFormalesOpcional();
             match("pnt_parentesisDerecho");
-        } else {
-            throw new SyntacticException("argsFormales", actualToken);
-        }
+            return args;
     }
 
-    private void listaArgsFormalesOpcional() throws LexicalException, SyntacticException, IOException {
+    private List<Parameter> listaArgsFormalesOpcional() throws LexicalException, SyntacticException, IOException {
+        List<Parameter> args = new ArrayList<>();
         if (firsts.isFirst("listaArgsFormales", actualToken.getTokenType())) {
-            listaArgsFormales();
-        } else { }
-    }
-
-    private void listaArgsFormales() throws LexicalException, SyntacticException, IOException {
-        if (firsts.isFirst("argFormal", actualToken.getTokenType())) {
-            argFormal();
-            listaArgsFormalesTerminal();
-        } else {
-            throw new SyntacticException("listaArgsFormales", actualToken);
+            args = listaArgsFormales();
         }
+        return args;
     }
 
-    private void listaArgsFormalesTerminal() throws LexicalException, SyntacticException, IOException {
+    private List<Parameter> listaArgsFormales() throws LexicalException, SyntacticException, IOException {
+            List<Parameter> args = new ArrayList<>();
+            if(firsts.isFirst("argFormal", actualToken.getTokenType())) {
+                args.add(argFormal());
+                args.addAll(listaArgsFormalesTerminal());
+            } else {
+                throw new SyntacticException("argFormal", actualToken);
+            }
+            return args;
+    }
+
+    private List<Parameter> listaArgsFormalesTerminal() throws LexicalException, SyntacticException, IOException {
+        List<Parameter> args = new ArrayList<>();
         if (Objects.equals(actualToken.getTokenType(), "pnt_coma")) {
             match("pnt_coma");
-            argFormal();
-            listaArgsFormalesTerminal();
+            args.add(argFormal());
+            args.addAll(listaArgsFormalesTerminal());
         } else { }
+        return args;
     }
 
-    private void argFormal() throws LexicalException, SyntacticException, IOException {
+    private Parameter argFormal() throws LexicalException, SyntacticException, IOException {
+        Parameter parameter = null;
         if (firsts.isFirst("tipo", actualToken.getTokenType())) {
-            tipo();
+            Type type = tipo();
+            Token id = actualToken;
             match("idMetVar");
+            parameter = new Parameter(id, type);
         } else {
             throw new SyntacticException("argFormal", actualToken);
         }
+        return parameter;
     }
 
-    private void bloqueOpcional() throws LexicalException, SyntacticException, IOException {
+    private boolean bloqueOpcional() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("bloque", actualToken.getTokenType())){
             bloque();
+            return true;
         } else {
             if(Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")){
                 match("pnt_puntoYComa");
+                return false;
             } else {
                 throw new SyntacticException("bloqueOpcional", actualToken);
             }

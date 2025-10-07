@@ -4,23 +4,17 @@ import Lexical.Token;
 public class Attribute {
     private Token token;
     private Type type;
-    private Token visibility;
 
-    public Attribute(Token token,  Type type, Token visibility) {
+    public Attribute(Token token,  Type type) {
         this.token = token;
         this.type = type;
-        this.visibility = visibility;
     }
 
     public Token getToken(){
         return token;
     }
 
-    public Type getType(){
-        return type;
-    }
-
-    public Token getVisibility(){
-        return visibility;
+    public String getName(){
+        return token.getLexeme();
     }
 }

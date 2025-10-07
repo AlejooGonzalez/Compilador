@@ -10,6 +10,7 @@ public class Method {
     private Token modifier;
     private Type returnType;
     private HashMap<String,Parameter> parameters;
+    private boolean hasBody;
 
     public Method(Token token, Token modifier, Type returnType){
         this.token = token;
@@ -17,7 +18,6 @@ public class Method {
         this.returnType = returnType;
         parameters =  new HashMap<>();
     }
-
 
     public HashMap<String,Parameter> getParameters() {
         return parameters;
@@ -27,39 +27,19 @@ public class Method {
         this.token = token;
     }
 
-    public void setModifier(Token modifier) {
-        this.modifier = modifier;
-    }
-
-    public void setReturnType(Type returnType) {
-        this.returnType = returnType;
-    }
-
-    public void addParameters(Parameter parameters) throws SyntacticException {
-        if(!this.parameters.containsKey(parameters.getName())) {
+    public void addParameters(Parameter parameters) {
             this.parameters.put(parameters.getName(), parameters);
-        } else {
-            throw new SyntacticException("Error", parameters.getToken());
-        }
     }
 
     public String getName() {
         return token.getLexeme();
     }
 
-    public int getLine() {
-        return token.getLineNumber();
-    }
-
-    public Type getReturnType() {
-        return returnType;
-    }
-
-    public Token getModifier() {
-        return modifier;
-    }
-
     public Token getToken() {
         return token;
+    }
+
+    public void setHasBlock(boolean hasBlock) {
+        this.hasBody = hasBlock;
     }
 }

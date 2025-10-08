@@ -15,6 +15,6 @@ import Lexical.Token;
 
         public void getErrorMessage() {
             System.out.println("Error Semantico en linea "+rowNumber+": "+msg);
-            System.out.println("[Error:" + actualToken.getLexeme() + "|" + actualToken.getLineNumber() + "]");
+            System.out.println("[Error:" + actualToken.getLexeme() + "|" + rowNumber + "]");
         }
     }

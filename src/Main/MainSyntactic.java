@@ -44,6 +44,7 @@ public class MainSyntactic {
         if (noMistakes) {
             try {
                 ST.itIsWellStated();
+                ST.consolidate();
             } catch (SemanticException e) {
                 e.getErrorMessage();
                 noMistakes = false;

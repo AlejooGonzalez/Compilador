@@ -132,6 +132,12 @@ public class SymbolTable {
         }
     }
 
+    public void consolidate() throws SemanticException {
+        for (ConcreteClass c : classes.values()) {
+            c.consolidate();
+        }
+    }
+
     public ConcreteClass existsClass(Token className){
         ConcreteClass retorno = null;
         if(classes.get(className.getLexeme())!=null){

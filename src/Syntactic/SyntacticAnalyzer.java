@@ -267,7 +267,7 @@ public class SyntacticAnalyzer {
             match("pr_void");
             Token methodName = actualToken;
             match("idMetVar");
-            Method method = new Method(methodName,modifier,null); //PREGUNTAR A GOTTI
+            Method method = new Method(methodName,modifier,new PrimitiveType(new Token("pr_void", "void", actualToken.getLineNumber())));
             MainSyntactic.ST.setCurrentMethod(method);
             List<Parameter> params = argsFormales();
             for (Parameter p : params) {

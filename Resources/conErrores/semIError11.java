@@ -1,4 +1,4 @@
 ///[Error:AbsChild|4]
 
-final class Concrete {}
+class Concrete {}
 abstract class AbsChild extends Concrete { }

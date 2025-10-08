@@ -29,7 +29,7 @@ public class Parameter {
         if (!type.isPrimitive()) {
             Token typeToken = type.getToken();
             if (MainSyntactic.ST.existsClass(typeToken) == null) {
-                throw new SemanticException("El tipo de retorno " + typeToken.getLexeme() + " no está declarado", token, token.getLineNumber());
+                throw new SemanticException("El tipo de retorno " + typeToken.getLexeme() + " no está declarado", typeToken, typeToken.getLineNumber());
             }
         }
     }

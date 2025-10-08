@@ -14,6 +14,7 @@ public class ConcreteClass {
         private Token modifier;
         private HashMap<String, Method> methods;
         private HashMap<String, Attribute> attributes;
+        private boolean consolidated = false;
 
         public ConcreteClass(Token token, Token modifier) {
             this.token = token;
@@ -88,6 +89,13 @@ public class ConcreteClass {
                         if(this.getModifier() != null) {
                             String classType = this.getModifier().getTokenType();
                             if ((classType.equals("pr_final") || classType.equals("pr_static")) && fatherType.equals("pr_abstract")) {
+                                throw new SemanticException("Una clase abstracta, no puede extender a una clase final/estatica", token, token.getLineNumber());
+                            }
+                        }
+                    } else {
+                        if (this.getModifier() != null) {
+                            String classType = this.getModifier().getTokenType();
+                            if (classType.equals("pr_abstract")) {
                                 throw new SemanticException("Una clase abstracta, no puede extender a una clase concreta", token, token.getLineNumber());
                             }
                         }
@@ -112,15 +120,20 @@ public class ConcreteClass {
         }
 
     public void consolidate() throws SemanticException {
-        if (inheritance != null) {
-            ConcreteClass father = MainSyntactic.ST.existsClass(inheritance);
-            consolidateAttributes(father);
-            consolidateMethod(father);
-        } else {
-            if (!Objects.equals(this.getName(), "Object")) {
-                this.inheritance = MainSyntactic.ST.getClasses().get("Object").getToken();
+            if(!consolidated) {
+                if (inheritance == null) {
+                    this.inheritance = MainSyntactic.ST.getClasses().get("Object").getToken();
+                } else {
+                    ConcreteClass father = MainSyntactic.ST.existsClass(inheritance);
+                    father.consolidate();
+                    consolidateAttributes(father);
+                    consolidateMethod(father);
+                }
+                if (constructor == null) {
+                    this.setConstructor(new Constructor(token));
+                }
+                consolidated = true;
             }
-        }
     }
 
     private HashMap<String, Method> getMethods() {
@@ -151,41 +164,54 @@ public class ConcreteClass {
             return a.getToken().getLineNumber();
         }
 
-        private void consolidateMethod(ConcreteClass father) throws SemanticException {
-            for (Method mFather : father.getMethods().values()) {
-                Method mThis = methods.get(mFather.getName());
-                if (mThis != null) {
-                    if (mFather.getModifier() != null) {
-                        if (mFather.getModifier().getTokenType().equals("pr_final")) {
-                            throw new SemanticException("El método final '" + mFather.getName() + "' no puede ser redefinido en " + this.getName(), mThis.getToken(), mThis.getToken().getLineNumber());
-                        }
-                        if (mFather.getModifier().getTokenType().equals("pr_static")) {
-                            throw new SemanticException("El método static '" + mFather.getName() + "' no puede ser redefinido en " + this.getName(), mThis.getToken(), mThis.getToken().getLineNumber());
-                        }
-                        if (mFather.getModifier().getTokenType().equals("pr_abstract") && mThis.getName().equals(mFather.getName()) && mThis.sameParameters(mFather) && !mThis.getHasBlock()) {
-                            throw new SemanticException("El método abstract '" + mFather.getName() + "' fue redefinidio y no tiene cuerpo ", mThis.getToken(), mThis.getToken().getLineNumber());
-                        }
+    private void consolidateMethod(ConcreteClass father) throws SemanticException {
+        for (Method fatherMethod : father.getMethods().values()) {
+            Method thisMethod = methods.get(fatherMethod.getName());
+
+            if (thisMethod != null) {
+                Token fatherModifier = null;
+                String fatherModifierType = "";
+
+                if (fatherMethod.getModifier() != null) {
+                    fatherModifier = fatherMethod.getModifier();
+                    fatherModifierType = fatherModifier.getTokenType();
+                }
+
+                if (fatherModifierType.equals("pr_final")) {
+                    throw new SemanticException("El método final '" + fatherMethod.getName() + "' no puede ser redefinido en " + this.getName(), thisMethod.getToken(), thisMethod.getToken().getLineNumber());
+                }
+
+                if (fatherModifierType.equals("pr_static")) {
+                    throw new SemanticException("El método static '" + fatherMethod.getName() + "' no puede ser redefinido en " + this.getName(), thisMethod.getToken(), thisMethod.getToken().getLineNumber());
+                }
+                boolean fatherIsAbstract = fatherModifierType.equals("pr_abstract");
+                boolean thisClassIsConcrete = (modifier == null) || !modifier.getTokenType().equals("pr_abstract");
+
+                if (fatherIsAbstract && thisClassIsConcrete && thisMethod.sameParameters(fatherMethod) && !thisMethod.getHasBlock()) {
+                    throw new SemanticException("El método abstract '" + fatherMethod.getName() + "' fue redefinido y no tiene cuerpo", thisMethod.getToken(), thisMethod.getToken().getLineNumber());
+                }
+                if (fatherMethod.getReturnType() != null && thisMethod.getReturnType() != null) {
+                    boolean differentReturnType = !thisMethod.getReturnType().getToken().getLexeme().equals(fatherMethod.getReturnType().getToken().getLexeme());
+                    boolean differentParams = !thisMethod.sameParameters(fatherMethod);
+
+                    if (differentReturnType) {
+                        throw new SemanticException("El método '" + thisMethod.getName() + "' redefine con tipo de retorno distinto al heredado", thisMethod.getToken(), thisMethod.getToken().getLineNumber());
                     }
-                    if (mFather.getReturnType() != null && mThis.getReturnType() != null) {
-                        if (!mThis.getReturnType().getToken().getLexeme().equals(mFather.getReturnType().getToken().getLexeme())) {
-                            throw new SemanticException("El método '" + mThis.getName() + "' sobreecarga con tipo de retorno distinto al heredado", mThis.getToken(), mThis.getToken().getLineNumber());
-                        } else {
-                            if (!mThis.sameParameters(mFather)) {
-                                throw new SemanticException("El método '" + mThis.getName() + "' es redefinido con distinto tipo de parametros", mThis.getToken(), mThis.getToken().getLineNumber());
-                            }
-                        }
-                    }
-                } else {
-                    if (mFather.getModifier() != null) {
-                        if (mFather.getModifier().getTokenType().equals("pr_abstract")) {
-                            throw new SemanticException("No definiste el metodo " + mFather.getName(), mFather.getToken(), mFather.getToken().getLineNumber());
-                        } else {
-                            methods.put(mFather.getName(), mFather);
-                        }
+                    if (differentParams) {
+                        throw new SemanticException("El método '" + thisMethod.getName() + "' redefine con distinta lista de parámetros", thisMethod.getToken(), thisMethod.getToken().getLineNumber());
                     }
                 }
             }
+            else {
+                boolean fatherIsAbstract = fatherMethod.getModifier() != null && fatherMethod.getModifier().getTokenType().equals("pr_abstract");
+                boolean thisClassIsConcrete = (modifier == null) || !modifier.getTokenType().equals("pr_abstract");
+                if (fatherIsAbstract && thisClassIsConcrete) {
+                    throw new SemanticException("No definiste el método abstracto '" + fatherMethod.getName() + "' en la clase " + this.getName(), fatherMethod.getToken(), fatherMethod.getToken().getLineNumber());
+                }
+                methods.put(fatherMethod.getName(), fatherMethod);
+            }
         }
+    }
 
         private void consolidateAttributes(ConcreteClass father) throws SemanticException {
             for (Attribute a : father.getAttributes().values()) {
@@ -196,7 +222,9 @@ public class ConcreteClass {
             }
         }
 
-
+        public void setConstructor(Constructor token){
+            constructor = token;
+        }
     }
 
 

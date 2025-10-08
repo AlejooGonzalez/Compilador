@@ -24,7 +24,7 @@ public class Attribute {
         if (!type.isPrimitive()) {
             Token typeToken = type.getToken();
             if (MainSyntactic.ST.existsClass(typeToken) == null) {
-                throw new SemanticException("El tipo " + typeToken.getLexeme() + " no está declarado", token, token.getLineNumber());
+                throw new SemanticException("El tipo " + typeToken.getLexeme() + " no está declarado", typeToken, typeToken.getLineNumber());
             }
         }
     }

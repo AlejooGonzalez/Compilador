@@ -9,7 +9,7 @@ import SourceManager.SourceManagerImplementation;
 import Syntactic.SyntacticAnalyzer;
 import java.io.IOException;
 
-public class MainSyntactic {
+public class MainSemantic {
     public static SymbolTable ST;
 
     public static void main(String[] args)  {

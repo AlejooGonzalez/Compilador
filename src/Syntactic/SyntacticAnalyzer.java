@@ -5,7 +5,7 @@ import Exceptions.SemanticException;
 import Exceptions.SyntacticException;
 import Lexical.LexicalAnalyzer;
 import Lexical.Token;
-import Main.MainSyntactic;
+import Main.MainSemantic;
 import Semantic.*;
 
 import java.io.IOException;
@@ -62,13 +62,13 @@ public class SyntacticAnalyzer {
             Token name = actualToken;
             match("idClase");
             ConcreteClass c = new ConcreteClass(name, modificador);
-            MainSyntactic.ST.setCurrentClass(c);
+            MainSemantic.ST.setCurrentClass(c);
             Token ancestorName = herenciaOpcional();
-            MainSyntactic.ST.getCurrentClass().setInheritance(ancestorName);
+            MainSemantic.ST.getCurrentClass().setInheritance(ancestorName);
             match("pnt_llaveIzquierda");
             listaMiembros();
             match("pnt_llaveDerecha");
-            MainSyntactic.ST.insertClass(MainSyntactic.ST.getCurrentClass());
+            MainSemantic.ST.insertClass(MainSemantic.ST.getCurrentClass());
     }
 
     private Token herenciaOpcional() throws LexicalException, SyntacticException, IOException {
@@ -171,18 +171,18 @@ public class SyntacticAnalyzer {
         if (firsts.isFirst("argsFormales", actualToken.getTokenType())) {
             Token modifier = modificadorOpcional();
             Method method = new Method(token, modifier ,type);
-            MainSyntactic.ST.setCurrentMethod(method);
+            MainSemantic.ST.setCurrentMethod(method);
             List<Parameter> params = argsFormales();
             for (Parameter p : params) {
-                MainSyntactic.ST.getCurrentMethod().addParameters(p);
+                MainSemantic.ST.getCurrentMethod().addParameters(p);
             }
-            MainSyntactic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
-            MainSyntactic.ST.getCurrentClass().addMethod(method);
+            MainSemantic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
+            MainSemantic.ST.getCurrentClass().addMethod(method);
         } else {
             if (Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")) {
                 Attribute attribute = new Attribute(token,type);
                 match("pnt_puntoYComa");
-                MainSyntactic.ST.getCurrentClass().addAttributes(attribute);
+                MainSemantic.ST.getCurrentClass().addAttributes(attribute);
             } else {
                 throw new SyntacticException("miembroMetodo", actualToken);
             }
@@ -194,13 +194,13 @@ public class SyntacticAnalyzer {
         Token token = actualToken;
         match("idClase");
         Constructor cons = new Constructor(token);
-        MainSyntactic.ST.setCurrentConstructor(cons);
+        MainSemantic.ST.setCurrentConstructor(cons);
         List<Parameter> params = argsFormales();
         for (Parameter p : params) {
             cons.addParameter(p);
         }
         bloque();
-        MainSyntactic.ST.getCurrentClass().addConstructor(cons);
+        MainSemantic.ST.getCurrentClass().addConstructor(cons);
     }
 
     private Type tipoMetodo() throws LexicalException, SyntacticException, IOException {
@@ -248,7 +248,7 @@ public class SyntacticAnalyzer {
             match("op_asignacion");
             expresionCompuesta();
             match("pnt_puntoYComa");
-            MainSyntactic.ST.getCurrentClass().addAttributes(attribute);
+            MainSemantic.ST.getCurrentClass().addAttributes(attribute);
         } else if (firsts.isFirst("miembroMetodo", actualToken.getTokenType())) {
             miembroMetodo(token,type);
         } else {
@@ -268,13 +268,13 @@ public class SyntacticAnalyzer {
             Token methodName = actualToken;
             match("idMetVar");
             Method method = new Method(methodName,modifier,new PrimitiveType(new Token("pr_void", "void", actualToken.getLineNumber())));
-            MainSyntactic.ST.setCurrentMethod(method);
+            MainSemantic.ST.setCurrentMethod(method);
             List<Parameter> params = argsFormales();
             for (Parameter p : params) {
                 method.addParameters(p);
             }
-            MainSyntactic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
-            MainSyntactic.ST.getCurrentClass().addMethod(method);
+            MainSemantic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
+            MainSemantic.ST.getCurrentClass().addMethod(method);
         } else {
             throw new SyntacticException("metodoAtributo", actualToken);
         }
@@ -286,13 +286,13 @@ public class SyntacticAnalyzer {
         Token name = actualToken;
         match("idMetVar");
         Method method = new Method(name, modifier, type);
-        MainSyntactic.ST.setCurrentMethod(method);
+        MainSemantic.ST.setCurrentMethod(method);
         List<Parameter> params = argsFormales();
         for (Parameter p : params) {
             method.addParameters(p);
         }
-        MainSyntactic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
-        MainSyntactic.ST.getCurrentClass().addMethod(method);
+        MainSemantic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
+        MainSemantic.ST.getCurrentClass().addMethod(method);
     }
 
     private void argBloque() throws LexicalException, SyntacticException, IOException {

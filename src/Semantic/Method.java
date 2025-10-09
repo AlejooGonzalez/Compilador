@@ -2,7 +2,7 @@ package Semantic;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
-import Main.MainSyntactic;
+import Main.MainSemantic;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -55,7 +55,7 @@ public class Method {
     public void itIsWellStated() throws SemanticException {
         if (returnType != null && !returnType.isPrimitive()) {
             Token typeToken = returnType.getToken();
-            if (MainSyntactic.ST.existsClass(typeToken) == null) {
+            if (MainSemantic.ST.existsClass(typeToken) == null) {
                 throw new SemanticException("El tipo de retorno " + typeToken.getLexeme() + " no está declarado", returnType.getToken(), returnType.getToken().getLineNumber());
             }
         } else {

@@ -1,7 +1,7 @@
 package Semantic;
 import Exceptions.SemanticException;
 import Lexical.Token;
-import Main.MainSyntactic;
+import Main.MainSemantic;
 
 public class Attribute {
     private Token token;
@@ -23,7 +23,7 @@ public class Attribute {
     public void itIsWellStated() throws SemanticException {
         if (!type.isPrimitive()) {
             Token typeToken = type.getToken();
-            if (MainSyntactic.ST.existsClass(typeToken) == null) {
+            if (MainSemantic.ST.existsClass(typeToken) == null) {
                 throw new SemanticException("El tipo " + typeToken.getLexeme() + " no está declarado", typeToken, typeToken.getLineNumber());
             }
         }

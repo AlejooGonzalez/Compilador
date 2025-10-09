@@ -2,7 +2,7 @@ package Semantic;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
-import Main.MainSyntactic;
+import Main.MainSemantic;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -70,7 +70,7 @@ public class ConcreteClass {
         public void itIsWellStated() throws SemanticException {
             if(inheritance!=null) {
                 if (!Objects.equals(inheritance.getLexeme(), "Object")) {
-                    ConcreteClass fatherClass = MainSyntactic.ST.existsClass(inheritance);
+                    ConcreteClass fatherClass = MainSemantic.ST.existsClass(inheritance);
                     if (fatherClass == null) {
                         throw new SemanticException("La clase " + inheritance.getLexeme() + " no está declarada", inheritance, inheritance.getLineNumber());
                     } else {
@@ -122,9 +122,9 @@ public class ConcreteClass {
     public void consolidate() throws SemanticException {
             if(!consolidated) {
                 if (inheritance == null) {
-                    this.inheritance = MainSyntactic.ST.getClasses().get("Object").getToken();
+                    this.inheritance = MainSemantic.ST.getClasses().get("Object").getToken();
                 } else {
-                    ConcreteClass father = MainSyntactic.ST.existsClass(inheritance);
+                    ConcreteClass father = MainSemantic.ST.existsClass(inheritance);
                     father.consolidate();
                     consolidateAttributes(father);
                     consolidateMethod(father);
@@ -147,7 +147,7 @@ public class ConcreteClass {
     private void checkCircularInheritance() throws SemanticException {
             ConcreteClass ancestor = this;
             while (ancestor.getInheritance() != null) {
-                ConcreteClass father = MainSyntactic.ST.existsClass(ancestor.getInheritance());
+                ConcreteClass father = MainSemantic.ST.existsClass(ancestor.getInheritance());
                 if (father == null)
                     break;
                 if (father == this) {
@@ -176,11 +176,9 @@ public class ConcreteClass {
                     fatherModifier = fatherMethod.getModifier();
                     fatherModifierType = fatherModifier.getTokenType();
                 }
-
                 if (fatherModifierType.equals("pr_final")) {
                     throw new SemanticException("El método final '" + fatherMethod.getName() + "' no puede ser redefinido en " + this.getName(), thisMethod.getToken(), thisMethod.getToken().getLineNumber());
                 }
-
                 if (fatherModifierType.equals("pr_static")) {
                     throw new SemanticException("El método static '" + fatherMethod.getName() + "' no puede ser redefinido en " + this.getName(), thisMethod.getToken(), thisMethod.getToken().getLineNumber());
                 }

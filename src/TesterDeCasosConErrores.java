@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 
-import Main.MainSyntactic;
+import Main.MainSemantic;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class TesterDeCasosConErrores {
     
     //TODO: el tipo de esta variable init tiene que ser la clase que tiene el main
-    private static final MainSyntactic init = null;
+    private static final MainSemantic init = null;
     
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;

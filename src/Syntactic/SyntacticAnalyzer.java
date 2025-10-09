@@ -87,19 +87,20 @@ public class SyntacticAnalyzer {
     }
 
     /*
-    private void interfaz() throws LexicalException, SyntacticException, IOException {
+    private void interfaz() throws LexicalException, SyntacticException, IOException, SemanticException {
         match("pr_interface");
         Token name = actualToken;
         match("idClase");
         ConcreteClass i = new ConcreteClass(name);
-        MainSyntactic.ST.setCurrentClass(i);
+        MainSemantic.ST.setCurrentClass(i);
         herenciaOpcionalInterfaz();
         match("pnt_llaveIzquierda");
         listaMiembrosInterfaz();
         match("pnt_llaveDerecha");
-        MainSyntactic.ST.insertClass(MainSyntactic.ST.getCurrentClass());
+        MainSemantic.ST.insertClass(MainSemantic.ST.getCurrentClass());
     }
-*/
+    */
+
     private void listaMiembrosInterfaz() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("miembroInterfaz", actualToken.getTokenType())) {
             miembroInterfaz();
@@ -293,11 +294,6 @@ public class SyntacticAnalyzer {
         }
         MainSemantic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
         MainSemantic.ST.getCurrentClass().addMethod(method);
-    }
-
-    private void argBloque() throws LexicalException, SyntacticException, IOException {
-        argsFormales();
-        bloqueOpcional();
     }
 
     private List<Parameter> argsFormales() throws LexicalException, SyntacticException, IOException {

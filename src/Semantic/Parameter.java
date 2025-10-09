@@ -28,7 +28,7 @@ public class Parameter {
     public void itIsWellStated() throws SemanticException {
         if (!type.isPrimitive()) {
             Token typeToken = type.getToken();
-            if (MainSemantic.ST.existsClass(typeToken) == null) {
+            if (MainSemantic.ST.itIsAnExistingClass(typeToken) == null) {
                 throw new SemanticException("El tipo de retorno " + typeToken.getLexeme() + " no está declarado", typeToken, typeToken.getLineNumber());
             }
         }

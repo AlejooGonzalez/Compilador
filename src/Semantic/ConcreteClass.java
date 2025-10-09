@@ -15,8 +15,9 @@ public class ConcreteClass {
         private HashMap<String, Method> methods;
         private HashMap<String, Attribute> attributes;
         private boolean consolidated = false;
+        private boolean checkingCircular = false;
 
-        public ConcreteClass(Token token, Token modifier) {
+    public ConcreteClass(Token token, Token modifier) {
             this.token = token;
             this.modifier = modifier;
             this.methods = new HashMap<>();
@@ -35,7 +36,7 @@ public class ConcreteClass {
             if (!attributes.containsKey(attribute.getName())) {
                 attributes.put(attribute.getName(), attribute);
             } else {
-                throw new SemanticException("El atributo"+attribute.getToken()+"ya existe", attribute.getToken(), attribute.getToken().getLineNumber());
+                throw new SemanticException("El atributo "+attribute.getToken()+" ya existe", attribute.getToken(), attribute.getToken().getLineNumber());
             }
         }
 
@@ -70,7 +71,7 @@ public class ConcreteClass {
         public void itIsWellStated() throws SemanticException {
             if(inheritance!=null) {
                 if (!Objects.equals(inheritance.getLexeme(), "Object")) {
-                    ConcreteClass fatherClass = MainSemantic.ST.existsClass(inheritance);
+                    ConcreteClass fatherClass = MainSemantic.ST.itIsAnExistingClass(inheritance);
                     if (fatherClass == null) {
                         throw new SemanticException("La clase " + inheritance.getLexeme() + " no está declarada", inheritance, inheritance.getLineNumber());
                     } else {
@@ -124,7 +125,7 @@ public class ConcreteClass {
                 if (inheritance == null) {
                     this.inheritance = MainSemantic.ST.getClasses().get("Object").getToken();
                 } else {
-                    ConcreteClass father = MainSemantic.ST.existsClass(inheritance);
+                    ConcreteClass father = MainSemantic.ST.itIsAnExistingClass(inheritance);
                     father.consolidate();
                     consolidateAttributes(father);
                     consolidateMethod(father);
@@ -145,17 +146,19 @@ public class ConcreteClass {
     }
 
     private void checkCircularInheritance() throws SemanticException {
-            ConcreteClass ancestor = this;
-            while (ancestor.getInheritance() != null) {
-                ConcreteClass father = MainSemantic.ST.existsClass(ancestor.getInheritance());
-                if (father == null)
-                    break;
-                if (father == this) {
-                    throw new SemanticException("Herencia circular detectada en clase " + this.getName(), inheritance, inheritance.getLineNumber());
-                }
-                ancestor = father;
+        if (checkingCircular) {
+            throw new SemanticException("Herencia circular detectada en clase " + this.getName(), inheritance, inheritance.getLineNumber());
+        }
+        checkingCircular = true;
+        if (inheritance != null) {
+            ConcreteClass father = MainSemantic.ST.itIsAnExistingClass(inheritance);
+            if (father != null) {
+                father.checkCircularInheritance();
             }
         }
+
+        checkingCircular = false;
+    }
 
     public int getAttributeLine(String attributeName) throws SemanticException {
             Attribute a = attributes.get(attributeName);

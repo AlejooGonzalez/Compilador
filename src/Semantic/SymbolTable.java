@@ -138,7 +138,7 @@ public class SymbolTable {
         }
     }
 
-    public ConcreteClass existsClass(Token className){
+    public ConcreteClass itIsAnExistingClass(Token className){
         ConcreteClass retorno = null;
         if(classes.get(className.getLexeme())!=null){
             retorno = classes.get(className.getLexeme());

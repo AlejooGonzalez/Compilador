@@ -7,6 +7,9 @@ import Lexical.LexicalAnalyzer;
 import Lexical.Token;
 import Main.MainSemantic;
 import Semantic.*;
+import Semantic.Types.PrimitiveType;
+import Semantic.Types.ReferenceType;
+import Semantic.Types.Type;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -3,6 +3,7 @@ package Semantic;
 import Exceptions.SemanticException;
 import Lexical.Token;
 import Main.MainSemantic;
+import Semantic.Types.Type;
 
 public class Parameter {
     private Token token;

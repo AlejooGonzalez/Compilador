@@ -3,6 +3,7 @@ package Semantic;
 import Exceptions.SemanticException;
 import Lexical.Token;
 import Main.MainSemantic;
+import Semantic.Types.Type;
 
 import java.util.HashMap;
 import java.util.Objects;

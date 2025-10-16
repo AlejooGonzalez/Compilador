@@ -1,0 +1,19 @@
+package Semantic.Ast.Expressions;
+
+import Lexical.Token;
+import Semantic.Types.Type;
+
+public class UnaryExpressionNode extends CompoundExpressionNode {
+    private OperatorNode rightSide;
+    private Token operator;
+
+    public UnaryExpressionNode(OperatorNode rightSide, Token operator) {
+        this.rightSide = rightSide;
+        this.operator = operator;
+    }
+
+    @Override
+    public Type check() {
+        return null;
+    }
+}

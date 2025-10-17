@@ -226,6 +226,12 @@ public class ConcreteClass {
         public void setConstructor(Constructor token){
             constructor = token;
         }
+
+    public void sentenceCheck() throws SemanticException {
+        for(Method m : methods.values()){
+            m.sentenceCheck();
+        }
     }
+}
 
 

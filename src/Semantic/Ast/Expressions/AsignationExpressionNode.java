@@ -1,5 +1,6 @@
 package Semantic.Ast.Expressions;
 
+import Exceptions.SemanticException;
 import Lexical.Token;
 import Semantic.Types.Type;
 
@@ -15,7 +16,5 @@ public class AsignationExpressionNode extends ExpressionNode {
     }
 
     @Override
-    public Type check() {
-        return null;
-    }
+    public Type check() throws SemanticException { return null; }
 }

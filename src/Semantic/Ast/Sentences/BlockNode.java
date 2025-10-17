@@ -15,6 +15,7 @@ public class BlockNode extends SentenceNode {
     public void addSentence(SentenceNode sentence) {
         sentences.add(sentence);
     }
+
     public List<SentenceNode> getSentences() {
         return sentences;
     }

@@ -134,6 +134,12 @@ public class SymbolTable {
         }
     }
 
+    public void sentenceCheck() throws SemanticException {
+        for(ConcreteClass c : classes.values()){
+            c.sentenceCheck();
+        }
+    }
+
     public void consolidate() throws SemanticException {
         for (ConcreteClass c : classes.values()) {
             c.consolidate();

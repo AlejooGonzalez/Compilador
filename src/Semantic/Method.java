@@ -3,6 +3,7 @@ package Semantic;
 import Exceptions.SemanticException;
 import Lexical.Token;
 import Main.MainSemantic;
+import Semantic.Ast.Sentences.BlockNode;
 import Semantic.Types.Type;
 
 import java.util.HashMap;
@@ -14,6 +15,7 @@ public class Method {
     private Type returnType;
     private HashMap<String,Parameter> parameters;
     private boolean hasBody;
+    private BlockNode block;
 
     public Method(Token token, Token modifier, Type returnType){
         this.token = token;
@@ -114,5 +116,14 @@ public class Method {
             }
         }
         return retorno;
+    }
+
+    public void sentenceCheck() throws SemanticException {
+        if(block != null)
+            block.check();
+    }
+
+    public void setBlockNode(BlockNode block) {
+        this.block = block;
     }
 }

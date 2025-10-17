@@ -1,5 +1,6 @@
 package Semantic.Types;
 
+import Exceptions.SemanticException;
 import Lexical.Token;
 
 public class ReferenceType implements Type{
@@ -29,5 +30,10 @@ public class ReferenceType implements Type{
 
     public boolean isPrimitive() {
         return false;
+    }
+
+    @Override
+    public void itsCompatible(String prBoolean) throws SemanticException {
+
     }
 }

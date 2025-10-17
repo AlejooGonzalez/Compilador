@@ -14,6 +14,30 @@ public class IfNode extends SentenceNode{
         this.elseBody = elseBody;
     }
 
+    public ExpressionNode getCondition() {
+        return condition;
+    }
+
+    public SentenceNode getIfBody() {
+        return ifBody;
+    }
+
+    public SentenceNode getElseBody() {
+        return elseBody;
+    }
+
+    public void setCondition(ExpressionNode condition) {
+        this.condition = condition;
+    }
+
+    public void setIfBody(SentenceNode ifBody) {
+        this.ifBody = ifBody;
+    }
+
+    public void setElseBody(SentenceNode elseBody) {
+        this.elseBody = elseBody;
+    }
+
     @Override
     public void check() throws SemanticException {
         condition.check().itsCompatible("pr_boolean");

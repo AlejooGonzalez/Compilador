@@ -5,10 +5,10 @@ import Semantic.Ast.Expressions.ExpressionNode;
 import Semantic.Types.IntType;
 import Semantic.Types.Type;
 
-public class IntLiteralNode extends ExpressionNode {
+public class NullLiteralNode extends ExpressionNode {
     private Token token;
 
-    public IntLiteralNode(Token token) {
+    public NullLiteralNode(Token token) {
         this.token = token;
     }
 

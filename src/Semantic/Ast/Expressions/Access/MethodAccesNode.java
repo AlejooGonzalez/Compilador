@@ -1,4 +1,4 @@
-package Semantic.Ast.Expressions.Literals;
+package Semantic.Ast.Expressions.Access;
 
 import Lexical.Token;
 import Semantic.Ast.Expressions.ExpressionNode;
@@ -18,6 +18,16 @@ public class MethodAccesNode extends OperatorNode {
 
     @Override
     public Type check() {
+        return null;
+    }
+
+    @Override
+    public int getLine() {
+        return 0;
+    }
+
+    @Override
+    public Token getToken() {
         return null;
     }
 }

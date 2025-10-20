@@ -33,7 +33,18 @@ public class ReferenceType implements Type{
     }
 
     @Override
-    public void itsCompatible(String prBoolean) throws SemanticException {
-
+    public boolean itsCompatible(String prBoolean) throws SemanticException {
+        if(!prBoolean.equals(token.getLexeme())){
+            throw new SemanticException("Asignacion de distinto tipo", token, token.getLineNumber());
+        } else {
+            return true;
+        }
     }
+
+    @Override
+    public boolean conformsWith(Type other) {
+        return false;
+    }
+
+
 }

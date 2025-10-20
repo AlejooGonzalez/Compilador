@@ -14,6 +14,17 @@ public class UnaryExpressionNode extends CompoundExpressionNode {
 
     @Override
     public Type check() {
+        Type type = rightSide.check();
+        return type;
+    }
+
+    @Override
+    public int getLine() {
+        return 0;
+    }
+
+    @Override
+    public Token getToken() {
         return null;
     }
 }

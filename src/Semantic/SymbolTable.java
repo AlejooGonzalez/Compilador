@@ -3,6 +3,7 @@ package Semantic;
 import Exceptions.SemanticException;
 import Exceptions.SyntacticException;
 import Lexical.Token;
+import Semantic.Ast.Sentences.BlockNode;
 import Semantic.Types.PrimitiveType;
 import Semantic.Types.ReferenceType;
 
@@ -13,6 +14,7 @@ public class SymbolTable {
     private Method currentMethod;
     private ConcreteClass currentClass;
     private Constructor currentConstructor;
+    private BlockNode currentBlock;
 
     public SymbolTable() throws SyntacticException, SemanticException {
         classes = new HashMap<>();
@@ -118,6 +120,14 @@ public class SymbolTable {
 
     public Constructor getCurrentConstructor() {
         return currentConstructor;
+    }
+
+    public BlockNode getCurrentBlock() {
+        return currentBlock;
+    }
+
+    public void setCurrentBlock(BlockNode b) {
+        currentBlock = b;
     }
 
     public void insertClass(ConcreteClass currentClass) throws SemanticException {

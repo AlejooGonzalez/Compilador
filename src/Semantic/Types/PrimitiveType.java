@@ -33,9 +33,16 @@ public class PrimitiveType implements Type{
     }
 
     @Override
-    public void itsCompatible(String prBoolean) throws SemanticException {
-        if(!prBoolean.equals(token.getTokenType())){
-            throw new SemanticException("Type mismatch", token, token.getLineNumber());
+    public boolean itsCompatible(String string) throws SemanticException {
+        if(!string.equals(token.getTokenType())){
+            throw new SemanticException("Asignacion de distinto tipo", token, token.getLineNumber());
+        } else {
+            return true;
         }
+    }
+
+    @Override
+    public boolean conformsWith(Type other) {
+        return other instanceof  PrimitiveType;
     }
 }

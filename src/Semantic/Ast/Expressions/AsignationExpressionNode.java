@@ -16,5 +16,15 @@ public class AsignationExpressionNode extends ExpressionNode {
     }
 
     @Override
-    public Type check() throws SemanticException { return null; }
+    public Type check() { return null; }
+
+    @Override
+    public int getLine() {
+        return 0;
+    }
+
+    @Override
+    public Token getToken() {
+        return null;
+    }
 }

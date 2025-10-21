@@ -1,17 +1,19 @@
 package Semantic.Ast.Expressions.Access;
 
 import Lexical.Token;
+import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Expressions.ExpressionNode;
-import Semantic.Ast.Expressions.OperatorNode;
 import Semantic.Types.Type;
 
 import java.util.List;
 
-public class MethodAccesNode extends OperatorNode {
+public class MethodAccessNode extends AccessNode {
     private List<ExpressionNode> currentParamList;
     private Token tokenIdMetVar;
+    private ChainedNode chaining;
 
-    public MethodAccesNode(Token tokenIdMetVar, List<ExpressionNode> currentParamList) {
+
+    public MethodAccessNode(Token tokenIdMetVar, List<ExpressionNode> currentParamList) {
         this.tokenIdMetVar = tokenIdMetVar;
         this.currentParamList = currentParamList;
     }
@@ -29,5 +31,9 @@ public class MethodAccesNode extends OperatorNode {
     @Override
     public Token getToken() {
         return null;
+    }
+
+    public void setChaining(ChainedNode chaining) {
+        this.chaining = chaining;
     }
 }

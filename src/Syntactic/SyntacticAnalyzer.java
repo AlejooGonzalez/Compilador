@@ -7,12 +7,12 @@ import Lexical.LexicalAnalyzer;
 import Lexical.Token;
 import Main.MainSemantic;
 import Semantic.*;
+import Semantic.Ast.Chained.ChainedCallNode;
+import Semantic.Ast.Chained.ChainedNode;
+import Semantic.Ast.Chained.ChainedVariableNode;
+import Semantic.Ast.Expressions.*;
 import Semantic.Ast.Expressions.Access.*;
-import Semantic.Ast.Expressions.BinaryExpressionNode;
-import Semantic.Ast.Expressions.EmptyExpression;
-import Semantic.Ast.Expressions.ExpressionNode;
 import Semantic.Ast.Expressions.Literals.*;
-import Semantic.Ast.Expressions.OperatorNode;
 import Semantic.Ast.Sentences.*;
 import Semantic.Types.PrimitiveType;
 import Semantic.Types.ReferenceType;
@@ -360,9 +360,11 @@ public class SyntacticAnalyzer {
     }
 
     private BlockNode bloqueOpcional() throws LexicalException, SyntacticException, IOException {
+        BlockNode block;
         if (firsts.isFirst("bloque", actualToken.getTokenType())){
+            block = bloque();
             MainSemantic.ST.getCurrentMethod().setHasBlock(true);
-            MainSemantic.ST.getCurrentMethod().setBlockNode(bloque());
+            MainSemantic.ST.getCurrentMethod().setBlockNode(block);
         } else {
             if(Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")){
                 match("pnt_puntoYComa");
@@ -372,7 +374,7 @@ public class SyntacticAnalyzer {
                 throw new SyntacticException("bloqueOpcional", actualToken);
             }
         }
-        return bloque();
+        return block;
     }
 
     private BlockNode bloque() throws LexicalException, SyntacticException, IOException {
@@ -381,6 +383,7 @@ public class SyntacticAnalyzer {
             match("pnt_llaveIzquierda");
             listaSentencias(block);
             match("pnt_llaveDerecha");
+            MainSemantic.ST.setCurrentBlock(block);
         }
         return block;
     }
@@ -398,8 +401,9 @@ public class SyntacticAnalyzer {
             match("pnt_puntoYComa");
             return new EmptySentenceNode();
         } else if (firsts.isFirst("asignacionLlamada", actualToken.getTokenType())) {
-            asignacionLlamada(); //HACER
+            AssignCallNode assignCallNode = new AssignCallNode(actualToken, asignacionLlamada());
             match("pnt_puntoYComa");
+            return assignCallNode;
         } else if (firsts.isFirst("varLocal", actualToken.getTokenType())) {
             LocalVarNode varNode = varLocal();
             match("pnt_puntoYComa");
@@ -425,9 +429,9 @@ public class SyntacticAnalyzer {
         return new EmptySentenceNode();
     }
 
-    private void asignacionLlamada() throws LexicalException, SyntacticException, IOException {
+    private ExpressionNode asignacionLlamada() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("expresion", actualToken.getTokenType())) {
-            expresion();
+            return expresion();
         } else {
             throw  new SyntacticException("asignacionLlamada", actualToken);
         }
@@ -498,12 +502,13 @@ public class SyntacticAnalyzer {
     }
 
     private ExpressionNode expresionAux(ExpressionNode exp) throws LexicalException, SyntacticException, IOException {
+        ExpressionNode expNode = null;
         if (firsts.isFirst("operadorAsignacion", actualToken.getTokenType())) {
             Token opToken = actualToken;
             operadorAsignacion();
-            //return new AssignationNode(exp, expresionCompuesta(), opToken);
+            expNode = new AssignationExpressionNode(exp, expresionCompuesta(), opToken);
         } else { }
-        return exp; //PARCHE
+        return expNode;
     }
 
     private void forPrincipal() throws LexicalException, SyntacticException, IOException {
@@ -609,8 +614,10 @@ public class SyntacticAnalyzer {
 
     private ExpressionNode expresionBasica() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("operadorUnario", actualToken.getTokenType())) {
+            Token token = actualToken;
             operadorUnario();
-            operando();
+            OperatorNode opNode = operando();
+            return new UnaryExpressionNode(opNode, token);
         } else {
             if (firsts.isFirst("operando", actualToken.getTokenType())) {
                 return operando();
@@ -618,7 +625,6 @@ public class SyntacticAnalyzer {
                 throw new SyntacticException("expresionBasica", actualToken);
             }
         }
-        return new EmptyExpression();
     }
 
     private void operadorUnario() throws SyntacticException, LexicalException, IOException {
@@ -633,21 +639,20 @@ public class SyntacticAnalyzer {
         }
     }
 
-    private ExpressionNode operando() throws LexicalException, SyntacticException, IOException {
+    private OperatorNode operando() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("primitivo", actualToken.getTokenType())) {
             return primitivo();
         } else {
             if (firsts.isFirst("referencia", actualToken.getTokenType())) {
-                referencia();
+                return referencia();
             } else {
                 throw new SyntacticException("operando", actualToken);
             }
         }
-        return new EmptyExpression();
     }
 
-    private ExpressionNode primitivo() throws SyntacticException, LexicalException, IOException {
-        ExpressionNode literal;
+    private LiteralNode primitivo() throws SyntacticException, LexicalException, IOException {
+        LiteralNode literal;
         switch (actualToken.getTokenType()) {
             case "pr_true" -> {
                 literal = new BooleanLiteralNode(actualToken);
@@ -658,9 +663,8 @@ public class SyntacticAnalyzer {
                 match("pr_false");
             }
             case "intLiteral" -> {
-                IntLiteralNode exp =  new IntLiteralNode(actualToken);
+                literal =  new IntLiteralNode(actualToken);
                 match("intLiteral");
-                return exp;
             }
             case "charLiteral" -> {
                 literal = new CharLiteralNode(actualToken);
@@ -676,26 +680,37 @@ public class SyntacticAnalyzer {
         return literal;
     }
 
-    private void referencia() throws LexicalException, SyntacticException, IOException {
+    private AccessNode referencia() throws LexicalException, SyntacticException, IOException {
+        AccessNode node;
         if (firsts.isFirst("primario", actualToken.getTokenType())) {
-            primario();
-            referenciaTerminal();
+            node = primario();
+            node.setChaining(referenciaTerminal());
+            return node;
         } else {
             throw new SyntacticException("referencia", actualToken);
         }
     }
 
-    private void referenciaTerminal() throws LexicalException, SyntacticException, IOException {
+    private ChainedNode referenciaTerminal() throws LexicalException, SyntacticException, IOException {
+        ChainedNode ret = null;
         if (actualToken.getTokenType().equals("pnt_punto")) {
             match("pnt_punto");
+            Token token = actualToken;
             match("idMetVar");
-            encadenadoVarMetodo();
-            referenciaTerminal();
+            List<ExpressionNode> opParameters = encadenadoVarMetodo();
+            if(opParameters != null){
+                ret = new ChainedCallNode(token);
+                ret.setChaining(referenciaTerminal());
+            } else {
+                ret = new ChainedVariableNode(token);
+                ret.setChaining(referenciaTerminal());
+            }
         } else { }
+        return ret;
     }
 
-    private OperatorNode primario() throws LexicalException, SyntacticException, IOException {
-        OperatorNode operator;
+    private AccessNode primario() throws LexicalException, SyntacticException, IOException {
+        AccessNode operator;
         switch (actualToken.getTokenType()) {
             case "pr_this" -> {
                     operator = new thisAccessNode(actualToken);
@@ -723,7 +738,7 @@ public class SyntacticAnalyzer {
         return operator;
     }
 
-    private OperatorNode accesoVarMetodo(Token tokenIdMetVar) throws LexicalException, SyntacticException, IOException {
+    private AccessNode accesoVarMetodo(Token tokenIdMetVar) throws LexicalException, SyntacticException, IOException {
             if (actualToken.getTokenType().equals("idMetVar")) {
             match("idMetVar");
             return argsAux(tokenIdMetVar);
@@ -732,10 +747,10 @@ public class SyntacticAnalyzer {
         }
     }
 
-    private OperatorNode argsAux(Token tokenIdMetVar) throws LexicalException, SyntacticException, IOException {
+    private AccessNode argsAux(Token tokenIdMetVar) throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("argsActuales", actualToken.getTokenType())) {
             List<ExpressionNode> currentParamList = argsActuales();
-            return new MethodAccesNode(tokenIdMetVar, currentParamList);
+            return new MethodAccessNode(tokenIdMetVar, currentParamList);
         } else {
             return new VarAccessNode(tokenIdMetVar);
         }
@@ -752,7 +767,7 @@ public class SyntacticAnalyzer {
 
     private ExpressionParenthesesAccess expresionParentizada() throws LexicalException, SyntacticException, IOException {
         match("pnt_parentesisIzquierdo");
-        ExpressionNode expression =expresion();
+        ExpressionNode expression = expresion();
         match("pnt_parentesisDerecho");
         return new ExpressionParenthesesAccess(expression);
     }
@@ -797,10 +812,12 @@ public class SyntacticAnalyzer {
         return paramList;
     }
 
-    private void encadenadoVarMetodo() throws LexicalException, SyntacticException, IOException {
+    private List<ExpressionNode> encadenadoVarMetodo() throws LexicalException, SyntacticException, IOException {
+        List<ExpressionNode> ret = null;
         if (firsts.isFirst("argsActuales", actualToken.getTokenType())) {
-            argsActuales();
+            ret = argsActuales();
         } else { }
+        return ret;
     }
 }
 

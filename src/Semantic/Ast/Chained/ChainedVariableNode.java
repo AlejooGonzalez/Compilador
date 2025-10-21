@@ -7,17 +7,19 @@ import java.util.List;
 
 public class ChainedVariableNode extends ChainedNode {
     private Token token;
-    private List<ExpressionNode> parameters;
-    private ChainedNode cad;
+    private ChainedNode chaining;
 
-    public ChainedVariableNode(Token token, List<ExpressionNode> parameters, ChainedNode cad) {
+    public ChainedVariableNode(Token token) {
         this.token = token;
-        this.parameters = parameters;
-        this.cad = cad;
     }
 
     @Override
     public Type check(Type t) {
         return null;
+    }
+
+    @Override
+    public void setChaining(ChainedNode chaining) {
+        this.chaining = chaining;
     }
 }

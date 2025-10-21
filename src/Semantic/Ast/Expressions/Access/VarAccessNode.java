@@ -2,22 +2,14 @@ package Semantic.Ast.Expressions.Access;
 
 import Lexical.Token;
 import Semantic.Ast.Chained.ChainedNode;
-import Semantic.Ast.Expressions.ExpressionNode;
-import Semantic.ConcreteClass;
 import Semantic.Types.Type;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ConstructorAccessNode extends AccessNode {
+public class VarAccessNode extends AccessNode {
     private Token token;
-    private ConcreteClass constructorClass;
-    private List<ExpressionNode> arguments;
     private ChainedNode chaining;
 
-    public ConstructorAccessNode(Token token) {
+    public VarAccessNode(Token token) {
         this.token = token;
-        arguments = new ArrayList<>();
     }
 
     @Override
@@ -33,10 +25,6 @@ public class ConstructorAccessNode extends AccessNode {
     @Override
     public Token getToken() {
         return null;
-    }
-
-    public void setArguments(List<ExpressionNode> arguments) {
-        this.arguments = arguments;
     }
 
     public void setChaining(ChainedNode chaining) {

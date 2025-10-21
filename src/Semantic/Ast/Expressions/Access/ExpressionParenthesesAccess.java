@@ -1,12 +1,13 @@
 package Semantic.Ast.Expressions.Access;
 
 import Lexical.Token;
+import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Expressions.ExpressionNode;
-import Semantic.Ast.Expressions.OperatorNode;
 import Semantic.Types.Type;
 
-public class ExpressionParenthesesAccess extends OperatorNode {
+public class ExpressionParenthesesAccess extends AccessNode {
     ExpressionNode expression;
+    private ChainedNode chaining;
 
     public ExpressionParenthesesAccess(ExpressionNode expression) {
         this.expression = expression;
@@ -25,5 +26,9 @@ public class ExpressionParenthesesAccess extends OperatorNode {
     @Override
     public Token getToken() {
         return null;
+    }
+
+    public void setChaining(ChainedNode chaining) {
+        this.chaining = chaining;
     }
 }

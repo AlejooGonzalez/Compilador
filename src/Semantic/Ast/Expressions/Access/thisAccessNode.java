@@ -4,13 +4,13 @@ import Lexical.Token;
 import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Types.Type;
 
-public class StringLiteralAccessNode extends AccessNode {
-    private Token token;
+public class thisAccessNode extends AccessNode {
+    Token tokenThis;
     private ChainedNode chaining;
 
 
-    public StringLiteralAccessNode(Token token) {
-        this.token = token;
+    public thisAccessNode(Token tokenThis) {
+        this.tokenThis = tokenThis;
     }
 
     @Override

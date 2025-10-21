@@ -2,10 +2,11 @@ package Semantic.Ast.Expressions.Literals;
 
 import Lexical.Token;
 import Semantic.Ast.Expressions.ExpressionNode;
+import Semantic.Ast.Expressions.OperatorNode;
 import Semantic.Types.IntType;
 import Semantic.Types.Type;
 
-public class NullLiteralNode extends ExpressionNode {
+public class NullLiteralNode extends LiteralNode {
     private Token token;
 
     public NullLiteralNode(Token token) {

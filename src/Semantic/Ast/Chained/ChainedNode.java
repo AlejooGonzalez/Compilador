@@ -4,4 +4,5 @@ import Semantic.Types.Type;
 
 public abstract class ChainedNode {
     abstract public Type check(Type t);
+    abstract public void setChaining(ChainedNode chaining);
 }

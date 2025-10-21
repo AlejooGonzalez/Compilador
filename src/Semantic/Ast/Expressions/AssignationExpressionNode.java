@@ -1,15 +1,14 @@
 package Semantic.Ast.Expressions;
 
-import Exceptions.SemanticException;
 import Lexical.Token;
 import Semantic.Types.Type;
 
-public class AsignationExpressionNode extends ExpressionNode {
-    private CompoundExpressionNode leftSide;
+public class AssignationExpressionNode extends ExpressionNode {
+    private ExpressionNode leftSide;
     private ExpressionNode rightSide;
     private Token token;
 
-    public AsignationExpressionNode(CompoundExpressionNode leftSide, ExpressionNode rightSide, Token token) {
+    public AssignationExpressionNode(ExpressionNode leftSide, ExpressionNode rightSide, Token token) {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
         this.token = token;

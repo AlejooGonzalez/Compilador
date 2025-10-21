@@ -3,7 +3,6 @@ package Semantic.Ast.Sentences;
 import Exceptions.SemanticException;
 import Lexical.Token;
 import Semantic.Ast.Expressions.ExpressionNode;
-import Semantic.Types.BooleanType;
 
 public class WhileNode extends SentenceNode{
     private SentenceNode whileBody;

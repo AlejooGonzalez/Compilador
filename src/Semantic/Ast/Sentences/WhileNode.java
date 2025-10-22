@@ -3,6 +3,7 @@ package Semantic.Ast.Sentences;
 import Exceptions.SemanticException;
 import Lexical.Token;
 import Semantic.Ast.Expressions.ExpressionNode;
+import Semantic.Types.BooleanType;
 
 public class WhileNode extends SentenceNode{
     private SentenceNode whileBody;
@@ -17,7 +18,9 @@ public class WhileNode extends SentenceNode{
 
     @Override
     public void check() throws SemanticException {
-        expression.check().itsCompatible("while");
+        if((expression.check() != null) && !(expression.check().equals(new BooleanType(token.getLineNumber())))){
+            throw new SemanticException("La condicion del while no es de tipo booleano", token, token.getLineNumber());
+        }
         whileBody.check();
     }
 }

@@ -2,6 +2,9 @@ package Semantic.Types;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
+import Semantic.ConcreteClass;
+
+import java.util.HashMap;
 
 public class ReferenceType implements Type{
     private Token token;
@@ -20,7 +23,7 @@ public class ReferenceType implements Type{
         token = tokenType;
     }
 
-    public String getName() {
+    public String getLexeme() {
         return name;
     }
 
@@ -32,7 +35,6 @@ public class ReferenceType implements Type{
         return false;
     }
 
-    @Override
     public boolean itsCompatible(String prBoolean) throws SemanticException {
         if(!prBoolean.equals(token.getLexeme())){
             throw new SemanticException("Asignacion de distinto tipo", token, token.getLineNumber());
@@ -43,8 +45,27 @@ public class ReferenceType implements Type{
 
     @Override
     public boolean conformsWith(Type other) {
+
+        if (!(other instanceof ReferenceType))
+            return false;
+
+        String myName = this.getLexeme();
+        String otherName = other.getLexeme();
+
+        if (myName.equals(otherName))
+            return true;
+
+        HashMap<String, ConcreteClass> classes = Main.MainSemantic.ST.getClasses();
+        ConcreteClass current = classes.get(myName);
+        while (current != null) {
+            Token parentToken = current.getInheritance();
+            if (parentToken == null)
+                break;
+            String parentName = parentToken.getLexeme();
+            if (parentName.equals(otherName))
+                return true;
+            current = classes.get(parentName);
+        }
         return false;
     }
-
-
 }

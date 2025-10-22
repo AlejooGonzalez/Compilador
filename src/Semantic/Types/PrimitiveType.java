@@ -20,7 +20,7 @@ public class PrimitiveType implements Type{
         token = tokenType;
     }
 
-    public String getName() {
+    public String getLexeme() {
         return name;
     }
 
@@ -30,15 +30,6 @@ public class PrimitiveType implements Type{
 
     public boolean isPrimitive(){
         return true;
-    }
-
-    @Override
-    public boolean itsCompatible(String string) throws SemanticException {
-        if(!string.equals(token.getTokenType())){
-            throw new SemanticException("Asignacion de distinto tipo", token, token.getLineNumber());
-        } else {
-            return true;
-        }
     }
 
     @Override

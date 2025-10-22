@@ -2,9 +2,7 @@ package Semantic.Ast.Sentences;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
-import Main.MainSemantic;
 import Semantic.Ast.Expressions.ExpressionNode;
-import Semantic.Types.NullType;
 import Semantic.Types.Type;
 
 public class LocalVarNode extends SentenceNode {
@@ -16,20 +14,21 @@ public class LocalVarNode extends SentenceNode {
         this.token = token;
     }
 
+    /*
     @Override
     public void check() throws SemanticException {
-        if(value.check().equals(new NullType(token.getLineNumber()))){
+        if(value.check() == null){
             throw new SemanticException("variable de tipo nulo no valida", token, token.getLineNumber());
         }
         if(MainSemantic.ST.getCurrentMethod().getParameters().containsKey(token.getLexeme())){
             throw new SemanticException("La variable ya fue declarada en los parametros", token, token.getLineNumber());
         }
+
         if(MainSemantic.ST.getCurrentBlock().getLocalVar(token.getLexeme()) != null){
             throw new SemanticException("Local Var ya declarada", token, token.getLineNumber());
         }
         //FALTA VER SI UNA VARIABLE ESTA EN UN BLOQUE PADRE
-        MainSemantic.ST.getCurrentBlock().addLocalVariables(token.getLexeme(), this);
-    }
+    } */
 
     public Token getToken() {
         return token;
@@ -49,5 +48,10 @@ public class LocalVarNode extends SentenceNode {
 
     public void setTipo(Type type) {
         this.type = type;
+    }
+
+    @Override
+    public void check() throws SemanticException {
+
     }
 }

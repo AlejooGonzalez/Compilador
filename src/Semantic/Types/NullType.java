@@ -7,7 +7,7 @@ public class NullType extends PrimitiveType {
         super(new Token("pr_null","null", line));
     }
 
-    public boolean isSubtypeOf(Type rightType) {
+    public boolean conformsWith(Type rightType) {
         return rightType instanceof NullType;
     }
 }

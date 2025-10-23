@@ -1,8 +1,6 @@
 package Semantic.Ast.Expressions.Literals;
 
 import Lexical.Token;
-import Semantic.Ast.Expressions.ExpressionNode;
-import Semantic.Ast.Expressions.OperatorNode;
 import Semantic.Types.IntType;
 import Semantic.Types.Type;
 
@@ -28,6 +26,6 @@ public class IntLiteralNode extends LiteralNode {
 
     @Override
     public int getLine() {
-        return 0;
+        return token.getLineNumber();
     }
 }

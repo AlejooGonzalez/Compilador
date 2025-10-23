@@ -1,5 +1,6 @@
 package Semantic.Ast.Expressions.Access;
 
+import Exceptions.SemanticException;
 import Lexical.Token;
 import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Expressions.ExpressionNode;
@@ -14,8 +15,12 @@ public class ExpressionParenthesesAccess extends AccessNode {
     }
 
     @Override
-    public Type check() {
-        return null;
+    public Type check() throws SemanticException {
+        if(chaining == null) {
+            return expression.check();
+        } else {
+            return chaining.check(expression.check());
+        }
     }
 
     @Override

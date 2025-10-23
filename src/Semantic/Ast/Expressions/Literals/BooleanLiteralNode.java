@@ -1,9 +1,7 @@
 package Semantic.Ast.Expressions.Literals;
 
 import Lexical.Token;
-import Semantic.Ast.Expressions.ExpressionNode;
-import Semantic.Ast.Expressions.OperatorNode;
-import Semantic.Types.PrimitiveType;
+import Semantic.Types.BooleanType;
 import Semantic.Types.Type;
 
 public class BooleanLiteralNode extends LiteralNode {
@@ -13,19 +11,18 @@ public class BooleanLiteralNode extends LiteralNode {
         this.token = token;
     }
 
-
     @Override
     public Type check() {
-        return new PrimitiveType(token);
+        return new BooleanType(token.getLineNumber());
     }
 
     @Override
     public int getLine() {
-        return 0;
+        return token.getLineNumber();
     }
 
     @Override
     public Token getToken() {
-        return null;
+        return token;
     }
 }

@@ -17,7 +17,7 @@ public class Attribute {
         return token;
     }
 
-    public String getName(){
+    public String getLexeme(){
         return token.getLexeme();
     }
 

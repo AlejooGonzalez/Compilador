@@ -131,10 +131,10 @@ public class SymbolTable {
     }
 
     public void insertClass(ConcreteClass currentClass) throws SemanticException {
-            if (classes.containsKey(currentClass.getName())) {
-                throw new SemanticException("La clase "+currentClass.getName()+" ya existe", currentClass.getToken(), currentClass.getToken().getLineNumber());
+            if (classes.containsKey(currentClass.getLexeme())) {
+                throw new SemanticException("La clase "+currentClass.getLexeme()+" ya existe", currentClass.getToken(), currentClass.getToken().getLineNumber());
             } else {
-                classes.put(currentClass.getName(), currentClass);
+                classes.put(currentClass.getLexeme(), currentClass);
             }
     }
 

@@ -7,15 +7,15 @@ import Semantic.Types.IntType;
 import Semantic.Types.Type;
 
 public class UnaryExpressionNode extends CompoundExpressionNode {
-    private OperatorNode rightSide;
+    private OperandNode rightSide;
     private Token operator;
 
-    public UnaryExpressionNode(OperatorNode rightSide, Token operator) {
+    public UnaryExpressionNode(OperandNode rightSide, Token operator) {
         this.rightSide = rightSide;
         this.operator = operator;
     }
 
-    public UnaryExpressionNode(OperatorNode rightSide) {
+    public UnaryExpressionNode(OperandNode rightSide) {
         this.rightSide = rightSide;
     }
 

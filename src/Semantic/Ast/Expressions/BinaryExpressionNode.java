@@ -2,6 +2,8 @@ package Semantic.Ast.Expressions;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
+import Semantic.Types.BooleanType;
+import Semantic.Types.IntType;
 import Semantic.Types.Type;
 
 public class BinaryExpressionNode extends CompoundExpressionNode {
@@ -15,39 +17,38 @@ public class BinaryExpressionNode extends CompoundExpressionNode {
         this.operator = operator;
     }
 
-/*
     @Override
     public Type check() throws SemanticException {
         Type leftType = leftSide.check();
         Type rightType = rightSide.check();
         if(leftType != null && rightType != null) {
-            if (leftType.equals(new IntType(operator.getLineNumber())) && rightType.equals(new IntType(operator.getLineNumber()))) {
-                if ((operator.getLexeme().equals("+") || operator.getLexeme().equals("-") || operator.getLexeme().equals("*") || operator.getLexeme().equals("/") || operator.getLexeme().equals("%"))) {
+            if (itsInt(leftType) && itsInt(rightType)) {
+                if (aritmeticalOperator()) {
                     return new IntType(operator.getLineNumber());
                 }
-                if (operator.getLexeme().equals("<") || operator.getLexeme().equals(">") || operator.getLexeme().equals("<=") || operator.getLexeme().equals(">=")) {
-                    return new BooleanType(operator.getLineNumber());
-                }
-            }
-            if (leftType.equals(new BooleanType(operator.getLineNumber())) && rightType.equals(new BooleanType(operator.getLineNumber()))) {
-                if (operator.getLexeme().equals("&&") || operator.getLexeme().equals("||")) {
+                if (compareOperator()) {
                     return new BooleanType(operator.getLineNumber());
                 }
             } else {
-                if (leftType.conformsWith(rightType) || rightType.conformsWith(leftType)) { //CHECK ReferenceType?
-                    if (operator.getLexeme().equals("==") || operator.getLexeme().equals("!=")) {
+                if (itsBoolean(leftType) && itsBoolean(rightType)) {
+                    if (logicOperator()) {
                         return new BooleanType(operator.getLineNumber());
+                    }
+                } else {
+                    if (rightType.conformsWith(leftType) || leftType.conformsWith(rightType)) {
+                        if (equalOrDifferentOperator()) {
+                            return new BooleanType(operator.getLineNumber());
+                        }
                     }
                 }
             }
         }
             throw new SemanticException("Expresion Binaria no valida", operator, operator.getLineNumber());
-    } */
-
+    }
 
     @Override
     public int getLine() {
-        return 0;
+        return operator.getLineNumber();
     }
 
     @Override
@@ -55,9 +56,28 @@ public class BinaryExpressionNode extends CompoundExpressionNode {
         return operator;
     }
 
-    @Override
-    public Type check() throws SemanticException {
-        return null;
+    public boolean itsInt(Type type){
+        return type.getLexeme().equals(new IntType(operator.getLineNumber()).getLexeme());
+    }
+
+    public boolean itsBoolean(Type type){
+        return type.getLexeme().equals(new BooleanType(operator.getLineNumber()).getLexeme());
+    }
+
+    public boolean aritmeticalOperator(){
+        return (operator.getLexeme().equals("+") || operator.getLexeme().equals("-") || operator.getLexeme().equals("*") || operator.getLexeme().equals("/") || operator.getLexeme().equals("%"));
+    }
+
+    public boolean compareOperator(){
+        return (operator.getLexeme().equals("<") || operator.getLexeme().equals(">") || operator.getLexeme().equals("<=") || operator.getLexeme().equals(">="));
+    }
+
+    public boolean logicOperator(){
+        return (operator.getLexeme().equals("&&") || operator.getLexeme().equals("||"));
+    }
+
+    public boolean equalOrDifferentOperator(){
+        return (operator.getLexeme().equals("==") || operator.getLexeme().equals("!="));
     }
 }
 

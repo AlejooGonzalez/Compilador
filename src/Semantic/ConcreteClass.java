@@ -33,8 +33,8 @@ public class ConcreteClass {
         }
 
         public void addAttributes(Attribute attribute) throws SemanticException {
-            if (!attributes.containsKey(attribute.getName())) {
-                attributes.put(attribute.getName(), attribute);
+            if (!attributes.containsKey(attribute.getLexeme())) {
+                attributes.put(attribute.getLexeme(), attribute);
             } else {
                 throw new SemanticException("El atributo "+attribute.getToken()+" ya existe", attribute.getToken(), attribute.getToken().getLineNumber());
             }
@@ -49,8 +49,8 @@ public class ConcreteClass {
         }
 
         public void addMethod(Method m) throws SemanticException {
-            if (!methods.containsKey(m.getName())) {
-                methods.put(m.getName(), m);
+            if (!methods.containsKey(m.getLexeme())) {
+                methods.put(m.getLexeme(), m);
             } else {
                 throw new SemanticException("El metodo " + m.getToken() + " ya existe", m.getToken(), m.getToken().getLineNumber());
             }
@@ -64,7 +64,7 @@ public class ConcreteClass {
             return inheritance;
         }
 
-        public String getName() {
+        public String getLexeme() {
             return token.getLexeme();
         }
 
@@ -147,7 +147,7 @@ public class ConcreteClass {
 
     private void checkCircularInheritance() throws SemanticException {
         if (checkingCircular) {
-            throw new SemanticException("Herencia circular detectada en clase " + this.getName(), inheritance, inheritance.getLineNumber());
+            throw new SemanticException("Herencia circular detectada en clase " + this.getLexeme(), inheritance, inheritance.getLineNumber());
         }
         checkingCircular = true;
         if (inheritance != null) {
@@ -163,13 +163,13 @@ public class ConcreteClass {
     public int getAttributeLine(String attributeName) throws SemanticException {
             Attribute a = attributes.get(attributeName);
             if (a == null) {
-                throw new SemanticException("El atributo '" + attributeName + "' no existe en la clase " + getName(), token, token.getLineNumber()); }
+                throw new SemanticException("El atributo '" + attributeName + "' no existe en la clase " + getLexeme(), token, token.getLineNumber()); }
             return a.getToken().getLineNumber();
         }
 
     private void consolidateMethod(ConcreteClass father) throws SemanticException {
         for (Method fatherMethod : father.getMethods().values()) {
-            Method thisMethod = methods.get(fatherMethod.getName());
+            Method thisMethod = methods.get(fatherMethod.getLexeme());
 
             if (thisMethod != null) {
                 Token fatherModifier = null;
@@ -180,26 +180,26 @@ public class ConcreteClass {
                     fatherModifierType = fatherModifier.getTokenType();
                 }
                 if (fatherModifierType.equals("pr_final")) {
-                    throw new SemanticException("El método final '" + fatherMethod.getName() + "' no puede ser redefinido en " + this.getName(), thisMethod.getToken(), thisMethod.getToken().getLineNumber());
+                    throw new SemanticException("El método final '" + fatherMethod.getLexeme() + "' no puede ser redefinido en " + this.getLexeme(), thisMethod.getToken(), thisMethod.getToken().getLineNumber());
                 }
                 if (fatherModifierType.equals("pr_static")) {
-                    throw new SemanticException("El método static '" + fatherMethod.getName() + "' no puede ser redefinido en " + this.getName(), thisMethod.getToken(), thisMethod.getToken().getLineNumber());
+                    throw new SemanticException("El método static '" + fatherMethod.getLexeme() + "' no puede ser redefinido en " + this.getLexeme(), thisMethod.getToken(), thisMethod.getToken().getLineNumber());
                 }
                 boolean fatherIsAbstract = fatherModifierType.equals("pr_abstract");
                 boolean thisClassIsConcrete = (modifier == null) || !modifier.getTokenType().equals("pr_abstract");
 
                 if (fatherIsAbstract && thisClassIsConcrete && thisMethod.sameParameters(fatherMethod) && !thisMethod.getHasBlock()) {
-                    throw new SemanticException("El método abstract '" + fatherMethod.getName() + "' fue redefinido y no tiene cuerpo", thisMethod.getToken(), thisMethod.getToken().getLineNumber());
+                    throw new SemanticException("El método abstract '" + fatherMethod.getLexeme() + "' fue redefinido y no tiene cuerpo", thisMethod.getToken(), thisMethod.getToken().getLineNumber());
                 }
                 if (fatherMethod.getReturnType() != null && thisMethod.getReturnType() != null) {
                     boolean differentReturnType = !thisMethod.getReturnType().getToken().getLexeme().equals(fatherMethod.getReturnType().getToken().getLexeme());
                     boolean differentParams = !thisMethod.sameParameters(fatherMethod);
 
                     if (differentReturnType) {
-                        throw new SemanticException("El método '" + thisMethod.getName() + "' redefine con tipo de retorno distinto al heredado", thisMethod.getToken(), thisMethod.getToken().getLineNumber());
+                        throw new SemanticException("El método '" + thisMethod.getLexeme() + "' redefine con tipo de retorno distinto al heredado", thisMethod.getToken(), thisMethod.getToken().getLineNumber());
                     }
                     if (differentParams) {
-                        throw new SemanticException("El método '" + thisMethod.getName() + "' redefine con distinta lista de parámetros", thisMethod.getToken(), thisMethod.getToken().getLineNumber());
+                        throw new SemanticException("El método '" + thisMethod.getLexeme() + "' redefine con distinta lista de parámetros", thisMethod.getToken(), thisMethod.getToken().getLineNumber());
                     }
                 }
             }
@@ -207,19 +207,19 @@ public class ConcreteClass {
                 boolean fatherIsAbstract = fatherMethod.getModifier() != null && fatherMethod.getModifier().getTokenType().equals("pr_abstract");
                 boolean thisClassIsConcrete = (modifier == null) || !modifier.getTokenType().equals("pr_abstract");
                 if (fatherIsAbstract && thisClassIsConcrete) {
-                    throw new SemanticException("No definiste el método abstracto '" + fatherMethod.getName() + "' en la clase " + this.getName(), fatherMethod.getToken(), fatherMethod.getToken().getLineNumber());
+                    throw new SemanticException("No definiste el método abstracto '" + fatherMethod.getLexeme() + "' en la clase " + this.getLexeme(), fatherMethod.getToken(), fatherMethod.getToken().getLineNumber());
                 }
-                methods.put(fatherMethod.getName(), fatherMethod);
+                methods.put(fatherMethod.getLexeme(), fatherMethod);
             }
         }
     }
 
         private void consolidateAttributes(ConcreteClass father) throws SemanticException {
             for (Attribute a : father.getAttributes().values()) {
-                if (attributes.containsKey(a.getName())) {
-                    throw new SemanticException("El atributo '" + a.getName() + "' tiene el mismo nombre que un atributo de una superclase " + this.getName(), a.getToken(), this.getAttributeLine(a.getName()));
+                if (attributes.containsKey(a.getLexeme())) {
+                    throw new SemanticException("El atributo '" + a.getLexeme() + "' tiene el mismo nombre que un atributo de una superclase " + this.getLexeme(), a.getToken(), this.getAttributeLine(a.getLexeme()));
                 }
-                attributes.put(a.getName(), a);
+                attributes.put(a.getLexeme(), a);
             }
         }
 
@@ -231,6 +231,10 @@ public class ConcreteClass {
         for(Method m : methods.values()){
             m.sentenceCheck();
         }
+    }
+
+    public Method itsAnExisistingMethod(Token method) {
+        return methods.get(method.getLexeme());
     }
 }
 

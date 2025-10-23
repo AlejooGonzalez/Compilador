@@ -1,15 +1,12 @@
 package Semantic.Types;
 
-import Exceptions.SemanticException;
 import Lexical.Token;
 
 public class PrimitiveType implements Type{
     private Token token;
-    private String name;
 
     public PrimitiveType(Token token){
         this.token = token;
-        name = token.getLexeme();
     }
 
     public Token getToken() {
@@ -21,11 +18,7 @@ public class PrimitiveType implements Type{
     }
 
     public String getLexeme() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return token.getLexeme();
     }
 
     public boolean isPrimitive(){

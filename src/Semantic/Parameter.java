@@ -22,7 +22,7 @@ public class Parameter {
         this.token = token;
     }
 
-    public String getName() {
+    public String getLexeme() {
         return token.getLexeme();
     }
 
@@ -33,6 +33,10 @@ public class Parameter {
                 throw new SemanticException("El tipo de retorno " + typeToken.getLexeme() + " no está declarado", typeToken, typeToken.getLineNumber());
             }
         }
+    }
+
+    public Type getType() {
+        return type;
     }
 }
 

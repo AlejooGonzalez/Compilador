@@ -1,8 +1,11 @@
 package Semantic.Ast.Expressions.Access;
 
+import Exceptions.SemanticException;
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Expressions.ExpressionNode;
+import Semantic.Method;
 import Semantic.Types.Type;
 
 import java.util.List;
@@ -19,18 +22,27 @@ public class MethodAccessNode extends AccessNode {
     }
 
     @Override
-    public Type check() {
-        return null;
+    public Type check() throws SemanticException {
+        Method method = MainSemantic.ST.getCurrentClass().itsAnExisistingMethod(tokenIdMetVar); //Consultar si le puedo pasar class por parametro
+        if(method == null){
+            throw new SemanticException("El metodo no existe", tokenIdMetVar, tokenIdMetVar.getLineNumber());
+        } else {
+            method.sameArguments(currentParamList);
+        }
+        if(chaining != null){
+            chaining.check(method.getReturnType());
+        }
+        return method.getReturnType();
     }
 
     @Override
     public int getLine() {
-        return 0;
+        return tokenIdMetVar.getLineNumber();
     }
 
     @Override
     public Token getToken() {
-        return null;
+        return tokenIdMetVar;
     }
 
     public void setChaining(ChainedNode chaining) {

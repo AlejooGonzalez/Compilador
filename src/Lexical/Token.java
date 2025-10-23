@@ -1,9 +1,9 @@
 package Lexical;
 
 public class Token{
-    String tokenType;
-    String lexeme;
-    int lineNumber;
+    private String tokenType;
+    private String lexeme;
+    private int lineNumber;
 
     public Token(String tokenType, String lexeme, int lineNumber){
         this.tokenType = tokenType;

@@ -14,7 +14,7 @@ public class Constructor {
         parameters = new HashMap<>();
     }
 
-    public String getName() {
+    public String getLexeme() {
         return token.getLexeme();
     }
 
@@ -27,8 +27,8 @@ public class Constructor {
     }
 
     public void addParameter(Parameter param) throws SemanticException {
-        if (parameters.get(param.getName()) == null) {
-            parameters.put(param.getName(), param);
+        if (parameters.get(param.getLexeme()) == null) {
+            parameters.put(param.getLexeme(), param);
         } else {
             throw new SemanticException("El parametro "+param.getToken()+" ya existe", param.getToken(), param.getToken().getLineNumber());
         }

@@ -1,15 +1,14 @@
 package Semantic.Ast.Expressions;
 
 import Lexical.Token;
+import Semantic.Types.PrimitiveType;
 import Semantic.Types.Type;
 
 public class EmptyExpression extends ExpressionNode {
 
-
     @Override
     public Type check() {
-        //return new UniversalType();
-        return null;
+        return new PrimitiveType(new Token("pr_universal", "universal",0));
     }
 
     @Override
@@ -20,5 +19,9 @@ public class EmptyExpression extends ExpressionNode {
     @Override
     public Token getToken() {
         return null;
+    }
+
+    public String getLexeme() {
+        return "universal";
     }
 }

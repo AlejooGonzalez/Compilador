@@ -20,16 +20,14 @@ public class IfNode extends SentenceNode{
 
     @Override
     public void check() throws SemanticException {
-
-    }
-
-    /*
-    @Override
-    public void check() throws SemanticException {
-        if(!condition.check().equals(new BooleanType(ifToken.getLineNumber()))){
-            throw new SemanticException("La condicion del If debe ser un booleano", ifToken, ifToken.getLineNumber());
-        }
+        booleanCondition();
         ifBody.check();
         elseBody.check();
-    } */
+    }
+
+    public void booleanCondition() throws SemanticException {
+        if(!condition.check().getLexeme().equals(new BooleanType(ifToken.getLineNumber()).getLexeme())){
+            throw new SemanticException("La condicion del If debe ser un booleano", ifToken, ifToken.getLineNumber());
+        }
+    }
 }

@@ -286,7 +286,7 @@ public class SyntacticAnalyzer {
                 method.addParameters(p);
             }
             bloqueOpcional();
-            //MainSemantic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
+            //MainSemantic.ST.getCurrentMethod().setBlockNode(bloqueOpcional());
             MainSemantic.ST.getCurrentClass().addMethod(method);
         } else {
             throw new SyntacticException("metodoAtributo", actualToken);
@@ -305,7 +305,7 @@ public class SyntacticAnalyzer {
             method.addParameters(p);
         }
         bloqueOpcional();
-        //MainSemantic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
+        //MainSemantic.ST.getCurrentMethod().setBlockNode(bloqueOpcional());
         MainSemantic.ST.getCurrentClass().addMethod(method);
     }
 
@@ -359,7 +359,7 @@ public class SyntacticAnalyzer {
         return parameter;
     }
 
-    private BlockNode bloqueOpcional() throws LexicalException, SyntacticException, IOException {
+    private void bloqueOpcional() throws LexicalException, SyntacticException, IOException {
         BlockNode block;
         if (firsts.isFirst("bloque", actualToken.getTokenType())){
             block = bloque();
@@ -369,12 +369,11 @@ public class SyntacticAnalyzer {
             if(Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")){
                 match("pnt_puntoYComa");
                 MainSemantic.ST.getCurrentMethod().setHasBlock(false);
-                return new NullBlockNode();
+                MainSemantic.ST.getCurrentMethod().setBlockNode(new NullBlockNode());
             } else {
                 throw new SyntacticException("bloqueOpcional", actualToken);
             }
         }
-        return block;
     }
 
     private BlockNode bloque() throws LexicalException, SyntacticException, IOException {
@@ -401,9 +400,9 @@ public class SyntacticAnalyzer {
             match("pnt_puntoYComa");
             return new EmptySentenceNode();
         } else if (firsts.isFirst("asignacionLlamada", actualToken.getTokenType())) {
-            AssignCallNode assignCallNode = new AssignCallNode(actualToken, asignacionLlamada());
+            AssignationNode assignationNode = new AssignationNode(actualToken, asignacionLlamada());
             match("pnt_puntoYComa");
-            return assignCallNode;
+            return assignationNode;
         } else if (firsts.isFirst("varLocal", actualToken.getTokenType())) {
             LocalVarNode varNode = varLocal();
             match("pnt_puntoYComa");
@@ -620,7 +619,7 @@ public class SyntacticAnalyzer {
             return new UnaryExpressionNode(operando(), token);
         } else {
             if (firsts.isFirst("operando", actualToken.getTokenType())) {
-                return new UnaryExpressionNode(operando());
+                return operando();
             } else {
                 throw new SyntacticException("expresionBasica", actualToken);
             }
@@ -639,7 +638,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    private OperatorNode operando() throws LexicalException, SyntacticException, IOException {
+    private OperandNode operando() throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("primitivo", actualToken.getTokenType())) {
             return primitivo();
         } else {
@@ -720,7 +719,7 @@ public class SyntacticAnalyzer {
                     match("pr_this");
             }
             case "stringLiteral" -> {
-                operator = new StringLiteralAccessNode(actualToken);
+                operator = new StringLiteralNode(actualToken);
                 match("stringLiteral");
             }
             case "idMetVar" -> {

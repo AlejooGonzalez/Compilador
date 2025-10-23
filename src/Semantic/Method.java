@@ -3,10 +3,12 @@ package Semantic;
 import Exceptions.SemanticException;
 import Lexical.Token;
 import Main.MainSemantic;
+import Semantic.Ast.Expressions.ExpressionNode;
 import Semantic.Ast.Sentences.BlockNode;
 import Semantic.Types.Type;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class Method {
@@ -33,13 +35,13 @@ public class Method {
     }
 
     public void addParameters(Parameter p) throws SemanticException {
-        if (parameters.containsKey(p.getName())) {
-            throw new SemanticException("El parámetro '" + p.getName() + "' está duplicado en el método '" + this.getName() + "'", p.getToken(), p.getToken().getLineNumber());
+        if (parameters.containsKey(p.getLexeme())) {
+            throw new SemanticException("El parámetro '" + p.getLexeme() + "' está duplicado en el método '" + this.getLexeme() + "'", p.getToken(), p.getToken().getLineNumber());
         }
-        parameters.put(p.getName(), p);
+        parameters.put(p.getLexeme(), p);
     }
 
-    public String getName() {
+    public String getLexeme() {
         return token.getLexeme();
     }
 
@@ -89,11 +91,11 @@ public class Method {
 
     public boolean sameParameters(Method metFather) {
         boolean ret = true;
-        if (this.parameters.size() != metFather.parameters.size()) {
+        if (this.parameters.size() != metFather.getParameters().size()) {
             ret = false;
         }
         var it1 = this.parameters.values().iterator();
-        var it2 = metFather.parameters.values().iterator();
+        var it2 = metFather.getParameters().values().iterator();
         while (it1.hasNext() && it2.hasNext() && ret) {
             Parameter p1 = it1.next();
             Parameter p2 = it2.next();
@@ -125,5 +127,26 @@ public class Method {
 
     public void setBlockNode(BlockNode block) {
         this.block = block;
+    }
+
+    public boolean isStaticMethod() {
+        if(modifier != null) {
+            return modifier.getLexeme().equals("static");
+        }
+        return false;
+    }
+
+    public void sameArguments(List<ExpressionNode> args) throws SemanticException {
+        if (args.size() != parameters.size()) {
+            throw new SemanticException("No coinciden la cantidad de parametros con el metodo llamado", token, token.getLineNumber());
+        }
+        var formalIt = parameters.values().iterator();
+        for (ExpressionNode arg : args) {
+            Type argType = arg.check();
+            Type formalType = formalIt.next().getType();
+            if (!formalType.conformsWith(argType)) {
+                throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", token, token.getLineNumber());
+            }
+        }
     }
 }

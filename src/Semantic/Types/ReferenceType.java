@@ -5,6 +5,8 @@ import Lexical.Token;
 import Semantic.ConcreteClass;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ReferenceType implements Type{
     private Token token;
@@ -27,10 +29,6 @@ public class ReferenceType implements Type{
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public boolean isPrimitive() {
         return false;
     }
@@ -45,38 +43,33 @@ public class ReferenceType implements Type{
 
     @Override
     public boolean conformsWith(Type other) {
-        if (!(other instanceof ReferenceType))
-            return false;
-        else {
-            String myName = this.getLexeme();
-            String otherName = other.getLexeme();
+        String myName = this.getLexeme();
+        String otherName = other.getLexeme();
 
-            if (myName.equals("null") || myName.equals(otherName))
+        if (myName.equals("null") || myName.equals(otherName)) {
+            return true;
+        }
+
+        HashMap<String, ConcreteClass> classes = Main.MainSemantic.ST.getClasses();
+        if (!classes.containsKey(myName) || !classes.containsKey(otherName)) {
+            return false;
+        }
+
+        Set<String> visited = new HashSet<>();
+        ConcreteClass current = classes.get(myName);
+
+        while (current != null && !visited.contains(current.getLexeme())) {
+            visited.add(current.getLexeme());
+            Token parentToken = current.getInheritance();
+
+            if (parentToken == null)
+                break;
+
+            if (parentToken.getLexeme().equals(otherName))
                 return true;
 
-            HashMap<String, ConcreteClass> classes = Main.MainSemantic.ST.getClasses();
-            if (!classes.containsKey(myName) || !classes.containsKey(otherName)) {
-                return false;
-            } else {
-                ConcreteClass current = classes.get(myName);
-                if (otherName.equals("Object")) {
-                    return true;
-                } else {
-                    while (current != null) {
-                        Token parentToken = current.getInheritance();
-                        if (parentToken == null) {
-                            return false;
-                        } else {
-                            String parentName = parentToken.getLexeme();
-                            if (parentName.equals(otherName)) {
-                                return true;
-                            }
-                            current = classes.get(parentName);
-                        }
-                    }
-                    return false;
-                }
-            }
+            current = classes.get(parentToken.getLexeme());
         }
+        return false;
     }
 }

@@ -15,10 +15,6 @@ public class UnaryExpressionNode extends CompoundExpressionNode {
         this.operator = operator;
     }
 
-    public UnaryExpressionNode(OperandNode rightSide) {
-        this.rightSide = rightSide;
-    }
-
     @Override
     public Type check() throws SemanticException {
         Type type = rightSide.check();

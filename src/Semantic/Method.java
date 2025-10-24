@@ -129,6 +129,10 @@ public class Method {
         this.block = block;
     }
 
+    public BlockNode getBlockNode() {
+        return block;
+    }
+
     public boolean isStaticMethod() {
         if(modifier != null) {
             return modifier.getLexeme().equals("static");
@@ -148,5 +152,9 @@ public class Method {
                 throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", token, token.getLineNumber());
             }
         }
+    }
+
+    public Parameter getParameter(String lexeme) {
+        return parameters.get(lexeme);
     }
 }

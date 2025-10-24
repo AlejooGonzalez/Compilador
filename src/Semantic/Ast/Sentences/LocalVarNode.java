@@ -2,33 +2,31 @@ package Semantic.Ast.Sentences;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Ast.Expressions.ExpressionNode;
 import Semantic.Types.Type;
 
 public class LocalVarNode extends SentenceNode {
     private Token token;
-    private ExpressionNode value;
+    private ExpressionNode expression;
     private Type type;
 
     public LocalVarNode(Token token) {
         this.token = token;
     }
 
-    /*
     @Override
     public void check() throws SemanticException {
-        if(value.check() == null){
-            throw new SemanticException("variable de tipo nulo no valida", token, token.getLineNumber());
-        }
         if(MainSemantic.ST.getCurrentMethod().getParameters().containsKey(token.getLexeme())){
             throw new SemanticException("La variable ya fue declarada en los parametros", token, token.getLineNumber());
         }
-
-        if(MainSemantic.ST.getCurrentBlock().getLocalVar(token.getLexeme()) != null){
-            throw new SemanticException("Local Var ya declarada", token, token.getLineNumber());
+        if(MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()) != null){
+            throw new SemanticException("Local Var ya declarada en atributos", token, token.getLineNumber());
         }
-        //FALTA VER SI UNA VARIABLE ESTA EN UN BLOQUE PADRE
-    } */
+        checkLocalVarInParentNode();
+        type = expression.check();
+        MainSemantic.ST.getCurrentBlock().addLocalVariables(token.getLexeme(), this);
+    }
 
     public Token getToken() {
         return token;
@@ -38,20 +36,25 @@ public class LocalVarNode extends SentenceNode {
         this.token = nombre;
     }
 
-    public void setExpression(ExpressionNode value) {
-        this.value = value;
-    }
-
-    public Type getTipo() {
+    public Type getType() {
         return type;
     }
 
-    public void setTipo(Type type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
-    @Override
-    public void check() throws SemanticException {
+    public void checkLocalVarInParentNode() throws SemanticException {
+        BlockNode parentBlock = MainSemantic.ST.getCurrentBlock().getParent();
+        while(parentBlock != null){
+            if(parentBlock.getLocalVar(token.getLexeme()) != null){
+                throw new SemanticException("Variable declarada en un bloque padre", token, token.getLineNumber());
+            }
+            parentBlock = parentBlock.getParent();
+        }
+    }
 
+    public void setExpression(ExpressionNode expression) {
+        this.expression = expression;
     }
 }

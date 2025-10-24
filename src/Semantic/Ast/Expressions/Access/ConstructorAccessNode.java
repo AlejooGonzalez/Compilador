@@ -38,12 +38,12 @@ public class ConstructorAccessNode extends AccessNode {
 
     @Override
     public int getLine() {
-        return 0;
+        return classToken.getLineNumber();
     }
 
     @Override
     public Token getToken() {
-        return null;
+        return classToken;
     }
 
     public void setArguments(List<ExpressionNode> arguments) {

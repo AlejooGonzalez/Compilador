@@ -172,7 +172,7 @@ public class ConcreteClass {
             Method thisMethod = methods.get(fatherMethod.getLexeme());
 
             if (thisMethod != null) {
-                Token fatherModifier = null;
+                Token fatherModifier;
                 String fatherModifierType = "";
 
                 if (fatherMethod.getModifier() != null) {
@@ -235,6 +235,10 @@ public class ConcreteClass {
 
     public Method itsAnExisistingMethod(Token method) {
         return methods.get(method.getLexeme());
+    }
+
+    public Attribute getAttribute(String lexeme) {
+        return attributes.get(lexeme);
     }
 }
 

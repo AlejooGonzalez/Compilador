@@ -21,6 +21,7 @@ import Semantic.Types.Type;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class SyntacticAnalyzer {
@@ -188,7 +189,6 @@ public class SyntacticAnalyzer {
                 MainSemantic.ST.getCurrentMethod().addParameters(p);
             }
             bloqueOpcional();
-            //MainSemantic.ST.getCurrentMethod().setHasBlock(bloqueOpcional());
             MainSemantic.ST.getCurrentClass().addMethod(method);
         } else {
             if (Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")) {
@@ -362,8 +362,8 @@ public class SyntacticAnalyzer {
     private void bloqueOpcional() throws LexicalException, SyntacticException, IOException {
         BlockNode block;
         if (firsts.isFirst("bloque", actualToken.getTokenType())){
-            block = bloque();
             MainSemantic.ST.getCurrentMethod().setHasBlock(true);
+            block = bloque();
             MainSemantic.ST.getCurrentMethod().setBlockNode(block);
         } else {
             if(Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")){
@@ -382,15 +382,13 @@ public class SyntacticAnalyzer {
             match("pnt_llaveIzquierda");
             listaSentencias(block);
             match("pnt_llaveDerecha");
-            MainSemantic.ST.setCurrentBlock(block);
         }
         return block;
     }
 
     private void listaSentencias(BlockNode block) throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("sentencia", actualToken.getTokenType())) {
-            SentenceNode sentence = sentencia();
-            block.addSentence(sentence);
+            block.addSentence(sentencia());
             listaSentencias(block);
         } else { }
     }

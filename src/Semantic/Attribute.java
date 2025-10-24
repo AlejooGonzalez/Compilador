@@ -29,4 +29,8 @@ public class Attribute {
             }
         }
     }
+
+    public Type getType() {
+        return type;
+    }
 }

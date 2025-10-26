@@ -45,7 +45,7 @@ public class MainSemantic {
             try {
                 ST.itIsWellStated();
                 ST.consolidate();
-                ST.sentenceCheck();
+                 ST.sentenceCheck();
             } catch (SemanticException e) {
                 e.getErrorMessage();
                 noMistakes = false;

@@ -7,7 +7,7 @@ import Semantic.Ast.Expressions.ExpressionNode;
 import Semantic.Types.Type;
 
 public class ExpressionParenthesesAccess extends AccessNode {
-    ExpressionNode expression;
+    private ExpressionNode expression;
     private ChainedNode chaining;
 
     public ExpressionParenthesesAccess(ExpressionNode expression) {
@@ -19,7 +19,7 @@ public class ExpressionParenthesesAccess extends AccessNode {
         if(chaining == null) {
             return expression.check();
         } else {
-            return chaining.check(expression.check());
+            return chaining.check(expression.check(), expression.getToken());
         }
     }
 

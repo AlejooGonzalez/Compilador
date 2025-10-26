@@ -4,6 +4,7 @@ import Exceptions.SemanticException;
 import Lexical.Token;
 import Main.MainSemantic;
 import Semantic.Ast.Chained.ChainedNode;
+import Semantic.Ast.Sentences.BlockNode;
 import Semantic.Types.Type;
 
 public class VarAccessNode extends AccessNode {
@@ -24,43 +25,55 @@ public class VarAccessNode extends AccessNode {
             throw new SemanticException("No existe la variable instanciada", token, token.getLineNumber());
         }
         if(chaining != null) {
-            chaining.check(returnType);
+            return chaining.check(returnType, token);
         }
         return returnType;
     }
 
     @Override
     public int getLine() {
-        return 0;
+        return token.getLineNumber();
     }
 
     @Override
     public Token getToken() {
-        return null;
+        return token;
     }
 
     public void setChaining(ChainedNode chaining) {
         this.chaining = chaining;
     }
 
-    public void varIsLocalVar(){
-        if(MainSemantic.ST.getCurrentMethod().getBlockNode().getLocalVar(token.getLexeme()) != null) {
-            returnType = MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()).getType();
+    public void varIsParameter(){
+        if(MainSemantic.ST.getCurrentMethod().getParameter(token.getLexeme()) != null) {
+            returnType = MainSemantic.ST.getCurrentMethod().getParameter(token.getLexeme()).getType();
         }
     }
 
-    public void varIsParameter(){
-        if(MainSemantic.ST.getCurrentMethod().getParameter(token.getLexeme()) != null) {
-            returnType = MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()).getType();
+    public void varIsAttribute() throws SemanticException {
+        if(MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()) != null) {
+            if (MainSemantic.ST.getCurrentMethod().getModifier() != null) {
+                if (!MainSemantic.ST.getCurrentMethod().getModifier().getLexeme().equals("static")) {
+                    returnType = MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()).getType();
+                } else {
+                    throw new SemanticException("No se puede acceder a un atributo de instancia en un metodo estatico", token, token.getLineNumber());
+                }
+            } else {
+                returnType = MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()).getType();
+            }
         }
     }
-    public void varIsAttribute() throws SemanticException {
-        if(MainSemantic.ST.getCurrentMethod().getParameter(token.getLexeme()) != null) {
-            if(!MainSemantic.ST.getCurrentMethod().getModifier().getLexeme().equals("static")) {
-                returnType = MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()).getType();
-            } else {
-                throw new SemanticException("No se puede acceder a un atributo de instancia estatico", token, token.getLineNumber());
+
+    public void varIsLocalVar() {
+        if(MainSemantic.ST.getCurrentBlock().getLocalVar(token.getLexeme()) != null) {
+            returnType = MainSemantic.ST.getCurrentBlock().getLocalVar(token.getLexeme()).getType();
+        }
+        BlockNode parentBlock = MainSemantic.ST.getCurrentBlock().getParent();
+        while(parentBlock != null){
+            if(parentBlock.getLocalVar(token.getLexeme()) != null){
+                returnType =  parentBlock.getLocalVar(token.getLexeme()).getType();
             }
+            parentBlock = parentBlock.getParent();
         }
     }
 }

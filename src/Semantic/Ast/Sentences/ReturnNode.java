@@ -40,7 +40,7 @@ public class ReturnNode extends SentenceNode {
             }
         } else {
             Type expressionType = exp.check();
-            if(expressionType != null) { //Falta hacer el check de constructor
+            if(expressionType != null) {
                 if (!expressionType.conformsWith(returnMethodExpected)) {
                     throw new SemanticException("El tipo de retorno no conforma con el tipo del método", token, token.getLineNumber());
                 }

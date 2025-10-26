@@ -240,6 +240,10 @@ public class ConcreteClass {
     public Attribute getAttribute(String lexeme) {
         return attributes.get(lexeme);
     }
+
+    public Attribute itsAnExisistingAttribute(Token method) {
+        return attributes.get(method.getLexeme());
+    }
 }
 
 

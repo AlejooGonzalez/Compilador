@@ -3,7 +3,7 @@ class A {
     int a1;
 
      void m1(int p1) {
-        v1 = 4;
+        var v1 = 4;
         while(4){ }
      }
 }

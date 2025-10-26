@@ -22,28 +22,28 @@ public class BinaryExpressionNode extends CompoundExpressionNode {
         Type leftType = leftSide.check();
         Type rightType = rightSide.check();
         if(leftType != null && rightType != null) {
-            if (itsInt(leftType) && itsInt(rightType)) {
-                if (aritmeticalOperator()) {
+            if (arithmeticalOperator()) {
+                if (itsInt(leftType) && itsInt(rightType)) {
                     return new IntType(operator.getLineNumber());
                 }
-                if (compareOperator()) {
+            }
+            if (compareOperator()) {
+                if (itsInt(leftType) && itsInt(rightType)) {
                     return new BooleanType(operator.getLineNumber());
                 }
-            } else {
+            }
+            if (logicOperator()) {
                 if (itsBoolean(leftType) && itsBoolean(rightType)) {
-                    if (logicOperator()) {
-                        return new BooleanType(operator.getLineNumber());
-                    }
-                } else {
-                    if (rightType.conformsWith(leftType) || leftType.conformsWith(rightType)) {
-                        if (equalOrDifferentOperator()) {
-                            return new BooleanType(operator.getLineNumber());
-                        }
-                    }
+                    return new BooleanType(operator.getLineNumber());
+                }
+            }
+            if (equalOrDifferentOperator()) {
+                if (rightType.conformsWith(leftType) || leftType.conformsWith(rightType) ) {
+                    return new BooleanType(operator.getLineNumber());
                 }
             }
         }
-            throw new SemanticException("Expresion Binaria no valida", operator, operator.getLineNumber());
+        throw new SemanticException("Expresion Binaria no valida con el operador", operator, operator.getLineNumber());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class BinaryExpressionNode extends CompoundExpressionNode {
         return type.getLexeme().equals(new BooleanType(operator.getLineNumber()).getLexeme());
     }
 
-    public boolean aritmeticalOperator(){
+    public boolean arithmeticalOperator(){
         return (operator.getLexeme().equals("+") || operator.getLexeme().equals("-") || operator.getLexeme().equals("*") || operator.getLexeme().equals("/") || operator.getLexeme().equals("%"));
     }
 

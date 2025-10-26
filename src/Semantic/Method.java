@@ -121,8 +121,10 @@ public class Method {
     }
 
     public void sentenceCheck() throws SemanticException {
-        if(block != null)
+        MainSemantic.ST.setCurrentMethod(this);
+        if(block != null) {
             block.check();
+        }
     }
 
     public void setBlockNode(BlockNode block) {
@@ -140,16 +142,26 @@ public class Method {
         return false;
     }
 
-    public void sameArguments(List<ExpressionNode> args) throws SemanticException {
-        if (args.size() != parameters.size()) {
-            throw new SemanticException("No coinciden la cantidad de parametros con el metodo llamado", token, token.getLineNumber());
-        }
-        var formalIt = parameters.values().iterator();
-        for (ExpressionNode arg : args) {
-            Type argType = arg.check();
-            Type formalType = formalIt.next().getType();
-            if (!formalType.conformsWith(argType)) {
-                throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", token, token.getLineNumber());
+    public void sameArguments(List<ExpressionNode> args, Token t) throws SemanticException {
+        if (args != null && parameters != null) {
+            if (args.size() != parameters.size()) {
+                throw new SemanticException("No coinciden la cantidad de parametros con el metodo llamado", t, t.getLineNumber());
+            }
+            var formalIt = parameters.values().iterator();
+            for (ExpressionNode arg : args) {
+                Type argType = arg.check();
+                Type formalType = formalIt.next().getType();
+                if (!formalType.conformsWith(argType)) {
+                    throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", t, t.getLineNumber());
+                }
+            }
+        } else {
+            if (args != null && parameters.isEmpty()) {
+                throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", t, t.getLineNumber());
+            } else {
+                if(args == null && !parameters.isEmpty()){
+                    throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", t, t.getLineNumber());
+                }
             }
         }
     }

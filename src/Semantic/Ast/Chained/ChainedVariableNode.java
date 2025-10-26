@@ -1,9 +1,11 @@
 package Semantic.Ast.Chained;
 
+import Exceptions.SemanticException;
 import Lexical.Token;
-import Semantic.Ast.Expressions.ExpressionNode;
+import Main.MainSemantic;
+import Semantic.Attribute;
+import Semantic.ConcreteClass;
 import Semantic.Types.Type;
-import java.util.List;
 
 public class ChainedVariableNode extends ChainedNode {
     private Token token;
@@ -14,8 +16,23 @@ public class ChainedVariableNode extends ChainedNode {
     }
 
     @Override
-    public Type check(Type t) {
-        return null;
+    public Type check(Type leftSide, Token leftToken) throws SemanticException {
+        if (leftSide.isPrimitive()) {
+            throw new SemanticException("No se puede acceder a atributos de un tipo primitivo", leftToken, token.getLineNumber());
+        }
+        ConcreteClass leftClass = MainSemantic.ST.itIsAnExistingClass(leftSide.getToken());
+        if (leftClass == null) {
+            throw new SemanticException("Clase no declarada", leftSide.getToken(), leftToken.getLineNumber());
+        }
+        Attribute attr = leftClass.itsAnExisistingAttribute(token);
+        if (attr == null) {
+            throw new SemanticException("El atributo no existe en la clase", leftToken, token.getLineNumber());
+        }
+        Type attrType = attr.getType();
+        if (chaining != null) {
+            return chaining.check(attrType, token);
+        }
+        return attrType;
     }
 
     @Override

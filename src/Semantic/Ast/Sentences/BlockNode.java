@@ -3,7 +3,6 @@ package Semantic.Ast.Sentences;
 import Exceptions.SemanticException;
 import Main.MainSemantic;
 import Semantic.ConcreteClass;
-import com.sun.tools.javac.Main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,13 +54,5 @@ public class BlockNode extends SentenceNode {
 
     public BlockNode getParent() {
         return parent;
-    }
-
-    public void setParent(BlockNode parent) {
-        this.parent = parent;
-    }
-
-    public Map<String, LocalVarNode> getLocalVariables() {
-        return localVariables;
     }
 }

@@ -1,8 +1,9 @@
 ///[SinErrores]
 
 class A {
-    int a1 = 1;
     void m() {
-        if(2 < 4){ }
+        var a1 = 1;
+        var a2 = 2;
+        (a1 < a2);
     }
 }

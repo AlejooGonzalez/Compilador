@@ -15,7 +15,6 @@ public class MethodAccessNode extends AccessNode {
     private Token tokenIdMetVar;
     private ChainedNode chaining;
 
-
     public MethodAccessNode(Token tokenIdMetVar, List<ExpressionNode> currentParamList) {
         this.tokenIdMetVar = tokenIdMetVar;
         this.currentParamList = currentParamList;
@@ -27,10 +26,10 @@ public class MethodAccessNode extends AccessNode {
         if(method == null){
             throw new SemanticException("El metodo no existe", tokenIdMetVar, tokenIdMetVar.getLineNumber());
         } else {
-            method.sameArguments(currentParamList);
+            method.sameArguments(currentParamList, tokenIdMetVar);
         }
         if(chaining != null){
-            chaining.check(method.getReturnType());
+            return chaining.check(method.getReturnType(),tokenIdMetVar);
         }
         return method.getReturnType();
     }

@@ -25,7 +25,7 @@ public class thisAccessNode extends AccessNode {
         ConcreteClass currentClass = MainSemantic.ST.getCurrentClass();
         Type thisType = new ReferenceType(currentClass.getToken());
         if(chaining != null){
-            return chaining.check(thisType);
+            return chaining.check(thisType, tokenThis);
         } else {
             return thisType;
         }
@@ -46,8 +46,10 @@ public class thisAccessNode extends AccessNode {
     }
 
     private void checkIsStaticMethod(Method currentMethod) throws SemanticException {
-        if(currentMethod.getModifier().getLexeme().equals("static")){
-            throw new SemanticException("No se puede utilizar this en un metodo estatico", tokenThis, tokenThis.getLineNumber());
+        if(currentMethod.getModifier() != null ) {
+            if (currentMethod.getModifier().getLexeme().equals("static")) {
+                throw new SemanticException("No se puede utilizar this en un metodo estatico", tokenThis, tokenThis.getLineNumber());
+            }
         }
     }
 }

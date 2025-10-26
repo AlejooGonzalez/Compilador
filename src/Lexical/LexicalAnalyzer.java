@@ -444,7 +444,7 @@ public class LexicalAnalyzer {
                 if (currentCharacter == '*') { //comentarioMultilinea
                     return e11_multilineComment();
                 } else {
-                    return new Token("op_division", lexeme, sourceManager.getLineNumber());
+                    return new Token("op_division", "/", sourceManager.getLineNumber());
                 }
             }
         }

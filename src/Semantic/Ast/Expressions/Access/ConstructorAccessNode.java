@@ -32,7 +32,7 @@ public class ConstructorAccessNode extends AccessNode {
         if(chaining == null) {
             return referenceType;
         } else {
-            return chaining.check(referenceType);
+            return chaining.check(referenceType, classToken);
         }
     }
 

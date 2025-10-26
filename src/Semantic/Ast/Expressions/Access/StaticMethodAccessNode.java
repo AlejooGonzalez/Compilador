@@ -31,10 +31,10 @@ public class StaticMethodAccessNode extends AccessNode{
         Method method = concreteClass.itsAnExisistingMethod(staticMethodToken);
         checkMethodExistsInStaticClass(method);
         checkIfMethodIsStatic(method);
-        method.sameArguments(parameters);
+        method.sameArguments(parameters, staticClassToken);
 
         if(chaining != null){
-            return chaining.check(method.getReturnType());
+            return chaining.check(method.getReturnType(),staticMethodToken);
         }
         return method.getReturnType();
     }

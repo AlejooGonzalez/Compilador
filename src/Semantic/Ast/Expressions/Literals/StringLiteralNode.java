@@ -15,7 +15,7 @@ public class StringLiteralNode extends AccessNode {
 
     @Override
     public Type check() {
-        return new ReferenceType(new Token("stringLiteral","stringLiteral", token.getLineNumber()));
+        return new ReferenceType(new Token("String","String", token.getLineNumber()));
     }
 
     @Override

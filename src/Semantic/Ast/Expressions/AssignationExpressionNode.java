@@ -19,7 +19,7 @@ public class AssignationExpressionNode extends ExpressionNode {
     public Type check() throws SemanticException {
         Type leftSideType = leftSide.check();
         Type rightSideType = rightSide.check();
-        if(!leftSideType.getToken().getTokenType().equals(rightSideType.getToken().getTokenType())){
+        if(!leftSideType.getToken().getLexeme().equals(rightSideType.getToken().getLexeme())){
            throw new SemanticException("Asignacion de distintos tipos no valida",token, token.getLineNumber());
         }
         return leftSideType;
@@ -27,7 +27,7 @@ public class AssignationExpressionNode extends ExpressionNode {
 
     @Override
     public int getLine() {
-        return 0;
+        return token.getLineNumber();
     }
 
     @Override

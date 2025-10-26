@@ -15,6 +15,7 @@ public class AssignationNode extends SentenceNode{
 
     @Override
     public void check() throws SemanticException {
+        expressionNode.check();
 
     }
 }

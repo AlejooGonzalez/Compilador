@@ -749,8 +749,7 @@ public class SyntacticAnalyzer {
 
     private AccessNode argsAux(Token tokenIdMetVar) throws LexicalException, SyntacticException, IOException {
         if (firsts.isFirst("argsActuales", actualToken.getTokenType())) {
-            List<ExpressionNode> currentParamList = argsActuales();
-            return new MethodAccessNode(tokenIdMetVar, currentParamList);
+            return new MethodAccessNode(tokenIdMetVar, argsActuales());
         } else {
             return new VarAccessNode(tokenIdMetVar);
         }
@@ -790,29 +789,23 @@ public class SyntacticAnalyzer {
     }
 
     private  List<ExpressionNode> listaExpsOpcional() throws LexicalException, SyntacticException, IOException {
-        List<ExpressionNode> paramList = null;
+        List<ExpressionNode> paramList = new ArrayList<>();
         if (firsts.isFirst("expresion", actualToken.getTokenType())) {
             ExpressionNode expressionNode = expresion();
-                paramList = listaExpsAux();
-            if(paramList != null) {
-                paramList.add(expressionNode);
-                return paramList;
-            }
-        } else { }
+            paramList = listaExpsAux();
+            paramList.add(expressionNode);
+        }
         return paramList;
     }
 
     private List<ExpressionNode> listaExpsAux() throws LexicalException, SyntacticException, IOException {
-        List<ExpressionNode> paramList = null;
+        List<ExpressionNode> paramList = new ArrayList<>();
         if (Objects.equals(actualToken.getTokenType(), "pnt_coma")) {
             match("pnt_coma");
             ExpressionNode expressionNode = expresion();
             paramList = listaExpsAux();
-            if(paramList != null) {
-                paramList.add(expressionNode);
-                return paramList;
-            }
-        } else { }
+            paramList.add(expressionNode);
+        }
         return paramList;
     }
 

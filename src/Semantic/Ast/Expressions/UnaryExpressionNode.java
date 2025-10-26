@@ -19,10 +19,10 @@ public class UnaryExpressionNode extends CompoundExpressionNode {
     public Type check() throws SemanticException {
         Type type = rightSide.check();
         if (operator != null) {
-            if (opIsAritmetic() && type.equals(new IntType(operator.getLineNumber()))) {
+            if (opIsAritmetic() && type.getLexeme().equals(new IntType(operator.getLineNumber()).getLexeme())) {
                 return type;
             } else {
-                if (opIsUnary() && type.equals(new BooleanType(operator.getLineNumber()))) {
+                if (opIsUnary() && type.getLexeme().equals(new BooleanType(operator.getLineNumber()).getLexeme())) {
                     return type;
                 } else {
                     throw new SemanticException("Tipos incompatibles en la expresion unaria", operator, operator.getLineNumber());

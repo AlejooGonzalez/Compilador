@@ -4,6 +4,7 @@ import Exceptions.SemanticException;
 import Lexical.Token;
 import Main.MainSemantic;
 import Semantic.Ast.Expressions.ExpressionNode;
+import Semantic.Types.NullType;
 import Semantic.Types.Type;
 
 public class LocalVarNode extends SentenceNode {
@@ -25,6 +26,9 @@ public class LocalVarNode extends SentenceNode {
         }
         checkLocalVarInParentNode();
         type = expression.check();
+        if(type.getLexeme().equals(new NullType(token.getLineNumber()).getLexeme())){
+            throw new SemanticException("Una variable no puede tener un valor nulo",  token, token.getLineNumber());
+        }
         MainSemantic.ST.getCurrentBlock().addLocalVariables(token.getLexeme(), this);
     }
 

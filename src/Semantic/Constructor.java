@@ -2,6 +2,7 @@ package Semantic;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
+import Semantic.Ast.Sentences.BlockNode;
 
 import java.util.HashMap;
 

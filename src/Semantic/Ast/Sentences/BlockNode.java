@@ -45,7 +45,6 @@ public class BlockNode extends SentenceNode {
     public void check() throws SemanticException {
         parent = MainSemantic.ST.getCurrentBlock();
         MainSemantic.ST.setCurrentBlock(this);
-        MainSemantic.ST.setCurrentClass(concreteClass);
         for(SentenceNode s: sentences) {
             s.check();
         }

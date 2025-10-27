@@ -18,15 +18,15 @@ public class LocalVarNode extends SentenceNode {
 
     @Override
     public void check() throws SemanticException {
-        if(MainSemantic.ST.getCurrentMethod().getParameters().containsKey(token.getLexeme())){
+        if(localVarDeclaratedInParameters()){
             throw new SemanticException("La variable ya fue declarada en los parametros", token, token.getLineNumber());
         }
-        if(MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()) != null){
+        if(localVarDeclaratedInAttributes()){
             throw new SemanticException("Local Var ya declarada en atributos", token, token.getLineNumber());
         }
         checkLocalVarInParentNode();
         type = expression.check();
-        if(type.getLexeme().equals(new NullType(token.getLineNumber()).getLexeme())){
+        if(localVarNullValued()){
             throw new SemanticException("Una variable no puede tener un valor nulo",  token, token.getLineNumber());
         }
         MainSemantic.ST.getCurrentBlock().addLocalVariables(token.getLexeme(), this);
@@ -60,5 +60,17 @@ public class LocalVarNode extends SentenceNode {
 
     public void setExpression(ExpressionNode expression) {
         this.expression = expression;
+    }
+
+    public boolean localVarDeclaratedInParameters(){
+        return MainSemantic.ST.getCurrentMethod().getParameters().containsKey(token.getLexeme());
+    }
+
+    public boolean localVarDeclaratedInAttributes(){
+        return MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()) != null;
+    }
+
+    public boolean localVarNullValued(){
+        return type.itsCompatible(new NullType(token.getLineNumber()));
     }
 }

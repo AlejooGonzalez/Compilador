@@ -1,3 +1,4 @@
+//[Error:=|5]
 // Error: asignación con lado izquierdo no asignable.
 class E21 {
     void m() {

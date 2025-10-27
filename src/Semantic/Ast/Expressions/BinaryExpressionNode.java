@@ -57,11 +57,11 @@ public class BinaryExpressionNode extends CompoundExpressionNode {
     }
 
     public boolean itsInt(Type type){
-        return type.getLexeme().equals(new IntType(operator.getLineNumber()).getLexeme());
+        return type.itsCompatible(new IntType(operator.getLineNumber()));
     }
 
     public boolean itsBoolean(Type type){
-        return type.getLexeme().equals(new BooleanType(operator.getLineNumber()).getLexeme());
+        return type.itsCompatible(new BooleanType(operator.getLineNumber()));
     }
 
     public boolean arithmeticalOperator(){

@@ -1,3 +1,4 @@
+// Uso de metodo estático y operadores lógicos válidos.
 class C2 {
     static int sm(int p) { return p + 1; }
     static void main() {

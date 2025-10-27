@@ -29,4 +29,9 @@ public class PrimitiveType implements Type{
     public boolean conformsWith(Type other) {
         return other instanceof  PrimitiveType;
     }
+
+    @Override
+    public boolean itsCompatible(Type prBoolean) {
+        return prBoolean.getLexeme().equals(token.getLexeme());
+    }
 }

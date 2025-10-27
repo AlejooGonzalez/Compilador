@@ -22,6 +22,11 @@ public class StringLiteralNode extends AccessNode {
     public void setChaining(ChainedNode chaining) { }
 
     @Override
+    public ChainedNode getChaining() {
+        return null;
+    }
+
+    @Override
     public int getLine() {
         return token.getLineNumber();
     }

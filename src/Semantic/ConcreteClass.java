@@ -52,7 +52,7 @@ public class ConcreteClass {
             if (!methods.containsKey(m.getLexeme())) {
                 methods.put(m.getLexeme(), m);
             } else {
-                throw new SemanticException("El metodo " + m.getToken() + " ya existe", m.getToken(), m.getToken().getLineNumber());
+                throw new SemanticException("El metodo con ese nombre ya existe", m.getToken(), m.getToken().getLineNumber());
             }
         }
 
@@ -116,6 +116,7 @@ public class ConcreteClass {
                 }
             }
             if(constructor!=null){
+                constructor.setClassName(token);
                 constructor.itIsWellStated();
             }
         }
@@ -228,8 +229,12 @@ public class ConcreteClass {
         }
 
     public void sentenceCheck() throws SemanticException {
+        MainSemantic.ST.setCurrentClass(this);
         for(Method m : methods.values()){
             m.sentenceCheck();
+        }
+        if(constructor!=null){
+            constructor.check();
         }
     }
 

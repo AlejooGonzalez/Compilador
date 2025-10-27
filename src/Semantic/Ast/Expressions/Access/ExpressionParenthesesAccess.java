@@ -36,4 +36,9 @@ public class ExpressionParenthesesAccess extends AccessNode {
     public void setChaining(ChainedNode chaining) {
         this.chaining = chaining;
     }
+
+    @Override
+    public ChainedNode getChaining() {
+        return chaining;
+    }
 }

@@ -1,3 +1,4 @@
+// Uso correcto de llamada estática a metodo que devuelve clase.
 class C10 {
     static C10 make() { return new C10(); }
     int useStaticCtor() {

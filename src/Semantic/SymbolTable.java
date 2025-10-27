@@ -20,7 +20,7 @@ public class SymbolTable {
         classes = new HashMap<>();
 
         //Object class
-        ConcreteClass objectClass = new ConcreteClass(new Token("idClase", "Object", 0),new Token("pr_static", "static", 0));
+        ConcreteClass objectClass = new ConcreteClass(new Token("idClase", "Object", 0),new Token("null", "null", 0));
         Method debugPrint = new Method(new Token("idMetVar", "debugPrint", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         debugPrint.addParameters(new Parameter(new Token("idMetVar", "i", 0), new PrimitiveType(new Token("pr_int", "int", 0))));
         debugPrint.setHasBlock(true);
@@ -28,11 +28,11 @@ public class SymbolTable {
         classes.put("Object", objectClass);
 
         //String class
-        ConcreteClass stringClass = new ConcreteClass(new Token("idClase", "String", 0),new Token("pr_static", "static", 0));
+        ConcreteClass stringClass = new ConcreteClass(new Token("idClase", "String", 0),new Token("null", "null", 0));
         classes.put("String", stringClass);
 
         //System class
-        ConcreteClass systemClass = new ConcreteClass(new Token("idClase", "System", 0),new Token("pr_static", "static", 0));
+        ConcreteClass systemClass = new ConcreteClass(new Token("idClase", "System", 0),new Token("null", "null", 0));
 
         Method read = new Method(new Token("idMetVar", "read", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_int", "int", 0)));
         read.setHasBlock(true);

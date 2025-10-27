@@ -45,6 +45,11 @@ public class thisAccessNode extends AccessNode {
         this.chaining = chaining;
     }
 
+    @Override
+    public ChainedNode getChaining() {
+        return chaining;
+    }
+
     private void checkIsStaticMethod(Method currentMethod) throws SemanticException {
         if(currentMethod.getModifier() != null ) {
             if (currentMethod.getModifier().getLexeme().equals("static")) {

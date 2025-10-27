@@ -28,20 +28,19 @@ public class ReturnNode extends SentenceNode {
 
     @Override
     public void check() throws SemanticException {
+        Type expressionType = exp.check();
         if(returnMethodExpected.isPrimitive()) {
             if (voidReturnMethod()) {
-                if (!exp.check().getLexeme().equals(new EmptyExpression().getLexeme()))
+                if (!checkReturnVoidMethod(expressionType))
                     throw new SemanticException("Un metodo con retorno de tipo 'void' no debe tener return", token, token.getLineNumber());
             } else {
-                Type expressionType = exp.check();
-                if ((expressionType != null) && !returnMethodExpected.getLexeme().equals(expressionType.getLexeme())) {
+                if (!checkReturnMethodCoincides(expressionType)) {
                     throw new SemanticException("No coincide el retorno con el tipo de retorno del metodo", token, token.getLineNumber());
                 }
             }
         } else {
-            Type expressionType = exp.check();
             if(expressionType != null) {
-                if (!expressionType.conformsWith(returnMethodExpected)) {
+                if (!checkReturnMethodCoincidesClass(expressionType)) {
                     throw new SemanticException("El tipo de retorno no conforma con el tipo del método", token, token.getLineNumber());
                 }
             }
@@ -49,6 +48,18 @@ public class ReturnNode extends SentenceNode {
     }
 
     public boolean voidReturnMethod() {
-        return returnMethodExpected.getLexeme().equals(new VoidType(token.getLineNumber()).getLexeme());
+        return returnMethodExpected.itsCompatible(new VoidType(token.getLineNumber()));
+    }
+
+    public boolean checkReturnVoidMethod(Type expressionType) {
+        return (expressionType.itsCompatible(new EmptyExpression().check()));
+    }
+
+    public boolean checkReturnMethodCoincides(Type expressionType) {
+        return ((expressionType != null) && returnMethodExpected.getLexeme().equals(expressionType.getLexeme()));
+    }
+
+    public boolean checkReturnMethodCoincidesClass(Type expressionType) {
+        return expressionType.conformsWith(returnMethodExpected);
     }
 }

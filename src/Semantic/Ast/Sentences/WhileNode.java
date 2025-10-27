@@ -23,7 +23,7 @@ public class WhileNode extends SentenceNode{
     }
 
     public void booleanCondition() throws SemanticException {
-        if((expression.check() != null) && !(expression.check().getLexeme().equals(new BooleanType(token.getLineNumber()).getLexeme()))){
+        if((expression.check() != null) && !(expression.check().itsCompatible(new BooleanType(token.getLineNumber())))){
             throw new SemanticException("La condicion del while no es de tipo booleano", token, token.getLineNumber());
         }
     }

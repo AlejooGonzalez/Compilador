@@ -7,7 +7,7 @@ class C1 {
         var b = true && false;
         var s = "hola";
         var obj = new C1();
-        var r = obj.m(); // calling same-class method
+        var r = obj.m();
         return y;
     }
 }

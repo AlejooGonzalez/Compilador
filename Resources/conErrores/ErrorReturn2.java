@@ -4,6 +4,6 @@ class A {
     int a1;
 
     void m1() {
-        return false;
+        return 3;
     }
 }

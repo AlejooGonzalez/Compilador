@@ -25,7 +25,7 @@ public class ConstructorAccessNode extends AccessNode {
 
     @Override
     public Type check() throws SemanticException {
-        if(MainSemantic.ST.itIsAnExistingClass(classToken) == null){
+        if(!existClass()){
             throw new SemanticException("la clase a la cual hace referencia, no existe", classToken, classToken.getLineNumber());
         }
         ReferenceType referenceType = new ReferenceType(classToken);
@@ -52,5 +52,14 @@ public class ConstructorAccessNode extends AccessNode {
 
     public void setChaining(ChainedNode chaining) {
         this.chaining = chaining;
+    }
+
+    @Override
+    public ChainedNode getChaining() {
+        return chaining;
+    }
+
+    public boolean existClass(){
+        return (MainSemantic.ST.itIsAnExistingClass(classToken) != null);
     }
 }

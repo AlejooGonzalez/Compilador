@@ -31,10 +31,10 @@ public class ChainedCallNode extends ChainedNode {
         }
         Method method = leftClass.itsAnExisistingMethod(token);
         if (method == null) {
-            throw new SemanticException("El método no existe en la clase", leftToken, token.getLineNumber());
+            throw new SemanticException("El método no existe en la clase", token, token.getLineNumber());
         } else {
             if(method.isStaticMethod()) {
-                throw new SemanticException("No se puede invocar un método estático desde una instancia", leftToken, token.getLineNumber());
+                throw new SemanticException("No se puede invocar un método estático desde una instancia", token, token.getLineNumber());
             }
         }
         method.sameArguments(arguments, token);
@@ -50,19 +50,12 @@ public class ChainedCallNode extends ChainedNode {
         this.chaining = chaining;
     }
 
-    public void setArgumentList(List<ExpressionNode> arguments) {
-        this.arguments = arguments;
+    @Override
+    public ChainedNode getChaining() {
+        return chaining;
     }
 
-    public void checkArguments(Method method) throws SemanticException {
-        if(method.getParameters() != null && arguments == null){
-            throw new SemanticException("Parametros incompatibles", token, token.getLineNumber());
-        }
-        if(method.getParameters() == null && arguments != null){
-            throw new SemanticException("Parametros incompatibles", token, token.getLineNumber());
-        }
-        if(method.getParameters() != null && arguments != null){
-            method.sameArguments(arguments, token);
-        }
+    public void setArgumentList(List<ExpressionNode> arguments) {
+        this.arguments = arguments;
     }
 }

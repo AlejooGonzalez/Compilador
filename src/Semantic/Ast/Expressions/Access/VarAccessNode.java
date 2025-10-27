@@ -44,6 +44,11 @@ public class VarAccessNode extends AccessNode {
         this.chaining = chaining;
     }
 
+    @Override
+    public ChainedNode getChaining() {
+        return chaining;
+    }
+
     public void varIsParameter(){
         if(MainSemantic.ST.getCurrentMethod().getParameter(token.getLexeme()) != null) {
             returnType = MainSemantic.ST.getCurrentMethod().getParameter(token.getLexeme()).getType();

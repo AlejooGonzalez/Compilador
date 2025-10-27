@@ -8,4 +8,5 @@ import Semantic.Types.Type;
 public abstract class AccessNode extends OperandNode {
     abstract public Type check() throws SemanticException;
     abstract public void setChaining(ChainedNode chaining);
+    abstract public ChainedNode getChaining();
 }

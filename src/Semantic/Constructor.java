@@ -9,6 +9,8 @@ import java.util.HashMap;
 public class Constructor {
     private Token token;
     private HashMap<String, Parameter> parameters;
+    private Token classToken;
+    private BlockNode block;
 
     public Constructor(Token token) {
         this.token = token;
@@ -27,6 +29,10 @@ public class Constructor {
         return token;
     }
 
+    public void setClassName(Token classToken) {
+        this.classToken = classToken;
+    }
+
     public void addParameter(Parameter param) throws SemanticException {
         if (parameters.get(param.getLexeme()) == null) {
             parameters.put(param.getLexeme(), param);
@@ -36,8 +42,17 @@ public class Constructor {
     }
 
     public void itIsWellStated() throws SemanticException {
+        if (!token.getLexeme().equals(classToken.getLexeme())){
+            throw new SemanticException("Nombre incorrecto en constructor ",token, token.getLineNumber());
+        }
         for(Parameter p : parameters.values()){
             p.itIsWellStated();
+        }
+    }
+
+    public void check() throws SemanticException{
+        if(block != null){
+            block.check();
         }
     }
 }

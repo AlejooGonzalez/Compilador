@@ -1,3 +1,4 @@
+//[Error:+|5]
 // Error: expresión suelta como sentencia.
 class E15 {
     void m() {

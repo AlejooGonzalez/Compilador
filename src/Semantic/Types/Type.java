@@ -9,4 +9,5 @@ public interface Type {
     public String getLexeme();
     public boolean isPrimitive();
     public boolean conformsWith(Type other);
+    boolean itsCompatible(Type booleanType);
 }

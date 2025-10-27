@@ -22,7 +22,7 @@ public class MethodAccessNode extends AccessNode {
 
     @Override
     public Type check() throws SemanticException {
-        Method method = MainSemantic.ST.getCurrentClass().itsAnExisistingMethod(tokenIdMetVar); //Consultar si le puedo pasar class por parametro
+        Method method = MainSemantic.ST.getCurrentClass().itsAnExisistingMethod(tokenIdMetVar);
         if(method == null){
             throw new SemanticException("El metodo no existe", tokenIdMetVar, tokenIdMetVar.getLineNumber());
         } else {
@@ -46,5 +46,10 @@ public class MethodAccessNode extends AccessNode {
 
     public void setChaining(ChainedNode chaining) {
         this.chaining = chaining;
+    }
+
+    @Override
+    public ChainedNode getChaining() {
+        return chaining;
     }
 }

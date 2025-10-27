@@ -39,4 +39,9 @@ public class ChainedVariableNode extends ChainedNode {
     public void setChaining(ChainedNode chaining) {
         this.chaining = chaining;
     }
+
+    @Override
+    public ChainedNode getChaining() {
+        return chaining;
+    }
 }

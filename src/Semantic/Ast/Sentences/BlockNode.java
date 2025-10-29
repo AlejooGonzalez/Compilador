@@ -13,14 +13,12 @@ public class BlockNode extends SentenceNode {
     private List<SentenceNode> sentences;
     private Map<String, LocalVarNode> localVariables;
     private BlockNode parent;
-    private ConcreteClass concreteClass;
     private boolean itsChecked;
 
     public BlockNode() {
         this.sentences = new ArrayList<>();
         this.localVariables = new HashMap<>();
         this.itsChecked = false;
-        concreteClass = MainSemantic.ST.getCurrentClass();
     }
 
     public void addLocalVariables(String string, LocalVarNode localVarNode) throws SemanticException {

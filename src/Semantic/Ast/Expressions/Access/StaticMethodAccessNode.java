@@ -17,7 +17,7 @@ public class StaticMethodAccessNode extends AccessNode{
     private List<ExpressionNode> parameters;
     private ChainedNode chaining;
 
-    public  StaticMethodAccessNode(Token staticClassToken, Token staticMethodToken, List<ExpressionNode> parameters) {
+    public StaticMethodAccessNode(Token staticClassToken, Token staticMethodToken, List<ExpressionNode> parameters) {
         this.staticClassToken = staticClassToken;
         this.staticMethodToken = staticMethodToken;
         this.parameters = parameters;

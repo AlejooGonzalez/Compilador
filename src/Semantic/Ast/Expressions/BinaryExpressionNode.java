@@ -2,9 +2,7 @@ package Semantic.Ast.Expressions;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
-import Semantic.Types.BooleanType;
-import Semantic.Types.IntType;
-import Semantic.Types.Type;
+import Semantic.Types.*;
 
 public class BinaryExpressionNode extends CompoundExpressionNode {
     private ExpressionNode leftSide;
@@ -38,8 +36,26 @@ public class BinaryExpressionNode extends CompoundExpressionNode {
                 }
             }
             if (equalOrDifferentOperator()) {
-                if (rightType.conformsWith(leftType) || leftType.conformsWith(rightType) ) {
-                    return new BooleanType(operator.getLineNumber());
+                if (!rightType.getLexeme().equals("null") && !leftType.getLexeme().equals("null")) {
+                    if (!leftType.isPrimitive() && !rightType.isPrimitive()) {
+                        if (rightType.conformsWith(leftType) || leftType.conformsWith(rightType)) {
+                            return new BooleanType(operator.getLineNumber());
+                        }
+                    } else {
+                        if ((!rightType.getLexeme().equals("void") && !leftType.getLexeme().equals("void"))) {
+                            if ((rightType.conformsWith(leftType) || leftType.conformsWith(rightType))) {
+                                return new BooleanType(operator.getLineNumber());
+                            }
+                        }
+                    }
+                } else {
+                    if (!leftType.isPrimitive() && rightType.getLexeme().equals("null") || !rightType.isPrimitive() && leftType.getLexeme().equals("null")) {
+                        return new BooleanType(operator.getLineNumber());
+                    } else {
+                        if (rightType.getLexeme().equals("null") && leftType.getLexeme().equals("null")) {
+                            return new BooleanType(operator.getLineNumber());
+                        }
+                    }
                 }
             }
         }
@@ -62,6 +78,10 @@ public class BinaryExpressionNode extends CompoundExpressionNode {
 
     public boolean itsBoolean(Type type){
         return type.itsCompatible(new BooleanType(operator.getLineNumber()));
+    }
+
+    public boolean itsReference(Type type){
+        return type.itsCompatible(new ReferenceType(leftSide.getToken()));
     }
 
     public boolean arithmeticalOperator(){

@@ -14,10 +14,12 @@ public class BlockNode extends SentenceNode {
     private Map<String, LocalVarNode> localVariables;
     private BlockNode parent;
     private ConcreteClass concreteClass;
+    private boolean itsChecked;
 
     public BlockNode() {
         this.sentences = new ArrayList<>();
         this.localVariables = new HashMap<>();
+        this.itsChecked = false;
         concreteClass = MainSemantic.ST.getCurrentClass();
     }
 
@@ -48,10 +50,15 @@ public class BlockNode extends SentenceNode {
         for(SentenceNode s: sentences) {
             s.check();
         }
+        itsChecked = true;
         MainSemantic.ST.setCurrentBlock(parent);
     }
 
     public BlockNode getParent() {
         return parent;
+    }
+
+    public boolean getItsChecked() {
+        return itsChecked;
     }
 }

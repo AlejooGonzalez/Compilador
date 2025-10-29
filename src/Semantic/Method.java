@@ -122,7 +122,7 @@ public class Method {
 
     public void sentenceCheck() throws SemanticException {
         MainSemantic.ST.setCurrentMethod(this);
-        if(block != null) {
+        if(block != null && !block.getItsChecked()) {
             block.check();
         }
     }
@@ -151,8 +151,18 @@ public class Method {
             for (ExpressionNode arg : args) {
                 Type argType = arg.check();
                 Type formalType = formalIt.next().getType();
-                if (!formalType.conformsWith(argType)) {
-                    throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", t, t.getLineNumber());
+                if (argType.isPrimitive() && formalType.isPrimitive()) {
+                    if (!argType.itsCompatible(formalType)) {
+                        throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", t, t.getLineNumber());
+                    }
+                } else {
+                    if (!argType.isPrimitive() && !formalType.isPrimitive()) {
+                        if (!formalType.conformsWith(argType)) {
+                            throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", t, t.getLineNumber());
+                        }
+                    } else {
+                        throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", t, t.getLineNumber());
+                    }
                 }
             }
         } else {

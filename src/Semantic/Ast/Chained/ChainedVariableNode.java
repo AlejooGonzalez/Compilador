@@ -26,7 +26,7 @@ public class ChainedVariableNode extends ChainedNode {
         }
         Attribute attr = leftClass.itsAnExisistingAttribute(token);
         if (attr == null) {
-            throw new SemanticException("El atributo no existe en la clase", leftToken, token.getLineNumber());
+            throw new SemanticException("El atributo no existe en la clase", token, token.getLineNumber());
         }
         Type attrType = attr.getType();
         if (chaining != null) {

@@ -41,4 +41,8 @@ public class ExpressionParenthesesAccess extends AccessNode {
     public ChainedNode getChaining() {
         return chaining;
     }
+
+    public ExpressionNode getExpression() {
+        return expression;
+    }
 }

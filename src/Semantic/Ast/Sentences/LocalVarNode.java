@@ -3,9 +3,12 @@ package Semantic.Ast.Sentences;
 import Exceptions.SemanticException;
 import Lexical.Token;
 import Main.MainSemantic;
+import Semantic.Ast.Expressions.Access.ExpressionParenthesesAccess;
+import Semantic.Ast.Expressions.AssignationExpressionNode;
 import Semantic.Ast.Expressions.ExpressionNode;
 import Semantic.Types.NullType;
 import Semantic.Types.Type;
+import Semantic.Types.VoidType;
 
 public class LocalVarNode extends SentenceNode {
     private Token token;
@@ -28,6 +31,14 @@ public class LocalVarNode extends SentenceNode {
         type = expression.check();
         if(localVarNullValued()){
             throw new SemanticException("Una variable no puede tener un valor nulo",  token, token.getLineNumber());
+        }
+        if(localVarVoidValued()){
+            throw new SemanticException("Una variable no puede tener un valor void",  token, token.getLineNumber());
+        }
+        if (expression instanceof ExpressionParenthesesAccess paramReference){
+            if (paramReference.getExpression() instanceof AssignationExpressionNode){
+                throw new SemanticException("Expresion invalida a izquierda de asignacion: ", token ,token.getLineNumber());
+            }
         }
         MainSemantic.ST.getCurrentBlock().addLocalVariables(token.getLexeme(), this);
     }
@@ -72,5 +83,9 @@ public class LocalVarNode extends SentenceNode {
 
     public boolean localVarNullValued(){
         return type.itsCompatible(new NullType(token.getLineNumber()));
+    }
+
+    public boolean localVarVoidValued(){
+        return type.itsCompatible(new VoidType(token.getLineNumber()));
     }
 }

@@ -39,7 +39,7 @@ public class ReturnNode extends SentenceNode {
                 }
             }
         } else {
-            if(expressionType != null) {
+            if(!expressionType.getLexeme().equals("null")) {
                 if (!checkReturnMethodCoincidesClass(expressionType)) {
                     throw new SemanticException("El tipo de retorno no conforma con el tipo del método", token, token.getLineNumber());
                 }
@@ -60,6 +60,6 @@ public class ReturnNode extends SentenceNode {
     }
 
     public boolean checkReturnMethodCoincidesClass(Type expressionType) {
-        return expressionType.conformsWith(returnMethodExpected);
+        return returnMethodExpected.conformsWith(expressionType);
     }
 }

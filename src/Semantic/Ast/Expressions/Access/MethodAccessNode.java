@@ -23,13 +23,16 @@ public class MethodAccessNode extends AccessNode {
     @Override
     public Type check() throws SemanticException {
         Method method = MainSemantic.ST.getCurrentClass().itsAnExisistingMethod(tokenIdMetVar);
-        if(method == null){
+        if (method == null) {
             throw new SemanticException("El metodo no existe", tokenIdMetVar, tokenIdMetVar.getLineNumber());
         } else {
             method.sameArguments(currentParamList, tokenIdMetVar);
         }
-        if(chaining != null){
-            return chaining.check(method.getReturnType(),tokenIdMetVar);
+        if (itsAnStaticMethod()) {
+            throw new SemanticException("No se puede acceder a un metodo en un metodo estatico", tokenIdMetVar, tokenIdMetVar.getLineNumber());
+        }
+        if (chaining != null) {
+            return chaining.check(method.getReturnType(), tokenIdMetVar);
         }
         return method.getReturnType();
     }
@@ -51,5 +54,14 @@ public class MethodAccessNode extends AccessNode {
     @Override
     public ChainedNode getChaining() {
         return chaining;
+    }
+
+    public boolean itsAnStaticMethod() {
+        if (MainSemantic.ST.getCurrentMethod().getModifier() != null) {
+            if (MainSemantic.ST.getCurrentMethod().getModifier().getLexeme().equals("static")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

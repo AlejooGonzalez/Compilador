@@ -10,7 +10,7 @@ import Semantic.Ast.Expressions.Access.StaticMethodAccessNode;
 import Semantic.Ast.Expressions.AssignationExpressionNode;
 import Semantic.Ast.Expressions.ExpressionNode;
 
-public class AssignationNode extends SentenceNode{
+public class AssignationNode extends SentenceNode {
     Token token;
     ExpressionNode expressionNode;
 
@@ -25,10 +25,10 @@ public class AssignationNode extends SentenceNode{
         if (!sentenceWithEffect()) {
             throw new SemanticException("Expresión no permitida como sentencia (no tiene efecto)", expressionNode.getToken(), token.getLineNumber());
         }
-        lastIsMethod();
+        checkChainingEndsInMethod();
     }
 
-    private void lastIsMethod() throws SemanticException {
+    private void checkChainingEndsInMethod() throws SemanticException {
         if (expressionNode instanceof AccessNode access) {
             if (access.getChaining() != null) {
                 if (!endsInMethod(access.getChaining())) {
@@ -38,15 +38,32 @@ public class AssignationNode extends SentenceNode{
         }
     }
 
-        private boolean endsInMethod(ChainedNode node){
-            ChainedNode current = node;
-            while (current.getChaining() != null) {
-                current = current.getChaining();
-            }
-            return current instanceof ChainedCallNode;
+    private boolean endsInMethod(ChainedNode node) {
+        ChainedNode current = node;
+        while (current.getChaining() != null) {
+            current = current.getChaining();
         }
-
-        public boolean sentenceWithEffect(){
-            return (expressionNode instanceof AssignationExpressionNode || expressionNode instanceof MethodAccessNode || expressionNode instanceof StaticMethodAccessNode);
-        }
+        return current instanceof ChainedCallNode;
     }
+
+    public boolean sentenceWithEffect() {
+        if (expressionNode instanceof AssignationExpressionNode || expressionNode instanceof MethodAccessNode || expressionNode instanceof StaticMethodAccessNode) {
+            return true;
+        }
+        if (expressionNode instanceof AccessNode access) {
+            return chainingEndsInMethod(access);
+        }
+        return false;
+    }
+
+    private boolean chainingEndsInMethod(AccessNode access) {
+        if (access.getChaining() == null) {
+            return false;
+        }
+        ChainedNode current = access.getChaining();
+        while (current.getChaining() != null) {
+            current = current.getChaining();
+        }
+        return current instanceof ChainedCallNode;
+    }
+}

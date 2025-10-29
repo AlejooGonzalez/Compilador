@@ -52,7 +52,7 @@ public class ReferenceType implements Type{
         }
 
         Set<String> visited = new HashSet<>();
-        ConcreteClass current = classes.get(myName);
+        ConcreteClass current = classes.get(otherName);
 
         while (current != null && !visited.contains(current.getLexeme())) {
             visited.add(current.getLexeme());
@@ -61,7 +61,7 @@ public class ReferenceType implements Type{
             if (parentToken == null)
                 break;
 
-            if (parentToken.getLexeme().equals(otherName))
+            if (parentToken.getLexeme().equals(myName))
                 return true;
 
             current = classes.get(parentToken.getLexeme());

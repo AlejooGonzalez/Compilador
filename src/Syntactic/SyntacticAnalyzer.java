@@ -21,7 +21,6 @@ import Semantic.Types.Type;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class SyntacticAnalyzer {
@@ -791,9 +790,8 @@ public class SyntacticAnalyzer {
     private  List<ExpressionNode> listaExpsOpcional() throws LexicalException, SyntacticException, IOException {
         List<ExpressionNode> paramList = new ArrayList<>();
         if (firsts.isFirst("expresion", actualToken.getTokenType())) {
-            ExpressionNode expressionNode = expresion();
-            paramList = listaExpsAux();
-            paramList.add(expressionNode);
+            paramList.add(expresion());
+            paramList.addAll(listaExpsAux());
         }
         return paramList;
     }
@@ -802,9 +800,8 @@ public class SyntacticAnalyzer {
         List<ExpressionNode> paramList = new ArrayList<>();
         if (Objects.equals(actualToken.getTokenType(), "pnt_coma")) {
             match("pnt_coma");
-            ExpressionNode expressionNode = expresion();
-            paramList = listaExpsAux();
-            paramList.add(expressionNode);
+            paramList.add(expresion());
+            paramList.addAll(listaExpsAux());
         }
         return paramList;
     }

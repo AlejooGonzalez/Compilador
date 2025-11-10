@@ -27,9 +27,15 @@ public class AssignationExpressionNode extends ExpressionNode {
         if (!leftSideItsVarOrAttribute()) {
             throw new SemanticException("El lado izquierdo de una asignación debe ser una variable o atributo", token, token.getLineNumber());
         }
-        if(!rightSideType.itsCompatible(leftSideType)) {
-            if (!conformsWithAndNullCheck(leftSideType, rightSideType)) {
+        if(leftSideType.isPrimitive() && rightSideType.isPrimitive()){
+            if(!rightSideType.itsCompatible(leftSideType)) {
                 throw new SemanticException("Asignacion de distintos tipos no valida", token, token.getLineNumber());
+            }
+        } else {
+            if (!rightSideType.itsCompatible(leftSideType)) {
+                if (!conformsWithAndNullCheck(leftSideType, rightSideType)) {
+                    throw new SemanticException("Asignacion de distintos tipos no valida", token, token.getLineNumber());
+                }
             }
         }
         if (rightSide instanceof ExpressionParenthesesAccess paramReference){

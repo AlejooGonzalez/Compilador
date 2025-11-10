@@ -42,7 +42,7 @@ public class ReferenceType implements Type{
         String myName = this.getLexeme();
         String otherName = other.getLexeme();
 
-        if (myName.equals("null") || myName.equals(otherName)) {
+        if (otherName.equals("null") || myName.equals(otherName)) {
             return true;
         }
 

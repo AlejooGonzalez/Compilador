@@ -5,6 +5,7 @@ import Lexical.Token;
 import Semantic.Ast.Chained.ChainedCallNode;
 import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Expressions.Access.AccessNode;
+import Semantic.Ast.Expressions.Access.ConstructorAccessNode;
 import Semantic.Ast.Expressions.Access.MethodAccessNode;
 import Semantic.Ast.Expressions.Access.StaticMethodAccessNode;
 import Semantic.Ast.Expressions.AssignationExpressionNode;
@@ -47,7 +48,7 @@ public class AssignationNode extends SentenceNode {
     }
 
     public boolean sentenceWithEffect() {
-        if (expressionNode instanceof AssignationExpressionNode || expressionNode instanceof MethodAccessNode || expressionNode instanceof StaticMethodAccessNode) {
+        if (expressionNode instanceof AssignationExpressionNode || expressionNode instanceof MethodAccessNode || expressionNode instanceof StaticMethodAccessNode || expressionNode instanceof ConstructorAccessNode) {
             return true;
         }
         if (expressionNode instanceof AccessNode access) {

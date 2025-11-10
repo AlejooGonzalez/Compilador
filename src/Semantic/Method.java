@@ -156,7 +156,7 @@ public class Method {
                         throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", t, t.getLineNumber());
                     }
                 } else {
-                    if (!argType.isPrimitive() && !formalType.isPrimitive()) {
+                    if (!formalType.isPrimitive()) {
                         if (!formalType.conformsWith(argType)) {
                             throw new SemanticException("No coincide el tipo de parametros con el metodo llamado", t, t.getLineNumber());
                         }

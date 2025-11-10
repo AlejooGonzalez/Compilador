@@ -8,7 +8,7 @@ public class EmptyExpression extends ExpressionNode {
 
     @Override
     public Type check() {
-        return new PrimitiveType(new Token("pr_universal", "universal",0));
+        return new PrimitiveType(new Token("universal", "universal",0));
     }
 
     @Override

@@ -27,10 +27,10 @@ public class MethodAccessNode extends AccessNode {
             throw new SemanticException("El metodo no existe", tokenIdMetVar, tokenIdMetVar.getLineNumber());
         } else {
             method.sameArguments(currentParamList, tokenIdMetVar);
-        }
+        } /*
         if (itsAnStaticMethod()) {
             throw new SemanticException("No se puede acceder a un metodo en un metodo estatico", tokenIdMetVar, tokenIdMetVar.getLineNumber());
-        }
+        } */
         if (chaining != null) {
             return chaining.check(method.getReturnType(), tokenIdMetVar);
         }

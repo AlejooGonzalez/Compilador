@@ -5,6 +5,11 @@ class A{
     boolean a1;
     B a2;
 
+    void b1(){
+        var v1 = 3;
+    }
+
+
 void m1(int p1)
 {
     v1 = m2(p1+(v1-10), a2, a2);

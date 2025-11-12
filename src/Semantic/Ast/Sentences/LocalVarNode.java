@@ -24,9 +24,10 @@ public class LocalVarNode extends SentenceNode {
         if(localVarDeclaratedInParameters()){
             throw new SemanticException("La variable ya fue declarada en los parametros", token, token.getLineNumber());
         }
+        /*
         if(localVarDeclaratedInAttributes()){
             throw new SemanticException("Local Var ya declarada en atributos", token, token.getLineNumber());
-        }
+        } */
         checkLocalVarInParentNode();
         type = expression.check();
         if(localVarNullValued()){

@@ -7,10 +7,15 @@ import Lexical.LexicalAnalyzer;
 import Semantic.SymbolTable;
 import SourceManager.SourceManagerImplementation;
 import Syntactic.SyntacticAnalyzer;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class MainSemantic {
     public static SymbolTable ST;
+    static String outputFileName;
 
     public static void main(String[] args)  {
         SourceManagerImplementation sourceManager = new SourceManagerImplementation();
@@ -23,6 +28,7 @@ public class MainSemantic {
 
         try {
             sourceManager.open(args[0]);
+            outputFileName = args[1];
             lexer = new LexicalAnalyzer(sourceManager);
         } catch (IOException e) { throw new RuntimeException(e);}
 
@@ -45,10 +51,13 @@ public class MainSemantic {
             try {
                 ST.itIsWellStated();
                 ST.consolidate();
-                 ST.sentenceCheck();
+                ST.sentenceCheck();
+                generate(outputFileName);
             } catch (SemanticException e) {
                 e.getErrorMessage();
                 noMistakes = false;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -59,5 +68,31 @@ public class MainSemantic {
         try {
             sourceManager.close();
         } catch (IOException e) { throw new RuntimeException(e);}
+    }
+
+    private static void generate(String outputFileName) throws IOException, SemanticException {
+        File file;
+        FileWriter writer;
+        BufferedWriter bufferedWriter;
+        ST.generate();
+
+        try{
+            if(outputFileName == null){
+                file = new File("Output_File.txt");
+            } else {
+                file = new File(outputFileName);
+            }
+            writer = new FileWriter(file);
+            bufferedWriter = new BufferedWriter(writer);
+
+            for(String instruction : ST.getInstructionsList()){
+                writer.write(instruction);
+                writer.write("\n");
+            }
+            writer.close();
+            bufferedWriter.close();
+        } catch (Exception e){
+            System.out.println("Error al generar el archivo de salida");
+        }
     }
 }

@@ -4,4 +4,5 @@ import Exceptions.SemanticException;
 
 public abstract class SentenceNode {
     abstract public void check() throws SemanticException;
+    abstract public void generate();
 }

@@ -46,6 +46,28 @@ public class ConstructorAccessNode extends AccessNode {
         return classToken;
     }
 
+    @Override
+    public void generate() {
+        MainSemantic.ST.getInstructionsList().add("    RMEM 1 ; Reservo puntero");
+        int auxClass = constructorClass.getLastAttributeOffset() + 1;
+        MainSemantic.ST.getInstructionsList().add("    PUSH " + auxClass);
+        MainSemantic.ST.getInstructionsList().add("    PUSH simple_malloc ; Push direccion de metodo");
+        MainSemantic.ST.getInstructionsList().add("    CALL");
+        MainSemantic.ST.getInstructionsList().add("    DUP ; Duplico la referencia al objeto");
+        MainSemantic.ST.getInstructionsList().add("    PUSH "+ MainSemantic.ST.getCurrentClass().getVTable() +" ; Etiqueta de la VT");
+        MainSemantic.ST.getInstructionsList().add("    STOREREF 0 ; Guardo VT en CIR, consumiendo una de las referencias");
+        MainSemantic.ST.getInstructionsList().add("    DUP ; Duplico this, para metodo de constructor");
+        for (ExpressionNode p : arguments) {
+            p.generate();
+            MainSemantic.ST.getInstructionsList().add("    SWAP ; Muevo this");
+        }
+        MainSemantic.ST.getInstructionsList().add("    PUSH "+classToken.getLexeme()+" ; Direccion del constructor");
+        MainSemantic.ST.getInstructionsList().add("    CALL ; Llama al metodo");
+
+        if (chaining != null)
+            chaining.generate();
+    }
+
     public void setArguments(List<ExpressionNode> arguments) {
         this.arguments = arguments;
     }
@@ -61,5 +83,9 @@ public class ConstructorAccessNode extends AccessNode {
 
     public boolean existClass(){
         return (MainSemantic.ST.itIsAnExistingClass(classToken) != null);
+    }
+
+    public void setConstructorClass(ConcreteClass constructorClass) {
+        this.constructorClass = constructorClass;
     }
 }

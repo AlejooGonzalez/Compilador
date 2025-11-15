@@ -29,6 +29,11 @@ public class AssignationNode extends SentenceNode {
         checkChainingEndsInMethod();
     }
 
+    @Override
+    public void generate() {
+
+    }
+
     private void checkChainingEndsInMethod() throws SemanticException {
         if (expressionNode instanceof AccessNode access) {
             if (access.getChaining() != null) {

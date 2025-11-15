@@ -47,6 +47,11 @@ public class ReturnNode extends SentenceNode {
         }
     }
 
+    @Override
+    public void generate() {
+
+    }
+
     public boolean voidReturnMethod() {
         return returnMethodExpected.itsCompatible(new VoidType(token.getLineNumber()));
     }

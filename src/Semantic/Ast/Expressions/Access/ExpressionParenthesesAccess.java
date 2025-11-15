@@ -33,6 +33,14 @@ public class ExpressionParenthesesAccess extends AccessNode {
         return null;
     }
 
+    @Override
+    public void generate() {
+        expression.generate();
+        if(chaining != null) {
+            chaining.generate();
+        }
+    }
+
     public void setChaining(ChainedNode chaining) {
         this.chaining = chaining;
     }

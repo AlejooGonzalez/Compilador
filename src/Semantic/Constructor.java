@@ -2,6 +2,7 @@ package Semantic;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Ast.Sentences.BlockNode;
 
 import java.util.HashMap;
@@ -54,5 +55,24 @@ public class Constructor {
         if(block != null){
             block.check();
         }
+    }
+
+    public void generate(){
+        MainSemantic.ST.setCurrentConstructor(this);
+        int par = parameters.size() + 1;
+
+        MainSemantic.ST.getInstructionsList().add(".CODE");
+        MainSemantic.ST.getInstructionsList().add("cnst_" + token.getLexeme() + ": ");
+        MainSemantic.ST.getInstructionsList().add("    LOADFP ; Guarda ED");
+        MainSemantic.ST.getInstructionsList().add("    LOADSP ; Guarda SP");
+        MainSemantic.ST.getInstructionsList().add("    STOREFP ; Corre FP al SP");
+
+        if(block != null) {
+            block.generate();
+        }
+
+        MainSemantic.ST.getInstructionsList().add("    STOREFP ; Usa ED para volver a RA llamador");
+        MainSemantic.ST.getInstructionsList().add("    RET " + par);
+        MainSemantic.ST.getInstructionsList().add("");
     }
 }

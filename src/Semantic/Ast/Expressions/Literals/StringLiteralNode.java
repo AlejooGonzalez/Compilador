@@ -1,6 +1,7 @@
 package Semantic.Ast.Expressions.Literals;
 
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Expressions.Access.AccessNode;
 import Semantic.Types.ReferenceType;
@@ -34,5 +35,10 @@ public class StringLiteralNode extends AccessNode {
     @Override
     public Token getToken() {
         return token;
+    }
+
+    @Override
+    public void generate() {
+        MainSemantic.ST.getInstructionsList().add("PUSH "+token.getLexeme());
     }
 }

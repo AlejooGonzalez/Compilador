@@ -2,6 +2,7 @@ package Semantic.Ast.Expressions;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Types.*;
 
 public class BinaryExpressionNode extends CompoundExpressionNode {
@@ -70,6 +71,40 @@ public class BinaryExpressionNode extends CompoundExpressionNode {
     @Override
     public Token getToken() {
         return operator;
+    }
+
+    @Override
+    public void generate() {
+        leftSide.generate();
+        rightSide.generate();
+        switch (operator.getLexeme()) {
+            case "+":
+                MainSemantic.ST.getInstructionsList().add("ADD");
+            case "-":
+                MainSemantic.ST.getInstructionsList().add("SUB");
+            case "*":
+                MainSemantic.ST.getInstructionsList().add("MUL");
+            case "/":
+                MainSemantic.ST.getInstructionsList().add("DIV");
+            case "%":
+                MainSemantic.ST.getInstructionsList().add("MOD");
+            case "<":
+                MainSemantic.ST.getInstructionsList().add("LT");
+            case ">":
+                MainSemantic.ST.getInstructionsList().add("GT");
+            case "<=":
+                MainSemantic.ST.getInstructionsList().add("LE");
+            case ">=":
+                MainSemantic.ST.getInstructionsList().add("GE");
+            case "==":
+                MainSemantic.ST.getInstructionsList().add("EQ");
+            case "!=":
+                MainSemantic.ST.getInstructionsList().add("NE");
+            case "&&":
+                MainSemantic.ST.getInstructionsList().add("AND");
+            case "||":
+                MainSemantic.ST.getInstructionsList().add("OR");
+        }
     }
 
     public boolean itsInt(Type type){

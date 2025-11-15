@@ -41,6 +41,11 @@ public class thisAccessNode extends AccessNode {
         return tokenThis;
     }
 
+    @Override
+    public void generate() {
+
+    }
+
     public void setChaining(ChainedNode chaining) {
         this.chaining = chaining;
     }

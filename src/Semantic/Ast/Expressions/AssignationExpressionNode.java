@@ -56,6 +56,11 @@ public class AssignationExpressionNode extends ExpressionNode {
         return token;
     }
 
+    @Override
+    public void generate() {
+
+    }
+
     private boolean endsInAttribute(AccessNode access) {
         if (access.getChaining() == null) {
             return false;

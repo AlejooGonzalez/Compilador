@@ -5,4 +5,9 @@ public class EmptySentenceNode extends SentenceNode{
 
     @Override
     public void check() { }
+
+    @Override
+    public void generate() {
+        ;
+    }
 }

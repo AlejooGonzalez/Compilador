@@ -27,6 +27,11 @@ public class IfNode extends SentenceNode{
         elseBody.check();
     }
 
+    @Override
+    public void generate() {
+
+    }
+
     public boolean booleanCondition() throws SemanticException {
         return condition.check().getLexeme().equals(new BooleanType(ifToken.getLineNumber()).getLexeme());
         }

@@ -8,4 +8,5 @@ public abstract class ExpressionNode {
     abstract public Type check() throws SemanticException;
     public abstract int getLine();
     public abstract Token getToken();
+    public abstract void generate();
 }

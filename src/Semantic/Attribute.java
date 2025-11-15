@@ -7,6 +7,8 @@ import Semantic.Types.Type;
 public class Attribute {
     private Token token;
     private Type type;
+    private int offset;
+    private boolean inherited = false;
 
     public Attribute(Token token,  Type type) {
         this.token = token;
@@ -32,5 +34,21 @@ public class Attribute {
 
     public Type getType() {
         return type;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void markAsInherited() {
+        inherited = true;
+    }
+
+    public boolean isInherited() {
+        return inherited;
     }
 }

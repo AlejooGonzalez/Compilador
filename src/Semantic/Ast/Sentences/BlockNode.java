@@ -59,4 +59,17 @@ public class BlockNode extends SentenceNode {
     public boolean getItsChecked() {
         return itsChecked;
     }
+
+    public void generate(){
+        MainSemantic.ST.setCurrentBlock(this);
+        for (SentenceNode sentence : sentences) {
+            sentence.generate();
+        }
+        if (!localVariables.isEmpty()) {
+            int count = localVariables.size();
+            MainSemantic.ST.getInstructionsList().add("; Libero " + count + " variables locales del bloque");
+            MainSemantic.ST.getInstructionsList().add("FMEM " + count + "   ; Libero memoria local");
+        }
+        MainSemantic.ST.setCurrentBlock(parent);
+    }
 }

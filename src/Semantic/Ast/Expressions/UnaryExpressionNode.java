@@ -2,6 +2,7 @@ package Semantic.Ast.Expressions;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Types.BooleanType;
 import Semantic.Types.IntType;
 import Semantic.Types.Type;
@@ -40,6 +41,18 @@ public class UnaryExpressionNode extends CompoundExpressionNode {
     @Override
     public Token getToken() {
         return operator;
+    }
+
+    @Override
+    public void generate() { //FALTA ++ y --
+        rightSide.generate();
+        if(operator.getLexeme().equals("+")){
+            ;
+        } else if(operator.getLexeme().equals("-")){
+            MainSemantic.ST.getInstructionsList().add("NEG;");
+        } else {
+            MainSemantic.ST.getInstructionsList().add("NOT;");
+        }
     }
 
     public boolean opIsAritmetic(){

@@ -47,6 +47,27 @@ public class MethodAccessNode extends AccessNode {
         return tokenIdMetVar;
     }
 
+    @Override
+    public void generate() {
+        Method m = MainSemantic.ST.getCurrentClass().itsAnExisistingMethod(tokenIdMetVar);
+        if (currentParamList != null) {
+            for (ExpressionNode exp : currentParamList) {
+                exp.generate();
+            }
+        }
+        MainSemantic.ST.getInstructionsList().add("LOAD 3   ; cargo THIS implícito para la llamada");
+        int offset = m.getOffset();
+        MainSemantic.ST.getInstructionsList().add("LOAD 3                  ; cargo THIS");
+        MainSemantic.ST.getInstructionsList().add("LOADREF 0               ; cargo PTR a la VT del objeto");
+        MainSemantic.ST.getInstructionsList().add("LOADREF " + offset + "  ; cargo dirección del método dinámico");
+        MainSemantic.ST.getInstructionsList().add("CALL                    ; llamada dinámica");
+
+         if (chaining != null) {
+            chaining.generate();
+        }
+
+    }
+
     public void setChaining(ChainedNode chaining) {
         this.chaining = chaining;
     }

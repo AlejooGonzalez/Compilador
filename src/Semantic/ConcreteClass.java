@@ -4,7 +4,9 @@ import Exceptions.SemanticException;
 import Lexical.Token;
 import Main.MainSemantic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class ConcreteClass {
@@ -16,13 +18,19 @@ public class ConcreteClass {
         private HashMap<String, Attribute> attributes;
         private boolean consolidated = false;
         private boolean checkingCircular = false;
+        private int lastMethodOffset;
+        private int lastAttributeOffset;
+        private boolean ifOffseted = false;
+        private boolean methodsOffseted = false;
+        private boolean attributesOffseted = false;
+
 
     public ConcreteClass(Token token, Token modifier) {
             this.token = token;
             this.modifier = modifier;
             this.methods = new HashMap<>();
             this.attributes = new HashMap<>();
-        }
+    }
 
         public Token getToken() {
             return token;
@@ -168,6 +176,10 @@ public class ConcreteClass {
             return a.getToken().getLineNumber();
         }
 
+    public void setLastMethodOffset(int lastMethodOffset) {
+        this.lastMethodOffset = lastMethodOffset;
+    }
+
     private void consolidateMethod(ConcreteClass father) throws SemanticException {
         for (Method fatherMethod : father.getMethods().values()) {
             Method thisMethod = methods.get(fatherMethod.getLexeme());
@@ -248,6 +260,155 @@ public class ConcreteClass {
 
     public Attribute itsAnExisistingAttribute(Token method) {
         return attributes.get(method.getLexeme());
+    }
+
+    public int getLastMethodOffset() {
+        return lastMethodOffset;
+    }
+
+    public void generate() throws SemanticException {
+        MainSemantic.ST.setCurrentClass(this);
+        setAttributesOffsets();
+        setMethodsOffsets();
+        generateVT();
+        generateConstructorAndMethods();
+    }
+
+    public void generateConstructorAndMethods(){
+        constructor.generate();
+        MainSemantic.ST.getInstructionsList().add("");
+        if(itIsNotADefaultClass()){
+            for(Method methods: methods.values()) {
+                methods.generate();
+                MainSemantic.ST.getInstructionsList().add("");
+            }
+        }
+    }
+
+    private boolean itIsNotADefaultClass(){
+        return !(token.getLexeme().equals("String") || token.getLexeme().equals("Object") || token.getLexeme().equals("System"));
+    }
+
+
+    private void generateVT() {
+        HashMap<Integer, String> methodsLabelByOffset = new HashMap<>();
+        for (Method m : methods.values()) {
+            if (!m.isStaticMethod())
+                methodsLabelByOffset.put(m.getOffset(), m.getLexeme());
+        }
+        if (!methodsLabelByOffset.isEmpty()){
+            MainSemantic.ST.getInstructionsList().add(".data");
+            StringBuilder methodsLabels = new StringBuilder();
+            for (int i = 0; i < getLastMethodOffset(); i++) {
+                if (methodsLabelByOffset.get(i) != null)
+                    methodsLabels.append(methodsLabelByOffset.get(i));
+                else methodsLabels.append("0");
+                if (i != getLastMethodOffset()-1)
+                    methodsLabels.append(",");
+            }
+            MainSemantic.ST.getInstructionsList().add("VT_"+token.getLexeme()+": DW "+methodsLabels+" ; Etiquetas de metodo de " + token.getLexeme());
+        } else {
+            MainSemantic.ST.getInstructionsList().add(".data");
+            MainSemantic.ST.getInstructionsList().add("VT_"+token.getLexeme()+": NOP ; Clase sin metodos dinamicos");
+        }
+        MainSemantic.ST.getInstructionsList().add("");
+    }
+
+    private void setMethodsOffsets() {
+        if (methodsOffseted)
+            return;
+        if (inheritance != null && !inheritance.getLexeme().equals("Object")) {
+            ConcreteClass father = MainSemantic.ST.itIsAnExistingClass(inheritance);
+            if (father != null) {
+                father.setMethodsOffsets();
+            }
+        }
+        int nextOffset = 1;
+        if (inheritance != null) {
+            ConcreteClass father = MainSemantic.ST.itIsAnExistingClass(inheritance);
+            if (father != null) {
+                nextOffset = father.getLastMethodOffset();
+            }
+        }
+        for (Method m : methods.values()) {
+            int offsetAux = methodIsInherited(m);
+            if (offsetAux != 0) {
+                m.setOffset(offsetAux);
+            } else {
+                m.setOffset(nextOffset);
+                nextOffset++;
+            }
+        }
+        this.lastMethodOffset = nextOffset;
+        methodsOffseted = true;
+    }
+
+    private int methodIsInherited(Method m) {
+        int toReturn = 0;
+        if(inheritance != null) {
+            if (!inheritance.getLexeme().equals("Object")) {
+                ConcreteClass aux = MainSemantic.ST.itIsAnExistingClass(inheritance);
+                if(aux != null) {
+                    for (Method m2 : aux.getMethods().values()) {
+                        if (m.getLexeme().equals(m2.getLexeme())) {
+                            toReturn = m2.getOffset();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return toReturn;
+    }
+
+    private void setAttributesOffsets() {
+        int nextOffset = 1;
+        if (attributesOffseted)
+            return;
+        if (inheritance != null && !inheritance.getLexeme().equals("Object")) {
+            ConcreteClass father = MainSemantic.ST.itIsAnExistingClass(inheritance);
+            if (father != null) {
+                father.setAttributesOffsets();
+                nextOffset = father.getLastAttributeOffset() + 1;
+            }
+        }
+        for (Attribute a : attributes.values()) {
+            int offsetAux = attributeIsInherited(a);
+            if (offsetAux != 0) {
+                a.setOffset(offsetAux);
+            } else {
+                a.setOffset(nextOffset);
+                nextOffset++;
+            }
+        }
+        this.lastAttributeOffset = nextOffset;
+        attributesOffseted = true;
+    }
+
+    public int getLastAttributeOffset() {
+        return  lastAttributeOffset;
+    }
+
+    private int attributeIsInherited(Attribute m) {
+        int toReturn = 0;
+        if(inheritance != null) {
+            if (!inheritance.getLexeme().equals("Object")) {
+                ConcreteClass aux = MainSemantic.ST.itIsAnExistingClass(inheritance);
+                if(aux != null) {
+                    for (Attribute m2 : aux.getAttributes().values()) {
+                        if (m.getLexeme().equals(m2.getLexeme())) {
+                            toReturn = m2.getOffset();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return toReturn;
+    }
+
+    public String getVTable(){
+        return "lblVT"+token.getLexeme();
     }
 }
 

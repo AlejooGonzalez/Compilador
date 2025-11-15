@@ -18,12 +18,15 @@ public class Method {
     private HashMap<String,Parameter> parameters;
     private boolean hasBody;
     private BlockNode block;
+    private int offset;
+    private boolean inherited = false;
 
     public Method(Token token, Token modifier, Type returnType){
         this.token = token;
         this.modifier = modifier;
         this.returnType = returnType;
         parameters =  new HashMap<>();
+        offset = -1;
     }
 
     public HashMap<String,Parameter> getParameters() {
@@ -178,5 +181,43 @@ public class Method {
 
     public Parameter getParameter(String lexeme) {
         return parameters.get(lexeme);
+    }
+
+    public void generate() {
+        String methodLabel = MainSemantic.ST.getCurrentClass().getLexeme() + "_" + this.getLexeme();
+        MainSemantic.ST.getInstructionsList().add(".CODE");
+        MainSemantic.ST.getInstructionsList().add(methodLabel + ": NOP   ; comienzo del método " + this.getLexeme());
+
+        MainSemantic.ST.getInstructionsList().add("LOADFP    ; Cargo FP actual");
+        MainSemantic.ST.getInstructionsList().add("LOADSP    ; Cargo SP actual");
+        MainSemantic.ST.getInstructionsList().add("STOREFP   ; Actualizo FP para nuevo RA");
+
+        if (block != null) {
+            block.generate();
+        }
+
+        MainSemantic.ST.getInstructionsList().add("STOREFP   ; Restaura FP anterior");
+        MainSemantic.ST.getInstructionsList().add("RET " + parameters.size() + "   ; Retorna y limpia parámetros");
+        MainSemantic.ST.getInstructionsList().add("; Fin del método " + this.getLexeme());
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void markAsInherited() {
+        inherited = true;
+    }
+
+    public boolean isInherited() {
+        return inherited;
+    }
+
+    public boolean isDynamic() {
+        return modifier == null || (!modifier.getTokenType().equals("pr_static"));
     }
 }

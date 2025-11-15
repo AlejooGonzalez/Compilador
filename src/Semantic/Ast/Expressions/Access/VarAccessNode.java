@@ -40,6 +40,11 @@ public class VarAccessNode extends AccessNode {
         return token;
     }
 
+    @Override
+    public void generate() {
+
+    }
+
     public void setChaining(ChainedNode chaining) {
         this.chaining = chaining;
     }

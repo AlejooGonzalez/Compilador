@@ -21,6 +21,11 @@ public class EmptyExpression extends ExpressionNode {
         return null;
     }
 
+    @Override
+    public void generate() {
+
+    }
+
     public String getLexeme() {
         return "universal";
     }

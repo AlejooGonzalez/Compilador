@@ -74,4 +74,27 @@ public class StaticMethodAccessNode extends AccessNode{
             throw new SemanticException("El metodo no es estatico",  staticMethodToken, staticMethodToken.getLineNumber());
         }
     }
+
+    public void generate() {
+        String className = staticClassToken.getLexeme();
+        String methodName = staticMethodToken.getLexeme();
+        String label = className + "_" + methodName;
+
+        if(className.equals("void")){
+            MainSemantic.ST.getInstructionsList().add("RMEM 1");
+        }
+        if (parameters != null) {
+            for (ExpressionNode expr : parameters) {
+                expr.generate();
+            }
+        }
+
+        MainSemantic.ST.getInstructionsList().add("; Llamada a método estático " + label);
+        MainSemantic.ST.getInstructionsList().add("PUSH " + label + "   ; Apilo etiqueta del método estático");
+        MainSemantic.ST.getInstructionsList().add("CALL                ; Llamo al método estático");
+
+        if (chaining != null) {
+            chaining.generate();
+        }
+    }
 }

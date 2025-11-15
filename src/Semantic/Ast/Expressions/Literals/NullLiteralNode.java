@@ -1,6 +1,7 @@
 package Semantic.Ast.Expressions.Literals;
 
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Types.IntType;
 import Semantic.Types.NullType;
 import Semantic.Types.Type;
@@ -14,6 +15,11 @@ public class NullLiteralNode extends LiteralNode {
 
     public Token getToken() {
         return token;
+    }
+
+    @Override
+    public void generate() {
+        MainSemantic.ST.getInstructionsList().add("PUSH "+token.getLexeme());
     }
 
     public Type getType() {

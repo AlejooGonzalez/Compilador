@@ -1,0 +1,245 @@
+.CODE
+PUSH Init_main
+CALL
+HALT
+
+simple_heap_init: RET 0 ; Retorna inmediatamente
+simple_malloc: LOADFP    ; Inicialización unidad
+LOADSP
+STOREFP ; Finaliza inicialización del RA
+LOADHL	; hl
+DUP	; hl
+PUSH 1	; 1
+ADD	; hl+1
+STORE 4 ; Guarda el resultado (un puntero a la primer celda de la región de memoria)
+LOAD 3	; Carga la cantidad de celdas a alojar (parámetro que debe ser positivo)
+ADD
+STOREHL ; Mueve el heap limit (hl). Expande el heap
+STOREFP
+RET 1	; Retorna eliminando el parámetro)
+
+.DATA
+lblVT_Object: NOP
+
+.CODE
+lblConstructor@Object: LOADFP ; Apila el valor del registro fp
+LOADSP ; Apila el valor del registro sp
+STOREFP ; Almacena el tope de la pila en el registro fp
+FMEM 0
+STOREFP ; Almacena el tope de la pila en el registro fp
+RET 1 ; Libera los parametros y retorna de la unidad
+
+lblMetdebugPrint@Object: LOADFP ; Apila el valor del registro fp
+LOADSP
+STOREFP
+LOAD 3 ; Lee i
+IPRINT ; Imprime i
+STOREFP
+RET 1
+
+.DATA
+lblVTString: NOP
+
+.CODE
+lblConstructor@String: LOADFP ; Apila el valor del registro fp
+LOADSP ; Apila el valor del registro sp
+STOREFP ; Almacena el tope de la pila en el registro fp
+FMEM 0
+STOREFP ; Almacena el tope de la pila en el registro fp
+RET 1 ; Libera los parametros y retorna de la unidad
+
+.DATA
+lblVTSystem: NOP
+
+.CODE
+lblConstructor@System: LOADFP ; Apila el valor del registro fp
+LOADSP ; Apila el valor del registro sp
+STOREFP ; Almacena el tope de la pila en el registro fp
+FMEM 0
+STOREFP ; Almacena el tope de la pila en el registro fp
+RET 1 ; Libera los parametros y retorna de la unidad
+
+lblMetread@System: LOADFP
+LOADSP
+STOREFP
+READ ; Lee tope de la pila
+PUSH 48 ; Por ASCII
+SUB
+STORE 3 ; Guarda en retorno el tope
+STOREFP
+RET 0
+
+lblMetprintB@System: LOADFP
+LOADSP
+STOREFP
+LOAD 3 
+BPRINT 
+STOREFP
+RET 1
+
+lblMetprintC@System: LOADFP
+LOADSP
+STOREFP
+LOAD 3 
+CPRINT 
+STOREFP
+RET 1
+
+lblMetprintI@System: LOADFP
+LOADSP
+STOREFP
+LOAD 3 
+IPRINT 
+STOREFP
+RET 1
+
+lblMetprintS@System: LOADFP
+LOADSP
+STOREFP
+LOAD 3 
+SPRINT 
+STOREFP
+RET 1
+
+lblMetprintln@System: LOADFP
+LOADSP
+STOREFP
+PRNLN
+STOREFP
+RET 0
+
+lblMetprintBln@System: LOADFP
+LOADSP
+STOREFP
+LOAD 3 
+BPRINT 
+PRNLN
+STOREFP
+RET 1
+
+lblMetprintCln@System: LOADFP
+LOADSP
+STOREFP
+LOAD 3 
+CPRINT 
+PRNLN
+STOREFP
+RET 1
+
+lblMetprintIln@System:LOADFP
+LOADSP
+STOREFP
+LOAD 3 
+IPRINT 
+PRNLN
+STOREFP
+RET 1
+
+lblMetprintSln@System: LOADFP
+LOADSP
+STOREFP
+LOAD 3 
+SPRINT 
+PRNLN
+STOREFP
+RET 1
+
+.data
+VT_A: DW mc,0 ; Etiquetas de metodo de A
+
+.CODE
+cnst_A: 
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1
+
+
+.CODE
+A_mc: NOP   ; comienzo del método mc
+LOADFP    ; Cargo FP actual
+LOADSP    ; Cargo SP actual
+STOREFP   ; Actualizo FP para nuevo RA
+STOREFP   ; Restaura FP anterior
+RET 0   ; Retorna y limpia parámetros
+; Fin del método mc
+
+.CODE
+A_debugPrint: NOP   ; comienzo del método debugPrint
+LOADFP    ; Cargo FP actual
+LOADSP    ; Cargo SP actual
+STOREFP   ; Actualizo FP para nuevo RA
+STOREFP   ; Restaura FP anterior
+RET 1   ; Retorna y limpia parámetros
+; Fin del método debugPrint
+
+.data
+VT_Init: NOP ; Clase sin metodos dinamicos
+
+.CODE
+cnst_Init: 
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1
+
+
+.CODE
+Init_debugPrint: NOP   ; comienzo del método debugPrint
+LOADFP    ; Cargo FP actual
+LOADSP    ; Cargo SP actual
+STOREFP   ; Actualizo FP para nuevo RA
+STOREFP   ; Restaura FP anterior
+RET 1   ; Retorna y limpia parámetros
+; Fin del método debugPrint
+
+.CODE
+Init_main: NOP   ; comienzo del método main
+LOADFP    ; Cargo FP actual
+LOADSP    ; Cargo SP actual
+STOREFP   ; Actualizo FP para nuevo RA
+RMEM 1 ; Reserva memoria para la variable local a
+; Libero 1 variables locales del bloque
+FMEM 1   ; Libero memoria local
+STOREFP   ; Restaura FP anterior
+RET 0   ; Retorna y limpia parámetros
+; Fin del método main
+
+.data
+VT_Object: NOP ; Clase sin metodos dinamicos
+
+.CODE
+cnst_Object: 
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1
+
+
+.data
+VT_String: NOP ; Clase sin metodos dinamicos
+
+.CODE
+cnst_String: 
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1
+
+
+.data
+VT_System: NOP ; Clase sin metodos dinamicos
+
+.CODE
+cnst_System: 
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1
+
+

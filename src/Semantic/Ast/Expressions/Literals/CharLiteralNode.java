@@ -1,6 +1,7 @@
 package Semantic.Ast.Expressions.Literals;
 
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Types.CharType;
 import Semantic.Types.Type;
 
@@ -23,5 +24,10 @@ public class CharLiteralNode extends LiteralNode {
     @Override
     public Token getToken() {
         return token;
+    }
+
+    @Override
+    public void generate() {
+        MainSemantic.ST.getInstructionsList().add("PUSH "+token.getLexeme());
     }
 }

@@ -300,9 +300,12 @@ public class ConcreteClass {
             MainSemantic.ST.getInstructionsList().add(".data");
             StringBuilder methodsLabels = new StringBuilder();
             for (int i = 0; i < getLastMethodOffset(); i++) {
-                if (methodsLabelByOffset.get(i) != null)
+                if (methodsLabelByOffset.get(i) != null) {
+                    methodsLabels.append(token.getLexeme()).append("_");
                     methodsLabels.append(methodsLabelByOffset.get(i));
-                else methodsLabels.append("0");
+                }
+                else
+                    methodsLabels.append("0");
                 if (i != getLastMethodOffset()-1)
                     methodsLabels.append(",");
             }
@@ -408,7 +411,7 @@ public class ConcreteClass {
     }
 
     public String getVTable(){
-        return "lblVT"+token.getLexeme();
+        return "VT_"+token.getLexeme();
     }
 }
 

@@ -43,7 +43,10 @@ public class thisAccessNode extends AccessNode {
 
     @Override
     public void generate() {
+        MainSemantic.ST.getInstructionsList().add("    LOAD 3 ; Apilo this");
 
+        if (chaining != null)
+            chaining.generate();
     }
 
     public void setChaining(ChainedNode chaining) {

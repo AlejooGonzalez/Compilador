@@ -14,11 +14,13 @@ public class BlockNode extends SentenceNode {
     private Map<String, LocalVarNode> localVariables;
     private BlockNode parent;
     private boolean itsChecked;
+    private boolean isGenerated;
 
     public BlockNode() {
         this.sentences = new ArrayList<>();
         this.localVariables = new HashMap<>();
         this.itsChecked = false;
+        this.isGenerated = false;
     }
 
     public void addLocalVariables(String string, LocalVarNode localVarNode) throws SemanticException {
@@ -61,15 +63,16 @@ public class BlockNode extends SentenceNode {
     }
 
     public void generate(){
+        parent = MainSemantic.ST.getCurrentBlock();
         MainSemantic.ST.setCurrentBlock(this);
         for (SentenceNode sentence : sentences) {
             sentence.generate();
         }
         if (!localVariables.isEmpty()) {
             int count = localVariables.size();
-            MainSemantic.ST.getInstructionsList().add("; Libero " + count + " variables locales del bloque");
-            MainSemantic.ST.getInstructionsList().add("FMEM " + count + "   ; Libero memoria local");
+            MainSemantic.ST.getInstructionsList().add("FMEM " + count + "   ; Libero memoria variables local");
         }
         MainSemantic.ST.setCurrentBlock(parent);
+        }
     }
-}
+

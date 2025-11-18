@@ -65,7 +65,6 @@ public class MethodAccessNode extends AccessNode {
          if (chaining != null) {
             chaining.generate();
         }
-
     }
 
     public void setChaining(ChainedNode chaining) {

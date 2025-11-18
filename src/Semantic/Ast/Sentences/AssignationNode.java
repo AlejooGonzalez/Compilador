@@ -31,7 +31,7 @@ public class AssignationNode extends SentenceNode {
 
     @Override
     public void generate() {
-
+        expressionNode.generate();
     }
 
     private void checkChainingEndsInMethod() throws SemanticException {

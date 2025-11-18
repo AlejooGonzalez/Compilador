@@ -145,10 +145,10 @@ STOREFP
 RET 1
 
 .data
-VT_A: DW m1,m2,0 ; Etiquetas de metodo de A
+VT_A: DW A_m1,A_m2,0 ; Etiquetas de metodo de A
 
 .CODE
-cnst_A: 
+const_A: 
     LOADFP ; Guarda ED
     LOADSP ; Guarda SP
     STOREFP ; Corre FP al SP
@@ -161,6 +161,11 @@ A_m1: NOP   ; comienzo del método m1
 LOADFP    ; Cargo FP actual
 LOADSP    ; Cargo SP actual
 STOREFP   ; Actualizo FP para nuevo RA
+LOAD 3   ; cargo THIS implícito para la llamada
+LOAD 3                  ; cargo THIS
+LOADREF 0               ; cargo PTR a la VT del objeto
+LOADREF 2  ; cargo dirección del método dinámico
+CALL                    ; llamada dinámica
 STOREFP   ; Restaura FP anterior
 RET 1   ; Retorna y limpia parámetros
 ; Fin del método m1
@@ -187,7 +192,7 @@ RET 1   ; Retorna y limpia parámetros
 VT_Init: NOP ; Clase sin metodos dinamicos
 
 .CODE
-cnst_Init: 
+const_Init: 
     LOADFP ; Guarda ED
     LOADSP ; Guarda SP
     STOREFP ; Corre FP al SP
@@ -210,8 +215,23 @@ LOADFP    ; Cargo FP actual
 LOADSP    ; Cargo SP actual
 STOREFP   ; Actualizo FP para nuevo RA
 RMEM 1 ; Reserva memoria para la variable local x
-; Libero 1 variables locales del bloque
-FMEM 1   ; Libero memoria local
+    RMEM 1 ; Reservo puntero
+    PUSH 1
+    PUSH simple_malloc ; Push direccion de metodo
+    CALL
+    DUP ; Duplico la referencia al objeto
+    PUSH VT_Init ; Etiqueta de la VT
+    STOREREF 0 ; Guardo VT en CIR, consumiendo una de las referencias
+    DUP ; Duplico this, para metodo de constructor
+    PUSH const_A ; Direccion del constructor
+    CALL ; Llama al metodo
+STORE 0 ; Almacena  el valor de la expresion del tope de la pila en la variable local
+LOAD 3   ; cargo THIS implícito para la llamada
+LOAD 3                  ; cargo THIS
+LOADREF 0               ; cargo PTR a la VT del objeto
+LOADREF 0  ; cargo dirección del método dinámico
+CALL                    ; llamada dinámica
+FMEM 1   ; Libero memoria variables local
 STOREFP   ; Restaura FP anterior
 RET 0   ; Retorna y limpia parámetros
 ; Fin del método main
@@ -220,7 +240,7 @@ RET 0   ; Retorna y limpia parámetros
 VT_Object: NOP ; Clase sin metodos dinamicos
 
 .CODE
-cnst_Object: 
+const_Object: 
     LOADFP ; Guarda ED
     LOADSP ; Guarda SP
     STOREFP ; Corre FP al SP
@@ -232,7 +252,7 @@ cnst_Object:
 VT_String: NOP ; Clase sin metodos dinamicos
 
 .CODE
-cnst_String: 
+const_String: 
     LOADFP ; Guarda ED
     LOADSP ; Guarda SP
     STOREFP ; Corre FP al SP
@@ -244,7 +264,7 @@ cnst_String:
 VT_System: NOP ; Clase sin metodos dinamicos
 
 .CODE
-cnst_System: 
+const_System: 
     LOADFP ; Guarda ED
     LOADSP ; Guarda SP
     STOREFP ; Corre FP al SP

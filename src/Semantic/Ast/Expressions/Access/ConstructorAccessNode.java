@@ -48,8 +48,11 @@ public class ConstructorAccessNode extends AccessNode {
 
     @Override
     public void generate() {
+        int auxClass = 1;
         MainSemantic.ST.getInstructionsList().add("    RMEM 1 ; Reservo puntero");
-        int auxClass = constructorClass.getLastAttributeOffset() + 1;
+        if(constructorClass!=null) {
+            auxClass = constructorClass.getLastAttributeOffset() + 1;
+        }
         MainSemantic.ST.getInstructionsList().add("    PUSH " + auxClass);
         MainSemantic.ST.getInstructionsList().add("    PUSH simple_malloc ; Push direccion de metodo");
         MainSemantic.ST.getInstructionsList().add("    CALL");
@@ -61,7 +64,7 @@ public class ConstructorAccessNode extends AccessNode {
             p.generate();
             MainSemantic.ST.getInstructionsList().add("    SWAP ; Muevo this");
         }
-        MainSemantic.ST.getInstructionsList().add("    PUSH "+classToken.getLexeme()+" ; Direccion del constructor");
+        MainSemantic.ST.getInstructionsList().add("    PUSH const_" + classToken.getLexeme() + " ; Direccion del constructor");
         MainSemantic.ST.getInstructionsList().add("    CALL ; Llama al metodo");
 
         if (chaining != null)

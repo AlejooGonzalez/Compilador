@@ -14,6 +14,7 @@ public class LocalVarNode extends SentenceNode {
     private Token token;
     private ExpressionNode expression;
     private Type type;
+    private int offset;
 
     public LocalVarNode(Token token) {
         this.token = token;
@@ -49,8 +50,15 @@ public class LocalVarNode extends SentenceNode {
         MainSemantic.ST.getInstructionsList().add("RMEM 1 ; Reserva memoria para la variable local " + token.getLexeme());
         if(expression != null){
             expression.generate();
-            //MainSemantic.ST.getInstructionsList().add("STORE "+ offset +" ; Almacena  el valor de la expresion del tope de la pila en la variable local");
+            MainSemantic.ST.getInstructionsList().add("STORE "+ offset +" ; Almacena  el valor de la expresion del tope de la pila en la variable local");
         }
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+    public int getOffset() {
+        return offset;
     }
 
     public Token getToken() {

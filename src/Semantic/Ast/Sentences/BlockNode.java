@@ -2,35 +2,32 @@ package Semantic.Ast.Sentences;
 
 import Exceptions.SemanticException;
 import Main.MainSemantic;
-import Semantic.ConcreteClass;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BlockNode extends SentenceNode {
     private List<SentenceNode> sentences;
-    private Map<String, LocalVarNode> localVariables;
+    private LinkedHashMap<String, LocalVarNode> localVariables;
     private BlockNode parent;
     private boolean itsChecked;
     private boolean isGenerated;
+    private int offset;
 
     public BlockNode() {
         this.sentences = new ArrayList<>();
-        this.localVariables = new HashMap<>();
+        this.localVariables = new LinkedHashMap<>();
         this.itsChecked = false;
         this.isGenerated = false;
     }
 
     public void addLocalVariables(String string, LocalVarNode localVarNode) throws SemanticException {
-        if(localVariables.containsKey(string)){
+        if (localVariables.containsKey(string)) {
             throw new SemanticException("La variable ya fue declarada en el bloque", localVarNode.getToken(), localVarNode.getToken().getLineNumber());
         }
         localVariables.put(string, localVarNode);
     }
 
-    public LocalVarNode getLocalVar(String idVar){
+    public LocalVarNode getLocalVar(String idVar) {
         return localVariables.get(idVar);
     }
 
@@ -47,7 +44,7 @@ public class BlockNode extends SentenceNode {
     public void check() throws SemanticException {
         parent = MainSemantic.ST.getCurrentBlock();
         MainSemantic.ST.setCurrentBlock(this);
-        for(SentenceNode s: sentences) {
+        for (SentenceNode s : sentences) {
             s.check();
         }
         itsChecked = true;
@@ -62,17 +59,47 @@ public class BlockNode extends SentenceNode {
         return itsChecked;
     }
 
-    public void generate(){
+    public void generate() {
+        setLocalVarsOffset();
         parent = MainSemantic.ST.getCurrentBlock();
         MainSemantic.ST.setCurrentBlock(this);
         for (SentenceNode sentence : sentences) {
             sentence.generate();
         }
+        /*
         if (!localVariables.isEmpty()) {
             int count = localVariables.size();
             MainSemantic.ST.getInstructionsList().add("FMEM " + count + "   ; Libero memoria variables local");
-        }
+        } */
+        MainSemantic.ST.getInstructionsList().add("FMEM 0");
         MainSemantic.ST.setCurrentBlock(parent);
+    }
+
+    public void setLocalVarsOffset() {
+        int offset = -1;
+        if(parent != null) {
+            offset = parent.getLastLocalVarOffset() - 1;
+        }
+        for(LocalVarNode localVarNode : localVariables.values()) {
+            if(offset != 0) {
+                localVarNode.setOffset(offset);
+                offset--;
+            }
         }
     }
+
+    public int getLastLocalVarOffset(){
+        int ret = 0;
+        if(!localVariables.isEmpty()) {
+            for(LocalVarNode localVarNode : localVariables.values()) {
+                if(localVarNode.getOffset() < ret) {
+                    ret =  localVarNode.getOffset();
+                }
+            }
+        }
+        return ret;
+    }
+}
+
+
 

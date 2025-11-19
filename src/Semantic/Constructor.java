@@ -6,16 +6,17 @@ import Main.MainSemantic;
 import Semantic.Ast.Sentences.BlockNode;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Constructor {
     private Token token;
-    private HashMap<String, Parameter> parameters;
+    private LinkedHashMap<String, Parameter> parameters;
     private Token classToken;
     private BlockNode block;
 
     public Constructor(Token token) {
         this.token = token;
-        parameters = new HashMap<>();
+        parameters = new LinkedHashMap<>();
     }
 
     public String getLexeme() {
@@ -63,20 +64,20 @@ public class Constructor {
 
         MainSemantic.ST.getInstructionsList().add(".CODE");
         MainSemantic.ST.getInstructionsList().add(getLabel() + ": ");
-        MainSemantic.ST.getInstructionsList().add("    LOADFP ; Guarda ED");
-        MainSemantic.ST.getInstructionsList().add("    LOADSP ; Guarda SP");
-        MainSemantic.ST.getInstructionsList().add("    STOREFP ; Corre FP al SP");
+        MainSemantic.ST.getInstructionsList().add("LOADFP ; Guarda ED");
+        MainSemantic.ST.getInstructionsList().add("LOADSP ; Guarda SP");
+        MainSemantic.ST.getInstructionsList().add("STOREFP ; Corre FP al SP");
 
         if(block != null) {
             block.generate();
         }
 
-        MainSemantic.ST.getInstructionsList().add("    STOREFP ; Usa ED para volver a RA llamador");
-        MainSemantic.ST.getInstructionsList().add("    RET " + par);
+        MainSemantic.ST.getInstructionsList().add("STOREFP ; Usa ED para volver a RA llamador");
+        MainSemantic.ST.getInstructionsList().add("RET " + par);
         MainSemantic.ST.getInstructionsList().add("");
     }
 
     public String getLabel(){
-        return "const_"+token.getLexeme();
+        return  "Constructor_" + token.getLexeme();
     }
 }

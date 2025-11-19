@@ -175,6 +175,8 @@ public class SymbolTable {
         instructionsList.add("");
 
         instructionsList.add("simple_heap_init: RET 0 ; Retorna inmediatamente");
+        instructionsList.add("");
+
         instructionsList.add("simple_malloc: LOADFP    ; Inicialización unidad");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP ; Finaliza inicialización del RA");
@@ -190,74 +192,36 @@ public class SymbolTable {
         instructionsList.add("RET 1	; Retorna eliminando el parámetro)");
         instructionsList.add("");
 
-        instructionsList.add(".DATA");
-        instructionsList.add("lblVT_Object: NOP");
-        instructionsList.add("");
-        instructionsList.add(".CODE");
-
-        instructionsList.add("lblConstructor@Object: LOADFP ; Apila el valor del registro fp");
-        instructionsList.add("LOADSP ; Apila el valor del registro sp");
-        instructionsList.add("STOREFP ; Almacena el tope de la pila en el registro fp");
-        instructionsList.add("FMEM 0");
-        instructionsList.add("STOREFP ; Almacena el tope de la pila en el registro fp");
-        instructionsList.add("RET "+ 1 +" ; Libera los parametros y retorna de la unidad");
-        instructionsList.add("");
-
-        instructionsList.add("lblMetdebugPrint@Object: LOADFP ; Apila el valor del registro fp");
-        instructionsList.add("LOADSP");
-        instructionsList.add("STOREFP");
-        instructionsList.add("LOAD 3 ; Lee i");
-        instructionsList.add("IPRINT ; Imprime i");
-        instructionsList.add("STOREFP");
-        instructionsList.add("RET 1");
-        instructionsList.add("");
-
-        instructionsList.add(".DATA");
-        instructionsList.add("lblVTString: NOP");
-        instructionsList.add("");
-        instructionsList.add(".CODE");
-
-        instructionsList.add("lblConstructor@String: LOADFP ; Apila el valor del registro fp");
-        instructionsList.add("LOADSP ; Apila el valor del registro sp");
-        instructionsList.add("STOREFP ; Almacena el tope de la pila en el registro fp");
-        instructionsList.add("FMEM 0");
-        instructionsList.add("STOREFP ; Almacena el tope de la pila en el registro fp");
-        instructionsList.add("RET "+ 1 +" ; Libera los parametros y retorna de la unidad");
-        instructionsList.add("");
-
-        instructionsList.add(".DATA");
-        instructionsList.add("lblVTSystem: NOP");
-        instructionsList.add("");
-
-        instructionsList.add(".CODE");
         generateSystemMethods();
 
         for(ConcreteClass classes:classes.values()){
-            classes.generate();
+            if(itIsNotADefaultClass(classes))
+                classes.generate();
         }
     }
 
     public void generateSystemMethods(){
-        instructionsList.add("lblConstructor@System: LOADFP ; Apila el valor del registro fp");
-        instructionsList.add("LOADSP ; Apila el valor del registro sp");
-        instructionsList.add("STOREFP ; Almacena el tope de la pila en el registro fp");
-        instructionsList.add("FMEM 0");
-        instructionsList.add("STOREFP ; Almacena el tope de la pila en el registro fp");
-        instructionsList.add("RET "+ 1 +" ; Libera los parametros y retorna de la unidad");
-        instructionsList.add("");
 
-        instructionsList.add("lblMetread@System: LOADFP");
+        instructionsList.add("Object_debugPrint: LOADFP ; Apila el valor del registro fp");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
-        instructionsList.add("READ ; Lee tope de la pila");
-        instructionsList.add("PUSH 48 ; Por ASCII");
-        instructionsList.add("SUB");
-        instructionsList.add("STORE 3 ; Guarda en retorno el tope");
+        instructionsList.add("LOAD 3");
+        instructionsList.add("IPRINT");
+        instructionsList.add("STOREFP");
+        instructionsList.add("RET 1");
+        instructionsList.add("");
+
+        instructionsList.add("System_read: LOADFP");
+        instructionsList.add("LOADFP");
+        instructionsList.add("LOADSP");
+        instructionsList.add("STOREFP");
+        instructionsList.add("READ");
+        instructionsList.add("STORE 3");
         instructionsList.add("STOREFP");
         instructionsList.add("RET 0");
         instructionsList.add("");
 
-        instructionsList.add("lblMetprintB@System: LOADFP");
+        instructionsList.add("System_printB: LOADFP");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
         instructionsList.add("LOAD 3 ");
@@ -266,7 +230,7 @@ public class SymbolTable {
         instructionsList.add("RET 1");
         instructionsList.add("");
 
-        instructionsList.add("lblMetprintC@System: LOADFP");
+        instructionsList.add("System_printC: LOADFP");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
         instructionsList.add("LOAD 3 ");
@@ -275,7 +239,7 @@ public class SymbolTable {
         instructionsList.add("RET 1");
         instructionsList.add("");
 
-        instructionsList.add("lblMetprintI@System: LOADFP");
+        instructionsList.add("System_printI: LOADFP");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
         instructionsList.add("LOAD 3 ");
@@ -284,7 +248,7 @@ public class SymbolTable {
         instructionsList.add("RET 1");
         instructionsList.add("");
 
-        instructionsList.add("lblMetprintS@System: LOADFP");
+        instructionsList.add("System_printS: LOADFP");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
         instructionsList.add("LOAD 3 ");
@@ -293,7 +257,7 @@ public class SymbolTable {
         instructionsList.add("RET 1");
         instructionsList.add("");
 
-        instructionsList.add("lblMetprintln@System: LOADFP");
+        instructionsList.add("System_println: LOADFP");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
         instructionsList.add("PRNLN");
@@ -301,7 +265,7 @@ public class SymbolTable {
         instructionsList.add("RET 0");
         instructionsList.add("");
 
-        instructionsList.add("lblMetprintBln@System: LOADFP");
+        instructionsList.add("System_printBln: LOADFP");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
         instructionsList.add("LOAD 3 ");
@@ -311,7 +275,7 @@ public class SymbolTable {
         instructionsList.add("RET 1");
         instructionsList.add("");
 
-        instructionsList.add("lblMetprintCln@System: LOADFP");
+        instructionsList.add("System_printCln: LOADFP");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
         instructionsList.add("LOAD 3 ");
@@ -321,7 +285,7 @@ public class SymbolTable {
         instructionsList.add("RET 1");
         instructionsList.add("");
 
-        instructionsList.add("lblMetprintIln@System:LOADFP");
+        instructionsList.add("System_printIln: LOADFP");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
         instructionsList.add("LOAD 3 ");
@@ -331,7 +295,7 @@ public class SymbolTable {
         instructionsList.add("RET 1");
         instructionsList.add("");
 
-        instructionsList.add("lblMetprintSln@System: LOADFP");
+        instructionsList.add("System_printSln: LOADFP");
         instructionsList.add("LOADSP");
         instructionsList.add("STOREFP");
         instructionsList.add("LOAD 3 ");
@@ -340,5 +304,9 @@ public class SymbolTable {
         instructionsList.add("STOREFP");
         instructionsList.add("RET 1");
         instructionsList.add("");
+    }
+
+    private boolean itIsNotADefaultClass(ConcreteClass classes){
+        return !(classes.getToken().getLexeme().equals("String") || classes.getToken().getLexeme().equals("Object") || classes.getToken().getLexeme().equals("System"));
     }
 }

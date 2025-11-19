@@ -79,9 +79,9 @@ public class ChainedCallNode extends ChainedNode {
             MainSemantic.ST.getInstructionsList().add("SWAP");
         }
         MainSemantic.ST.getInstructionsList().add("    DUP ; Duplico this");
-        MainSemantic.ST.getInstructionsList().add("    LOADREF 0 ; Apila el valor de la VT");
+        MainSemantic.ST.getInstructionsList().add("    LOADREF 0;");
         MainSemantic.ST.getInstructionsList().add("    LOADREF "+ methodAux.getOffset() +" ; Cargo metodo "+ methodAux.getLexeme() + "a la VT");
-        MainSemantic.ST.getInstructionsList().add("    CALL ; Llamo metodo");
+        MainSemantic.ST.getInstructionsList().add("    CALL;");
     }
         if (chaining != null) {
             chaining.generate();

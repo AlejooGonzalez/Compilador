@@ -4,6 +4,7 @@ CALL
 HALT
 
 simple_heap_init: RET 0 ; Retorna inmediatamente
+
 simple_malloc: LOADFP    ; Inicialización unidad
 LOADSP
 STOREFP ; Finaliza inicialización del RA
@@ -18,58 +19,24 @@ STOREHL ; Mueve el heap limit (hl). Expande el heap
 STOREFP
 RET 1	; Retorna eliminando el parámetro)
 
-.DATA
-lblVT_Object: NOP
-
-.CODE
-lblConstructor@Object: LOADFP ; Apila el valor del registro fp
-LOADSP ; Apila el valor del registro sp
-STOREFP ; Almacena el tope de la pila en el registro fp
-FMEM 0
-STOREFP ; Almacena el tope de la pila en el registro fp
-RET 1 ; Libera los parametros y retorna de la unidad
-
-lblMetdebugPrint@Object: LOADFP ; Apila el valor del registro fp
+Object_debugPrint: LOADFP ; Apila el valor del registro fp
 LOADSP
 STOREFP
-LOAD 3 ; Lee i
-IPRINT ; Imprime i
+LOAD 3
+IPRINT
 STOREFP
 RET 1
 
-.DATA
-lblVTString: NOP
-
-.CODE
-lblConstructor@String: LOADFP ; Apila el valor del registro fp
-LOADSP ; Apila el valor del registro sp
-STOREFP ; Almacena el tope de la pila en el registro fp
-FMEM 0
-STOREFP ; Almacena el tope de la pila en el registro fp
-RET 1 ; Libera los parametros y retorna de la unidad
-
-.DATA
-lblVTSystem: NOP
-
-.CODE
-lblConstructor@System: LOADFP ; Apila el valor del registro fp
-LOADSP ; Apila el valor del registro sp
-STOREFP ; Almacena el tope de la pila en el registro fp
-FMEM 0
-STOREFP ; Almacena el tope de la pila en el registro fp
-RET 1 ; Libera los parametros y retorna de la unidad
-
-lblMetread@System: LOADFP
+System_read: LOADFP
+LOADFP
 LOADSP
 STOREFP
-READ ; Lee tope de la pila
-PUSH 48 ; Por ASCII
-SUB
-STORE 3 ; Guarda en retorno el tope
+READ
+STORE 3
 STOREFP
 RET 0
 
-lblMetprintB@System: LOADFP
+System_printB: LOADFP
 LOADSP
 STOREFP
 LOAD 3 
@@ -77,7 +44,7 @@ BPRINT
 STOREFP
 RET 1
 
-lblMetprintC@System: LOADFP
+System_printC: LOADFP
 LOADSP
 STOREFP
 LOAD 3 
@@ -85,7 +52,7 @@ CPRINT
 STOREFP
 RET 1
 
-lblMetprintI@System: LOADFP
+System_printI: LOADFP
 LOADSP
 STOREFP
 LOAD 3 
@@ -93,7 +60,7 @@ IPRINT
 STOREFP
 RET 1
 
-lblMetprintS@System: LOADFP
+System_printS: LOADFP
 LOADSP
 STOREFP
 LOAD 3 
@@ -101,14 +68,14 @@ SPRINT
 STOREFP
 RET 1
 
-lblMetprintln@System: LOADFP
+System_println: LOADFP
 LOADSP
 STOREFP
 PRNLN
 STOREFP
 RET 0
 
-lblMetprintBln@System: LOADFP
+System_printBln: LOADFP
 LOADSP
 STOREFP
 LOAD 3 
@@ -117,7 +84,7 @@ PRNLN
 STOREFP
 RET 1
 
-lblMetprintCln@System: LOADFP
+System_printCln: LOADFP
 LOADSP
 STOREFP
 LOAD 3 
@@ -126,7 +93,7 @@ PRNLN
 STOREFP
 RET 1
 
-lblMetprintIln@System:LOADFP
+System_printIln: LOADFP
 LOADSP
 STOREFP
 LOAD 3 
@@ -135,7 +102,7 @@ PRNLN
 STOREFP
 RET 1
 
-lblMetprintSln@System: LOADFP
+System_printSln: LOADFP
 LOADSP
 STOREFP
 LOAD 3 
@@ -144,76 +111,47 @@ PRNLN
 STOREFP
 RET 1
 
-.data
-VT_A: DW A_m1,A_m2,0 ; Etiquetas de metodo de A
+.DATA
+VT_A: DW A_m1,A_m2 ; Etiquetas de metodo de A
 
 .CODE
-const_A: 
-    LOADFP ; Guarda ED
-    LOADSP ; Guarda SP
-    STOREFP ; Corre FP al SP
-    STOREFP ; Usa ED para volver a RA llamador
-    RET 1
-
-
-.CODE
-A_m1: NOP   ; comienzo del método m1
-LOADFP    ; Cargo FP actual
-LOADSP    ; Cargo SP actual
-STOREFP   ; Actualizo FP para nuevo RA
-LOAD 3   ; cargo THIS implícito para la llamada
-LOAD 3                  ; cargo THIS
-LOADREF 0               ; cargo PTR a la VT del objeto
-LOADREF 2  ; cargo dirección del método dinámico
+A_m1: LOADFP   ; Apila el valor del registro
+LOADSP    ; Apila el valor del registro sp
+STOREFP   ; Almacena el tope de la pila en el registro
+LOAD 3
+LOAD 3
+LOADREF 0
+LOADREF -1000  ; cargo dirección del método dinámico
 CALL                    ; llamada dinámica
-STOREFP   ; Restaura FP anterior
-RET 1   ; Retorna y limpia parámetros
-; Fin del método m1
+FMEM 0
+STOREFP   ; Almacena el tope de la pila en el registro
+RET 0
+A_m2: LOADFP   ; Apila el valor del registro
+LOADSP    ; Apila el valor del registro sp
+STOREFP   ; Almacena el tope de la pila en el registro
+FMEM 0
+STOREFP   ; Almacena el tope de la pila en el registro
+RET 0
+A_debugPrint: LOADFP   ; Apila el valor del registro
+LOADSP    ; Apila el valor del registro sp
+STOREFP   ; Almacena el tope de la pila en el registro
+STOREFP   ; Almacena el tope de la pila en el registro
+RET 0
+.CODE
+Constructor_A: 
+LOADFP ; Guarda ED
+LOADSP ; Guarda SP
+STOREFP ; Corre FP al SP
+STOREFP ; Usa ED para volver a RA llamador
+RET 1
+
+.DATA
+VT_Init: NOP 
 
 .CODE
-A_m2: NOP   ; comienzo del método m2
-LOADFP    ; Cargo FP actual
-LOADSP    ; Cargo SP actual
-STOREFP   ; Actualizo FP para nuevo RA
-STOREFP   ; Restaura FP anterior
-RET 0   ; Retorna y limpia parámetros
-; Fin del método m2
-
-.CODE
-A_debugPrint: NOP   ; comienzo del método debugPrint
-LOADFP    ; Cargo FP actual
-LOADSP    ; Cargo SP actual
-STOREFP   ; Actualizo FP para nuevo RA
-STOREFP   ; Restaura FP anterior
-RET 1   ; Retorna y limpia parámetros
-; Fin del método debugPrint
-
-.data
-VT_Init: NOP ; Clase sin metodos dinamicos
-
-.CODE
-const_Init: 
-    LOADFP ; Guarda ED
-    LOADSP ; Guarda SP
-    STOREFP ; Corre FP al SP
-    STOREFP ; Usa ED para volver a RA llamador
-    RET 1
-
-
-.CODE
-Init_debugPrint: NOP   ; comienzo del método debugPrint
-LOADFP    ; Cargo FP actual
-LOADSP    ; Cargo SP actual
-STOREFP   ; Actualizo FP para nuevo RA
-STOREFP   ; Restaura FP anterior
-RET 1   ; Retorna y limpia parámetros
-; Fin del método debugPrint
-
-.CODE
-Init_main: NOP   ; comienzo del método main
-LOADFP    ; Cargo FP actual
-LOADSP    ; Cargo SP actual
-STOREFP   ; Actualizo FP para nuevo RA
+Init_main: LOADFP   ; Apila el valor del registro
+LOADSP    ; Apila el valor del registro sp
+STOREFP   ; Almacena el tope de la pila en el registro
 RMEM 1 ; Reserva memoria para la variable local x
     RMEM 1 ; Reservo puntero
     PUSH 1
@@ -223,52 +161,27 @@ RMEM 1 ; Reserva memoria para la variable local x
     PUSH VT_Init ; Etiqueta de la VT
     STOREREF 0 ; Guardo VT en CIR, consumiendo una de las referencias
     DUP ; Duplico this, para metodo de constructor
-    PUSH const_A ; Direccion del constructor
+    PUSH Constructor_A ; Direccion del constructor
     CALL ; Llama al metodo
-STORE 0 ; Almacena  el valor de la expresion del tope de la pila en la variable local
-LOAD 3   ; cargo THIS implícito para la llamada
-LOAD 3                  ; cargo THIS
-LOADREF 0               ; cargo PTR a la VT del objeto
-LOADREF 0  ; cargo dirección del método dinámico
+STORE -1 ; Almacena  el valor de la expresion del tope de la pila en la variable local
+LOAD 3
+LOAD 3
+LOADREF 0
+LOADREF -1000  ; cargo dirección del método dinámico
 CALL                    ; llamada dinámica
-FMEM 1   ; Libero memoria variables local
-STOREFP   ; Restaura FP anterior
-RET 0   ; Retorna y limpia parámetros
-; Fin del método main
-
-.data
-VT_Object: NOP ; Clase sin metodos dinamicos
-
+FMEM 0
+STOREFP   ; Almacena el tope de la pila en el registro
+RET 0
+Init_debugPrint: LOADFP   ; Apila el valor del registro
+LOADSP    ; Apila el valor del registro sp
+STOREFP   ; Almacena el tope de la pila en el registro
+STOREFP   ; Almacena el tope de la pila en el registro
+RET 0
 .CODE
-const_Object: 
-    LOADFP ; Guarda ED
-    LOADSP ; Guarda SP
-    STOREFP ; Corre FP al SP
-    STOREFP ; Usa ED para volver a RA llamador
-    RET 1
-
-
-.data
-VT_String: NOP ; Clase sin metodos dinamicos
-
-.CODE
-const_String: 
-    LOADFP ; Guarda ED
-    LOADSP ; Guarda SP
-    STOREFP ; Corre FP al SP
-    STOREFP ; Usa ED para volver a RA llamador
-    RET 1
-
-
-.data
-VT_System: NOP ; Clase sin metodos dinamicos
-
-.CODE
-const_System: 
-    LOADFP ; Guarda ED
-    LOADSP ; Guarda SP
-    STOREFP ; Corre FP al SP
-    STOREFP ; Usa ED para volver a RA llamador
-    RET 1
-
+Constructor_Init: 
+LOADFP ; Guarda ED
+LOADSP ; Guarda SP
+STOREFP ; Corre FP al SP
+STOREFP ; Usa ED para volver a RA llamador
+RET 1
 

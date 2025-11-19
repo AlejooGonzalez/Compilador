@@ -8,6 +8,7 @@ import Semantic.Types.Type;
 public class Parameter {
     private Token token;
     private Type type;
+    private int offset;
 
     public Parameter(Token token, Type type) {
         this.token = token;
@@ -35,6 +36,12 @@ public class Parameter {
         }
     }
 
+    public int getOffset() {
+        return offset;
+    }
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
     public Type getType() {
         return type;
     }

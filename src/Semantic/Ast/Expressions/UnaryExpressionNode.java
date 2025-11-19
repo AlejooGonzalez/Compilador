@@ -44,14 +44,20 @@ public class UnaryExpressionNode extends CompoundExpressionNode {
     }
 
     @Override
-    public void generate() { //FALTA ++ y --
+    public void generate() {
         rightSide.generate();
-        if(operator.getLexeme().equals("+")){
-            ;
-        } else if(operator.getLexeme().equals("-")){
-            MainSemantic.ST.getInstructionsList().add("NEG;");
-        } else {
-            MainSemantic.ST.getInstructionsList().add("NOT;");
+        switch (operator.getLexeme()) {
+            case "++" -> {
+                MainSemantic.ST.getInstructionsList().add("--;");
+                MainSemantic.ST.getInstructionsList().add("ADD;");
+            }
+            case "+" -> { }
+            case "-" -> MainSemantic.ST.getInstructionsList().add("NEG;");
+            case "--" -> {
+                MainSemantic.ST.getInstructionsList().add("--;");
+                MainSemantic.ST.getInstructionsList().add("SUB;");
+            }
+            case "!" -> MainSemantic.ST.getInstructionsList().add("NOT;");
         }
     }
 

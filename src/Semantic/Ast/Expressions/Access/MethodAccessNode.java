@@ -55,12 +55,12 @@ public class MethodAccessNode extends AccessNode {
                 exp.generate();
             }
         }
-        MainSemantic.ST.getInstructionsList().add("LOAD 3   ; cargo THIS implícito para la llamada");
+        MainSemantic.ST.getInstructionsList().add("LOAD 3");
         int offset = m.getOffset();
-        MainSemantic.ST.getInstructionsList().add("LOAD 3                  ; cargo THIS");
-        MainSemantic.ST.getInstructionsList().add("LOADREF 0               ; cargo PTR a la VT del objeto");
+        MainSemantic.ST.getInstructionsList().add("LOAD 3");
+        MainSemantic.ST.getInstructionsList().add("LOADREF 0");
         MainSemantic.ST.getInstructionsList().add("LOADREF " + offset + "  ; cargo dirección del método dinámico");
-        MainSemantic.ST.getInstructionsList().add("CALL                    ; llamada dinámica");
+        MainSemantic.ST.getInstructionsList().add("CALL; llamada dinámica");
 
          if (chaining != null) {
             chaining.generate();

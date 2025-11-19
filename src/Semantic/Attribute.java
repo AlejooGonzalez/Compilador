@@ -13,6 +13,7 @@ public class Attribute {
     public Attribute(Token token,  Type type) {
         this.token = token;
         this.type = type;
+        this.offset = -1000;
     }
 
     public Token getToken(){

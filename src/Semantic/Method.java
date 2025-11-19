@@ -8,6 +8,7 @@ import Semantic.Ast.Sentences.BlockNode;
 import Semantic.Types.Type;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ public class Method {
     private Token token;
     private Token modifier;
     private Type returnType;
-    private HashMap<String,Parameter> parameters;
+    private LinkedHashMap<String,Parameter> parameters;
     private boolean hasBody;
     private BlockNode block;
     private int offset;
@@ -25,8 +26,8 @@ public class Method {
         this.token = token;
         this.modifier = modifier;
         this.returnType = returnType;
-        parameters =  new HashMap<>();
-        offset = -1;
+        parameters =  new LinkedHashMap<>();
+        offset = -1000;
     }
 
     public HashMap<String,Parameter> getParameters() {
@@ -184,25 +185,37 @@ public class Method {
     }
 
     public void generate() {
+        int param = parameters.size();
         String methodLabel = MainSemantic.ST.getCurrentClass().getLexeme() + "_" + this.getLexeme();
-        MainSemantic.ST.getInstructionsList().add(".CODE");
-        MainSemantic.ST.getInstructionsList().add(methodLabel + ": NOP   ; comienzo del método " + this.getLexeme());
-
-        MainSemantic.ST.getInstructionsList().add("LOADFP    ; Cargo FP actual");
-        MainSemantic.ST.getInstructionsList().add("LOADSP    ; Cargo SP actual");
-        MainSemantic.ST.getInstructionsList().add("STOREFP   ; Actualizo FP para nuevo RA");
+        MainSemantic.ST.getInstructionsList().add(methodLabel + ": LOADFP   ; Apila el valor del registro");
+        MainSemantic.ST.getInstructionsList().add("LOADSP    ; Apila el valor del registro sp");
+        MainSemantic.ST.getInstructionsList().add("STOREFP   ; Almacena el tope de la pila en el registro");
 
         if (block != null) {
+            param++ ;
             block.generate();
         }
 
-        MainSemantic.ST.getInstructionsList().add("STOREFP   ; Restaura FP anterior");
-        MainSemantic.ST.getInstructionsList().add("RET " + parameters.size() + "   ; Retorna y limpia parámetros");
-        MainSemantic.ST.getInstructionsList().add("; Fin del método " + this.getLexeme());
+        MainSemantic.ST.getInstructionsList().add("STOREFP   ; Almacena el tope de la pila en el registro");
+        MainSemantic.ST.getInstructionsList().add("RET 0");
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
+    public void setOffset(int a) {
+        offset = a;
+        setParametersOffset();
+    }
+
+    public void setParametersOffset(){
+        int pamOffsets = 1;
+        if(isStaticMethod()){
+            pamOffsets = 3;
+        } else {
+            pamOffsets = 4;
+        }
+        for(Parameter p:parameters.values()){
+            p.setOffset(pamOffsets);
+            pamOffsets++;
+        }
     }
 
     public int getOffset() {

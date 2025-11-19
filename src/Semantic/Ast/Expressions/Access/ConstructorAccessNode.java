@@ -64,7 +64,7 @@ public class ConstructorAccessNode extends AccessNode {
             p.generate();
             MainSemantic.ST.getInstructionsList().add("    SWAP ; Muevo this");
         }
-        MainSemantic.ST.getInstructionsList().add("    PUSH const_" + classToken.getLexeme() + " ; Direccion del constructor");
+        MainSemantic.ST.getInstructionsList().add("    PUSH Constructor_" + classToken.getLexeme() + " ; Direccion del constructor");
         MainSemantic.ST.getInstructionsList().add("    CALL ; Llama al metodo");
 
         if (chaining != null)

@@ -16,6 +16,7 @@ public class StaticMethodAccessNode extends AccessNode{
     private Token staticMethodToken;
     private List<ExpressionNode> parameters;
     private ChainedNode chaining;
+    private boolean isLeftSideOfAssign= false;
 
     public StaticMethodAccessNode(Token staticClassToken, Token staticMethodToken, List<ExpressionNode> parameters) {
         this.staticClassToken = staticClassToken;
@@ -57,6 +58,11 @@ public class StaticMethodAccessNode extends AccessNode{
         return chaining;
     }
 
+    @Override
+    public void setItsLeftSide(boolean leftSide) {
+        this.isLeftSideOfAssign = leftSide;
+    }
+
     private void checkConcreteClassIsNull(ConcreteClass concreteClass) throws SemanticException {
         if(concreteClass == null) {
             throw new SemanticException("La clase estatica no existe", staticClassToken, staticClassToken.getLineNumber());
@@ -89,10 +95,13 @@ public class StaticMethodAccessNode extends AccessNode{
             }
         }
 
-        MainSemantic.ST.getInstructionsList().add("PUSH " + label + "   ; Apilo el metodo");
-        MainSemantic.ST.getInstructionsList().add("CALL                ; Llamo al método en el tope de la pila");
+        MainSemantic.ST.getInstructionsList().add("PUSH " + label + "; Apilo el metodo");
+        MainSemantic.ST.getInstructionsList().add("CALL; Llamo al método en el tope de la pila");
 
         if (chaining != null) {
+            if(this.isLeftSideOfAssign) {
+                chaining.setItsLeftSide(true);
+            }
             chaining.generate();
         }
     }

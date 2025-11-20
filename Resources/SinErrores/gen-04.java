@@ -7,19 +7,9 @@ class A{
     String a3;
     
     
-      void setall(int p1, int p2, int p3){
+      void setall(int p1){
         a1 = p1;
         a2 = a1*2;
-          {
-              var x = 0;
-              var y = 1;
-              {
-                  var z = 0;
-                  {
-                      var f = 69;
-                  }
-              }
-          }
         a3 = "hola";
     }
     
@@ -55,7 +45,7 @@ class Init{
         
         var x = new B();
         x.seta4();
-        x.setall(1234,1,1);
+        x.setall(1234);
         x.m1();
         x.m2();
     }

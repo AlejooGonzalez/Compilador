@@ -28,6 +28,9 @@ public class StringLiteralNode extends AccessNode {
     }
 
     @Override
+    public void setItsLeftSide(boolean leftSide) { }
+
+    @Override
     public int getLine() {
         return token.getLineNumber();
     }
@@ -39,6 +42,11 @@ public class StringLiteralNode extends AccessNode {
 
     @Override
     public void generate() {
-        MainSemantic.ST.getInstructionsList().add("PUSH "+token.getLexeme());
+        int stringNumber = MainSemantic.ST.getNextStringNumber();
+        String label = "lbl_string" + stringNumber;
+        MainSemantic.ST.getInstructionsList().add(".DATA");
+        MainSemantic.ST.getInstructionsList().add(label+": DW "+token.getLexeme()+", 0");
+        MainSemantic.ST.getInstructionsList().add(".CODE");
+        MainSemantic.ST.getInstructionsList().add("PUSH "+label);
     }
 }

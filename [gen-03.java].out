@@ -115,73 +115,85 @@ RET 1
 VT_A: DW A_m1,A_m2 ; Etiquetas de metodo de A
 
 .CODE
-A_m1: LOADFP   ; Apila el valor del registro
-LOADSP    ; Apila el valor del registro sp
-STOREFP   ; Almacena el tope de la pila en el registro
-LOAD 3
-LOAD 3
-LOADREF 0
-LOADREF -1000  ; cargo dirección del método dinámico
-CALL                    ; llamada dinámica
+A_m1: LOADFP
+LOADSP
+STOREFP
+LOAD 4
+PUSH Object_debugPrint; Apilo el metodo
+CALL; Llamo al método en el tope de la pila
 FMEM 0
-STOREFP   ; Almacena el tope de la pila en el registro
-RET 0
-A_m2: LOADFP   ; Apila el valor del registro
-LOADSP    ; Apila el valor del registro sp
-STOREFP   ; Almacena el tope de la pila en el registro
+STOREFP
+RET 2
+A_m2: LOADFP
+LOADSP
+STOREFP
+PUSH 33
+STORE 4
+STOREFP
+RET 1
 FMEM 0
-STOREFP   ; Almacena el tope de la pila en el registro
-RET 0
-A_debugPrint: LOADFP   ; Apila el valor del registro
-LOADSP    ; Apila el valor del registro sp
-STOREFP   ; Almacena el tope de la pila en el registro
-STOREFP   ; Almacena el tope de la pila en el registro
-RET 0
-.CODE
+STOREFP
+RET 1
+A_debugPrint: LOADFP
+LOADSP
+STOREFP
+STOREFP
+RET 1
 Constructor_A: 
-LOADFP ; Guarda ED
-LOADSP ; Guarda SP
-STOREFP ; Corre FP al SP
-STOREFP ; Usa ED para volver a RA llamador
+LOADFP
+LOADSP
+STOREFP
+STOREFP
 RET 1
 
 .DATA
 VT_Init: NOP 
 
 .CODE
-Init_main: LOADFP   ; Apila el valor del registro
-LOADSP    ; Apila el valor del registro sp
-STOREFP   ; Almacena el tope de la pila en el registro
-RMEM 1 ; Reserva memoria para la variable local x
-    RMEM 1 ; Reservo puntero
-    PUSH 1
-    PUSH simple_malloc ; Push direccion de metodo
-    CALL
-    DUP ; Duplico la referencia al objeto
-    PUSH VT_Init ; Etiqueta de la VT
-    STOREREF 0 ; Guardo VT en CIR, consumiendo una de las referencias
-    DUP ; Duplico this, para metodo de constructor
-    PUSH Constructor_A ; Direccion del constructor
-    CALL ; Llama al metodo
-STORE -1 ; Almacena  el valor de la expresion del tope de la pila en la variable local
-LOAD 3
-LOAD 3
+Init_main: LOADFP
+LOADSP
+STOREFP
+RMEM 1
+RMEM 1
+PUSH 1
+PUSH simple_malloc
+CALL
+DUP
+PUSH VT_A
+STOREREF 0
+DUP
+PUSH Constructor_A
+CALL
+STORE 0
+LOAD 0
+RMEM 1
+SWAP
+DUP ; Duplico this
 LOADREF 0
-LOADREF -1000  ; cargo dirección del método dinámico
-CALL                    ; llamada dinámica
-FMEM 0
-STOREFP   ; Almacena el tope de la pila en el registro
+LOADREF 1
+CALL
+POP
+LOAD 0
+RMEM 1
+SWAP
+DUP ; Duplico this
+LOADREF 0
+LOADREF 1
+CALL
+PUSH Object_debugPrint; Apilo el metodo
+CALL; Llamo al método en el tope de la pila
+FMEM 1
+STOREFP
 RET 0
-Init_debugPrint: LOADFP   ; Apila el valor del registro
-LOADSP    ; Apila el valor del registro sp
-STOREFP   ; Almacena el tope de la pila en el registro
-STOREFP   ; Almacena el tope de la pila en el registro
-RET 0
-.CODE
+Init_debugPrint: LOADFP
+LOADSP
+STOREFP
+STOREFP
+RET 1
 Constructor_Init: 
-LOADFP ; Guarda ED
-LOADSP ; Guarda SP
-STOREFP ; Corre FP al SP
-STOREFP ; Usa ED para volver a RA llamador
+LOADFP
+LOADSP
+STOREFP
+STOREFP
 RET 1
 

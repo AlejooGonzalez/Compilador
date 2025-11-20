@@ -30,4 +30,5 @@ public class CharLiteralNode extends LiteralNode {
     public void generate() {
         MainSemantic.ST.getInstructionsList().add("PUSH "+token.getLexeme());
     }
+
 }

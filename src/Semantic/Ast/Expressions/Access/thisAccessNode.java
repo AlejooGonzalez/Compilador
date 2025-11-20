@@ -12,6 +12,7 @@ import Semantic.Types.Type;
 public class thisAccessNode extends AccessNode {
     private Token tokenThis;
     private ChainedNode chaining;
+    private boolean isLeftSideOfAssign= false;
 
     public thisAccessNode(Token tokenThis) {
         this.tokenThis = tokenThis;
@@ -44,8 +45,12 @@ public class thisAccessNode extends AccessNode {
     @Override
     public void generate() {
         MainSemantic.ST.getInstructionsList().add("    LOAD 3 ; Apilo this");
-        if (chaining != null)
+        if (chaining != null) {
+            if(this.isLeftSideOfAssign) {
+                chaining.setItsLeftSide(true);
+            }
             chaining.generate();
+        }
     }
 
     public void setChaining(ChainedNode chaining) {
@@ -57,6 +62,11 @@ public class thisAccessNode extends AccessNode {
         return chaining;
     }
 
+    @Override
+    public void setItsLeftSide(boolean leftSide) {
+        this.isLeftSideOfAssign = leftSide;
+    }
+
     private void checkIsStaticMethod(Method currentMethod) throws SemanticException {
         if(currentMethod.getModifier() != null ) {
             if (currentMethod.getModifier().getLexeme().equals("static")) {
@@ -64,4 +74,5 @@ public class thisAccessNode extends AccessNode {
             }
         }
     }
+
 }

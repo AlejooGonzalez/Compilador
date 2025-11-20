@@ -9,4 +9,5 @@ public abstract class ChainedNode {
     abstract public void setChaining(ChainedNode chaining);
     abstract public ChainedNode getChaining();
     abstract public void generate();
+    abstract public void setItsLeftSide(boolean b);
 }

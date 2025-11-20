@@ -60,20 +60,19 @@ public class Constructor {
 
     public void generate(){
         MainSemantic.ST.setCurrentConstructor(this);
-        int par = parameters.size() + 1;
+        int param = parameters.size() + 1;
 
-        MainSemantic.ST.getInstructionsList().add(".CODE");
         MainSemantic.ST.getInstructionsList().add(getLabel() + ": ");
-        MainSemantic.ST.getInstructionsList().add("LOADFP ; Guarda ED");
-        MainSemantic.ST.getInstructionsList().add("LOADSP ; Guarda SP");
-        MainSemantic.ST.getInstructionsList().add("STOREFP ; Corre FP al SP");
+        MainSemantic.ST.getInstructionsList().add("LOADFP");
+        MainSemantic.ST.getInstructionsList().add("LOADSP");
+        MainSemantic.ST.getInstructionsList().add("STOREFP");
 
         if(block != null) {
             block.generate();
         }
 
-        MainSemantic.ST.getInstructionsList().add("STOREFP ; Usa ED para volver a RA llamador");
-        MainSemantic.ST.getInstructionsList().add("RET " + par);
+        MainSemantic.ST.getInstructionsList().add("STOREFP");
+        MainSemantic.ST.getInstructionsList().add("RET " + param);
         MainSemantic.ST.getInstructionsList().add("");
     }
 

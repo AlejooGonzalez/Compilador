@@ -10,6 +10,7 @@ import Semantic.Types.Type;
 public class ChainedVariableNode extends ChainedNode {
     private Token token;
     private ChainedNode chaining;
+    private boolean isLeftSideOfAssign= false;
 
     public ChainedVariableNode(Token token) {
         this.token = token;
@@ -48,5 +49,10 @@ public class ChainedVariableNode extends ChainedNode {
     @Override
     public void generate() {
 
+    }
+
+    @Override
+    public void setItsLeftSide(boolean leftSide) {
+        this.isLeftSideOfAssign = leftSide;
     }
 }

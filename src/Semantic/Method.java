@@ -185,19 +185,21 @@ public class Method {
     }
 
     public void generate() {
-        int param = parameters.size();
         String methodLabel = MainSemantic.ST.getCurrentClass().getLexeme() + "_" + this.getLexeme();
-        MainSemantic.ST.getInstructionsList().add(methodLabel + ": LOADFP   ; Apila el valor del registro");
-        MainSemantic.ST.getInstructionsList().add("LOADSP    ; Apila el valor del registro sp");
-        MainSemantic.ST.getInstructionsList().add("STOREFP   ; Almacena el tope de la pila en el registro");
-
+        MainSemantic.ST.getInstructionsList().add(methodLabel + ": LOADFP");
+        MainSemantic.ST.getInstructionsList().add("LOADSP");
+        MainSemantic.ST.getInstructionsList().add("STOREFP");
         if (block != null) {
-            param++ ;
             block.generate();
         }
-
-        MainSemantic.ST.getInstructionsList().add("STOREFP   ; Almacena el tope de la pila en el registro");
-        MainSemantic.ST.getInstructionsList().add("RET 0");
+        if (block != null) {
+            MainSemantic.ST.getInstructionsList().add("FMEM " + block.getLocalVariables().size());
+        }
+        MainSemantic.ST.getInstructionsList().add("STOREFP");
+        if (modifier != null && modifier.getLexeme().equals("static")){
+            MainSemantic.ST.getInstructionsList().add("RET "+parameters.size());
+        } else
+            MainSemantic.ST.getInstructionsList().add("RET " + (parameters.size() + 1));
     }
 
     public void setOffset(int a) {

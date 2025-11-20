@@ -18,7 +18,7 @@ public class IntLiteralNode extends LiteralNode {
 
     @Override
     public void generate() {
-        MainSemantic.ST.getInstructionsList().add("PUSH " + token.getLexeme() + "   ; Apila el entero " + token.getLexeme());
+        MainSemantic.ST.getInstructionsList().add("PUSH " + token.getLexeme());
     }
 
     public Type getType() {

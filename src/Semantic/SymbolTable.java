@@ -17,6 +17,7 @@ public class SymbolTable {
     private Constructor currentConstructor;
     private BlockNode currentBlock;
     private ArrayList<String> instructionsList;
+    private int stringNumber = 0;
 
     public SymbolTable() throws SyntacticException, SemanticException {
         classes = new HashMap<>();
@@ -308,5 +309,10 @@ public class SymbolTable {
 
     private boolean itIsNotADefaultClass(ConcreteClass classes){
         return !(classes.getToken().getLexeme().equals("String") || classes.getToken().getLexeme().equals("Object") || classes.getToken().getLexeme().equals("System"));
+    }
+
+    public int getNextStringNumber(){
+        stringNumber++;
+        return stringNumber;
     }
 }

@@ -2,6 +2,7 @@ package Semantic.Ast.Sentences;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Ast.Chained.ChainedCallNode;
 import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Expressions.Access.AccessNode;
@@ -10,10 +11,13 @@ import Semantic.Ast.Expressions.Access.MethodAccessNode;
 import Semantic.Ast.Expressions.Access.StaticMethodAccessNode;
 import Semantic.Ast.Expressions.AssignationExpressionNode;
 import Semantic.Ast.Expressions.ExpressionNode;
+import Semantic.Types.Type;
+import Semantic.Types.VoidType;
 
 public class AssignationNode extends SentenceNode {
-    Token token;
-    ExpressionNode expressionNode;
+    private Token token;
+    private ExpressionNode expressionNode;
+    private Type expressionType;
 
     public AssignationNode(Token token, ExpressionNode expressionNode) {
         this.token = token;
@@ -22,7 +26,7 @@ public class AssignationNode extends SentenceNode {
 
     @Override
     public void check() throws SemanticException {
-        expressionNode.check();
+        expressionType = expressionNode.check();
         if (!sentenceWithEffect()) {
             throw new SemanticException("Expresión no permitida como sentencia (no tiene efecto)", expressionNode.getToken(), token.getLineNumber());
         }
@@ -32,7 +36,13 @@ public class AssignationNode extends SentenceNode {
     @Override
     public void generate() {
         expressionNode.generate();
+        if(!(expressionType.getLexeme().equals("void"))){
+            if(!(expressionNode instanceof AssignationExpressionNode)){
+                MainSemantic.ST.getInstructionsList().add("POP");
+            }
+        }
     }
+
 
     private void checkChainingEndsInMethod() throws SemanticException {
         if (expressionNode instanceof AccessNode access) {

@@ -143,11 +143,11 @@ public class ConcreteClass {
             }
     }
 
-    private HashMap<String, Method> getMethods() {
+    public HashMap<String, Method> getMethods() {
             return methods;
     }
 
-    private HashMap<String,Attribute> getAttributes() {
+    public HashMap<String,Attribute> getAttributes() {
             return attributes;
     }
 

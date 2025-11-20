@@ -14,6 +14,7 @@ public class MethodAccessNode extends AccessNode {
     private List<ExpressionNode> currentParamList;
     private Token tokenIdMetVar;
     private ChainedNode chaining;
+    private boolean isLeftSideOfAssign= false;
 
     public MethodAccessNode(Token tokenIdMetVar, List<ExpressionNode> currentParamList) {
         this.tokenIdMetVar = tokenIdMetVar;
@@ -62,7 +63,10 @@ public class MethodAccessNode extends AccessNode {
         MainSemantic.ST.getInstructionsList().add("LOADREF " + offset + "  ; cargo dirección del método dinámico");
         MainSemantic.ST.getInstructionsList().add("CALL; llamada dinámica");
 
-         if (chaining != null) {
+        if (chaining != null) {
+            if(this.isLeftSideOfAssign) {
+                chaining.setItsLeftSide(true);
+            }
             chaining.generate();
         }
     }
@@ -74,6 +78,11 @@ public class MethodAccessNode extends AccessNode {
     @Override
     public ChainedNode getChaining() {
         return chaining;
+    }
+
+    @Override
+    public void setItsLeftSide(boolean leftSide) {
+        this.isLeftSideOfAssign = leftSide;
     }
 
     public boolean itsAnStaticMethod() {

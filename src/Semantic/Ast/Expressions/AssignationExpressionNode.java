@@ -4,9 +4,7 @@ import Exceptions.SemanticException;
 import Lexical.Token;
 import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Chained.ChainedVariableNode;
-import Semantic.Ast.Expressions.Access.AccessNode;
-import Semantic.Ast.Expressions.Access.ExpressionParenthesesAccess;
-import Semantic.Ast.Expressions.Access.VarAccessNode;
+import Semantic.Ast.Expressions.Access.*;
 import Semantic.Types.Type;
 
 public class AssignationExpressionNode extends ExpressionNode {
@@ -58,7 +56,11 @@ public class AssignationExpressionNode extends ExpressionNode {
 
     @Override
     public void generate() {
-
+        rightSide.generate();
+        if(leftSide instanceof VarAccessNode var) {
+            var.setItsLeftSide(true);
+        }
+        leftSide.generate();
     }
 
     private boolean endsInAttribute(AccessNode access) {

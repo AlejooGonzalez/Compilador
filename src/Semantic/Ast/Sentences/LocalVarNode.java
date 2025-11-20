@@ -47,10 +47,10 @@ public class LocalVarNode extends SentenceNode {
 
     @Override
     public void generate() {
-        MainSemantic.ST.getInstructionsList().add("RMEM 1 ; Reserva memoria para la variable local " + token.getLexeme());
+        MainSemantic.ST.getInstructionsList().add("RMEM 1");
         if(expression != null){
             expression.generate();
-            MainSemantic.ST.getInstructionsList().add("STORE "+ offset +" ; Almacena  el valor de la expresion del tope de la pila en la variable local");
+            MainSemantic.ST.getInstructionsList().add("STORE "+ offset);
         }
     }
 

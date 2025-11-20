@@ -17,6 +17,7 @@ public class ConstructorAccessNode extends AccessNode {
     private ConcreteClass constructorClass;
     private List<ExpressionNode> arguments;
     private ChainedNode chaining;
+    private boolean isLeftSideOfAssign= false;
 
     public ConstructorAccessNode(Token classToken) {
         this.classToken = classToken;
@@ -48,27 +49,29 @@ public class ConstructorAccessNode extends AccessNode {
 
     @Override
     public void generate() {
-        int auxClass = 1;
-        MainSemantic.ST.getInstructionsList().add("    RMEM 1 ; Reservo puntero");
-        if(constructorClass!=null) {
-            auxClass = constructorClass.getLastAttributeOffset() + 1;
-        }
-        MainSemantic.ST.getInstructionsList().add("    PUSH " + auxClass);
-        MainSemantic.ST.getInstructionsList().add("    PUSH simple_malloc ; Push direccion de metodo");
-        MainSemantic.ST.getInstructionsList().add("    CALL");
-        MainSemantic.ST.getInstructionsList().add("    DUP ; Duplico la referencia al objeto");
-        MainSemantic.ST.getInstructionsList().add("    PUSH "+ MainSemantic.ST.getCurrentClass().getVTable() +" ; Etiqueta de la VT");
-        MainSemantic.ST.getInstructionsList().add("    STOREREF 0 ; Guardo VT en CIR, consumiendo una de las referencias");
-        MainSemantic.ST.getInstructionsList().add("    DUP ; Duplico this, para metodo de constructor");
+        String aux = MainSemantic.ST.itIsAnExistingClass(classToken).getVTable();
+        MainSemantic.ST.getInstructionsList().add("RMEM 1");
+        int auxClass = MainSemantic.ST.getCurrentClass().getAttributes().size() + 1;
+        MainSemantic.ST.getInstructionsList().add("PUSH " + auxClass);
+        MainSemantic.ST.getInstructionsList().add("PUSH simple_malloc");
+        MainSemantic.ST.getInstructionsList().add("CALL");
+        MainSemantic.ST.getInstructionsList().add("DUP");
+        MainSemantic.ST.getInstructionsList().add("PUSH "+ aux);
+        MainSemantic.ST.getInstructionsList().add("STOREREF 0");
+        MainSemantic.ST.getInstructionsList().add("DUP");
         for (ExpressionNode p : arguments) {
             p.generate();
-            MainSemantic.ST.getInstructionsList().add("    SWAP ; Muevo this");
+            MainSemantic.ST.getInstructionsList().add("SWAP");
         }
-        MainSemantic.ST.getInstructionsList().add("    PUSH Constructor_" + classToken.getLexeme() + " ; Direccion del constructor");
-        MainSemantic.ST.getInstructionsList().add("    CALL ; Llama al metodo");
+        MainSemantic.ST.getInstructionsList().add("PUSH Constructor_" + classToken.getLexeme());
+        MainSemantic.ST.getInstructionsList().add("CALL");
 
-        if (chaining != null)
+        if (chaining != null) {
+            if(isLeftSideOfAssign) {
+                chaining.setItsLeftSide(true);
+            }
             chaining.generate();
+        }
     }
 
     public void setArguments(List<ExpressionNode> arguments) {
@@ -82,6 +85,11 @@ public class ConstructorAccessNode extends AccessNode {
     @Override
     public ChainedNode getChaining() {
         return chaining;
+    }
+
+    @Override
+    public void setItsLeftSide(boolean leftSide) {
+        this.isLeftSideOfAssign = leftSide;
     }
 
     public boolean existClass(){

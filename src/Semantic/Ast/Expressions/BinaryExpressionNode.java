@@ -78,31 +78,31 @@ public class BinaryExpressionNode extends CompoundExpressionNode {
         leftSide.generate();
         rightSide.generate();
         switch (operator.getLexeme()) {
-            case "+":
+            case "+"->
                 MainSemantic.ST.getInstructionsList().add("ADD");
-            case "-":
+            case "-"->
                 MainSemantic.ST.getInstructionsList().add("SUB");
-            case "*":
+            case "*"->
                 MainSemantic.ST.getInstructionsList().add("MUL");
-            case "/":
+            case "/"->
                 MainSemantic.ST.getInstructionsList().add("DIV");
-            case "%":
+            case "%"->
                 MainSemantic.ST.getInstructionsList().add("MOD");
-            case "<":
+            case "<"->
                 MainSemantic.ST.getInstructionsList().add("LT");
-            case ">":
+            case ">"->
                 MainSemantic.ST.getInstructionsList().add("GT");
-            case "<=":
+            case "<="->
                 MainSemantic.ST.getInstructionsList().add("LE");
-            case ">=":
+            case ">="->
                 MainSemantic.ST.getInstructionsList().add("GE");
-            case "==":
+            case "=="->
                 MainSemantic.ST.getInstructionsList().add("EQ");
-            case "!=":
+            case "!="->
                 MainSemantic.ST.getInstructionsList().add("NE");
-            case "&&":
+            case "&&"->
                 MainSemantic.ST.getInstructionsList().add("AND");
-            case "||":
+            case "||"->
                 MainSemantic.ST.getInstructionsList().add("OR");
         }
     }

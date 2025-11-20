@@ -15,6 +15,8 @@ public class ChainedCallNode extends ChainedNode {
     private Token token;
     private ChainedNode chaining;
     private List<ExpressionNode> arguments;
+    private boolean isLeftSideOfAssign= false;
+    private ConcreteClass previousClass;
 
     public ChainedCallNode(Token token) {
         this.token = token;
@@ -27,6 +29,7 @@ public class ChainedCallNode extends ChainedNode {
             throw new SemanticException("El encadenado debe ser de tipo referencia", leftToken, token.getLineNumber());
         }
         ConcreteClass leftClass = MainSemantic.ST.itIsAnExistingClass(leftSide.getToken());
+        previousClass = leftClass;
         if (leftClass == null) {
             throw new SemanticException("Clase del metodo anterior no declarada", leftToken, token.getLineNumber());
         }
@@ -58,35 +61,35 @@ public class ChainedCallNode extends ChainedNode {
 
     @Override
     public void generate() {
-    Method methodAux = MainSemantic.ST.getCurrentClass().itsAnExisistingMethod(token);
-    if(methodAux.isStaticMethod()){
-        MainSemantic.ST.getInstructionsList().add("POP; Es estatico");
-        if(methodAux.getReturnType().getLexeme().equals("void")) {
-            MainSemantic.ST.getInstructionsList().add("RMEM 1 ; Reservo lugar para el retorno");
+        Method methodAux = previousClass.itsAnExisistingMethod(token);
+        if (methodAux != null) {
+            if (!methodAux.getReturnType().getLexeme().equals("void")) {
+                MainSemantic.ST.getInstructionsList().add("RMEM 1");
+                MainSemantic.ST.getInstructionsList().add("SWAP");
+            }
+            for (ExpressionNode exp : arguments) {
+                exp.generate();
+                MainSemantic.ST.getInstructionsList().add("SWAP");
+            }
+            MainSemantic.ST.getInstructionsList().add("DUP ; Duplico this");
+            MainSemantic.ST.getInstructionsList().add("LOADREF 0");
+            MainSemantic.ST.getInstructionsList().add("LOADREF " + methodAux.getOffset());
+            MainSemantic.ST.getInstructionsList().add("CALL");
         }
-        for(ExpressionNode exp : arguments){
-            exp.generate();
+
+                if (chaining != null) {
+                    if (isLeftSideOfAssign) {
+                        chaining.setItsLeftSide(true);
+                    }
+                    chaining.generate();
+                }
         }
-        MainSemantic.ST.getInstructionsList().add("PUSH "+ methodAux.getLexeme() + MainSemantic.ST.getCurrentClass());
-        MainSemantic.ST.getInstructionsList().add("CALL");
-    } else {
-        if(!methodAux.getReturnType().getLexeme().equals("void")) {
-            MainSemantic.ST.getInstructionsList().add("RMEM 1 ; Lugar para el retorno");
-            MainSemantic.ST.getInstructionsList().add("SWAP ; This en tope de la pila");
-        }
-        for(ExpressionNode exp : arguments){
-            exp.generate();
-            MainSemantic.ST.getInstructionsList().add("SWAP");
-        }
-        MainSemantic.ST.getInstructionsList().add("    DUP ; Duplico this");
-        MainSemantic.ST.getInstructionsList().add("    LOADREF 0;");
-        MainSemantic.ST.getInstructionsList().add("    LOADREF "+ methodAux.getOffset() +" ; Cargo metodo "+ methodAux.getLexeme() + "a la VT");
-        MainSemantic.ST.getInstructionsList().add("    CALL;");
+
+    @Override
+    public void setItsLeftSide(boolean leftSide) {
+        this.isLeftSideOfAssign = leftSide;
     }
-        if (chaining != null) {
-            chaining.generate();
-        }
-    }
+
 
     public void setArgumentList(List<ExpressionNode> arguments) {
         this.arguments = arguments;

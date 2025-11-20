@@ -2,8 +2,10 @@ package Semantic.Ast.Sentences;
 
 import Exceptions.SemanticException;
 import Lexical.Token;
+import Main.MainSemantic;
 import Semantic.Ast.Expressions.EmptyExpression;
 import Semantic.Ast.Expressions.ExpressionNode;
+import Semantic.Method;
 import Semantic.Types.Type;
 import Semantic.Types.VoidType;
 
@@ -11,6 +13,8 @@ public class ReturnNode extends SentenceNode {
     private ExpressionNode exp;
     private Token token;
     private Type returnMethodExpected;
+    private int localVariablesSize;
+    private Method containingMethod;
 
     public ReturnNode(Token token){
         this.token = token;
@@ -45,11 +49,30 @@ public class ReturnNode extends SentenceNode {
                 }
             }
         }
+        containingMethod = MainSemantic.ST.getCurrentMethod();
+        localVariablesSize = MainSemantic.ST.getCurrentBlock().getLocalVariables().size();
     }
 
     @Override
     public void generate() {
+        if(!containingMethod.getReturnType().getLexeme().equals("void")) {
+            exp.generate();
+            int returnOffset = containingMethod.getParameters().size() + 3;
+            if(!containingMethod.isStaticMethod()){
+                returnOffset++;
+            }
+            MainSemantic.ST.getInstructionsList().add("STORE " + returnOffset);
+         }
+        if(localVariablesSize > 0) {
+            MainSemantic.ST.getInstructionsList().add("FMEM " + localVariablesSize);
+        }
+        MainSemantic.ST.getInstructionsList().add("STOREFP");
 
+        int paramAccountToFree = containingMethod.getParameters().size();
+        if(!containingMethod.isStaticMethod()){
+            paramAccountToFree++;
+        }
+        MainSemantic.ST.getInstructionsList().add("RET "+paramAccountToFree);
     }
 
     public boolean voidReturnMethod() {

@@ -9,6 +9,7 @@ import Semantic.Types.Type;
 public class ExpressionParenthesesAccess extends AccessNode {
     private ExpressionNode expression;
     private ChainedNode chaining;
+    private boolean isLeftSideOfAssign= false;
 
     public ExpressionParenthesesAccess(ExpressionNode expression) {
         this.expression = expression;
@@ -36,7 +37,10 @@ public class ExpressionParenthesesAccess extends AccessNode {
     @Override
     public void generate() {
         expression.generate();
-        if(chaining != null) {
+        if (chaining != null) {
+            if(this.isLeftSideOfAssign) {
+                chaining.setItsLeftSide(true);
+            }
             chaining.generate();
         }
     }
@@ -48,6 +52,11 @@ public class ExpressionParenthesesAccess extends AccessNode {
     @Override
     public ChainedNode getChaining() {
         return chaining;
+    }
+
+    @Override
+    public void setItsLeftSide(boolean leftSide) {
+        this.isLeftSideOfAssign = leftSide;
     }
 
     public ExpressionNode getExpression() {

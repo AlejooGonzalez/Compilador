@@ -115,25 +115,24 @@ RET 1
 VT_Init: NOP 
 
 .CODE
-Init_main: LOADFP   ; Apila el valor del registro
-LOADSP    ; Apila el valor del registro sp
-STOREFP   ; Almacena el tope de la pila en el registro
-PUSH 1234   ; Apila el entero 1234
-PUSH Object_debugPrint   ; Apilo el metodo
-CALL                ; Llamo al método en el tope de la pila
+Init_main: LOADFP
+LOADSP
+STOREFP
+PUSH 1234
+PUSH Object_debugPrint; Apilo el metodo
+CALL; Llamo al método en el tope de la pila
 FMEM 0
-STOREFP   ; Almacena el tope de la pila en el registro
+STOREFP
 RET 0
-Init_debugPrint: LOADFP   ; Apila el valor del registro
-LOADSP    ; Apila el valor del registro sp
-STOREFP   ; Almacena el tope de la pila en el registro
-STOREFP   ; Almacena el tope de la pila en el registro
-RET 0
-.CODE
+Init_debugPrint: LOADFP
+LOADSP
+STOREFP
+STOREFP
+RET 1
 Constructor_Init: 
-LOADFP ; Guarda ED
-LOADSP ; Guarda SP
-STOREFP ; Corre FP al SP
-STOREFP ; Usa ED para volver a RA llamador
+LOADFP
+LOADSP
+STOREFP
+STOREFP
 RET 1
 

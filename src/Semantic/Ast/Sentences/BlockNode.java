@@ -27,6 +27,10 @@ public class BlockNode extends SentenceNode {
         localVariables.put(string, localVarNode);
     }
 
+    public LinkedHashMap<String, LocalVarNode> getLocalVariables() {
+        return localVariables;
+    }
+
     public LocalVarNode getLocalVar(String idVar) {
         return localVariables.get(idVar);
     }
@@ -71,17 +75,16 @@ public class BlockNode extends SentenceNode {
             int count = localVariables.size();
             MainSemantic.ST.getInstructionsList().add("FMEM " + count + "   ; Libero memoria variables local");
         } */
-        MainSemantic.ST.getInstructionsList().add("FMEM 0");
         MainSemantic.ST.setCurrentBlock(parent);
     }
 
     public void setLocalVarsOffset() {
-        int offset = -1;
+        int offset = 0;
         if(parent != null) {
             offset = parent.getLastLocalVarOffset() - 1;
         }
         for(LocalVarNode localVarNode : localVariables.values()) {
-            if(offset != 0) {
+            if(offset != 1) {
                 localVarNode.setOffset(offset);
                 offset--;
             }

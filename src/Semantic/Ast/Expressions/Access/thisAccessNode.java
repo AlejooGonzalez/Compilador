@@ -44,7 +44,7 @@ public class thisAccessNode extends AccessNode {
 
     @Override
     public void generate() {
-        MainSemantic.ST.getInstructionsList().add("    LOAD 3 ; Apilo this");
+        MainSemantic.ST.getInstructionsList().add("LOAD 3");
         if (chaining != null) {
             if(this.isLeftSideOfAssign) {
                 chaining.setItsLeftSide(true);

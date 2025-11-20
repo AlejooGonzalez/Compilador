@@ -27,7 +27,7 @@ public class Method {
         this.modifier = modifier;
         this.returnType = returnType;
         parameters =  new LinkedHashMap<>();
-        offset = -1000;
+        offset = 0;
     }
 
     public HashMap<String,Parameter> getParameters() {

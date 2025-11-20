@@ -18,6 +18,7 @@ public class SymbolTable {
     private BlockNode currentBlock;
     private ArrayList<String> instructionsList;
     private int stringNumber = 0;
+    private int ifWhileCounter = 0;
 
     public SymbolTable() throws SyntacticException, SemanticException {
         classes = new HashMap<>();
@@ -314,5 +315,10 @@ public class SymbolTable {
     public int getNextStringNumber(){
         stringNumber++;
         return stringNumber;
+    }
+
+    public int getIfWhileCounter(){
+        ifWhileCounter++;
+        return ifWhileCounter;
     }
 }

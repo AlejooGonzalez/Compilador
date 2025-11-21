@@ -57,7 +57,7 @@ public class AssignationExpressionNode extends ExpressionNode {
     @Override
     public void generate() {
         rightSide.generate();
-        if(leftSide instanceof VarAccessNode var) {
+        if(leftSide instanceof AccessNode var) {
             var.setItsLeftSide(true);
         }
         leftSide.generate();

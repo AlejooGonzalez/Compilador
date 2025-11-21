@@ -62,19 +62,10 @@ public class ChainedCallNode extends ChainedNode {
     @Override
     public void generate() {
         Method methodAux = previousClass.itsAnExisistingMethod(token);
-        if (methodAux != null) {
-            if (!methodAux.getReturnType().getLexeme().equals("void")) {
-                MainSemantic.ST.getInstructionsList().add("RMEM 1");
-                MainSemantic.ST.getInstructionsList().add("SWAP");
-            }
-            for (ExpressionNode exp : arguments) {
-                exp.generate();
-                MainSemantic.ST.getInstructionsList().add("SWAP");
-            }
-            MainSemantic.ST.getInstructionsList().add("DUP");
-            MainSemantic.ST.getInstructionsList().add("LOADREF 0");
-            MainSemantic.ST.getInstructionsList().add("LOADREF " + methodAux.getOffset());
-            MainSemantic.ST.getInstructionsList().add("CALL");
+        if(methodAux.isStaticMethod()) {
+            generateStaticMethodCode(methodAux);
+        } else {
+            generateDynamicMethodCode(methodAux);
         }
         if (chaining != null) {
             if (isLeftSideOfAssign) {
@@ -84,6 +75,35 @@ public class ChainedCallNode extends ChainedNode {
         }
     }
 
+    private void generateStaticMethodCode(Method methodAux){
+        MainSemantic.ST.getInstructionsList().add("POP");
+        if(!methodAux.getReturnType().getLexeme().equals("void")) {
+            MainSemantic.ST.getInstructionsList().add("RMEM 1");
+        }
+        for(ExpressionNode e : arguments) {
+            e.generate();
+        }
+        MainSemantic.ST.getInstructionsList().add("PUSH " + methodAux.getLabel());
+        MainSemantic.ST.getInstructionsList().add("CALL");
+    }
+
+    private void generateDynamicMethodCode(Method methodAux){
+        if(!methodAux.getReturnType().getLexeme().equals("void")) {
+            MainSemantic.ST.getInstructionsList().add("RMEM 1");
+            MainSemantic.ST.getInstructionsList().add("SWAP");
+        }
+        for(ExpressionNode e : arguments) {
+            e.generate();
+            MainSemantic.ST.getInstructionsList().add("SWAP");
+        }
+        MainSemantic.ST.getInstructionsList().add("DUP");
+        MainSemantic.ST.getInstructionsList().add("LOADREF 0");
+        MainSemantic.ST.getInstructionsList().add("LOADREF " + methodAux.getOffset());
+        MainSemantic.ST.getInstructionsList().add("CALL");
+
+    }
+
+        //---------------------------------------------
     @Override
     public void setItsLeftSide(boolean leftSide) {
         this.isLeftSideOfAssign = leftSide;

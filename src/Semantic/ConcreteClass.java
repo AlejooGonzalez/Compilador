@@ -302,7 +302,7 @@ public class ConcreteClass {
                     methodsLabels.append(",");
             }
 
-            MainSemantic.ST.getInstructionsList().add("VT_"+token.getLexeme()+": DW "+methodsLabels+" ; Etiquetas de metodo de " + token.getLexeme());
+            MainSemantic.ST.getInstructionsList().add("VT_"+token.getLexeme()+": DW "+methodsLabels);
         } else {
             MainSemantic.ST.getInstructionsList().add(".DATA");
             MainSemantic.ST.getInstructionsList().add("VT_"+token.getLexeme()+": NOP ");

@@ -11,6 +11,7 @@ public class ChainedVariableNode extends ChainedNode {
     private Token token;
     private ChainedNode chaining;
     private boolean isLeftSideOfAssign= false;
+    private Attribute attribute;
 
     public ChainedVariableNode(Token token) {
         this.token = token;
@@ -25,11 +26,11 @@ public class ChainedVariableNode extends ChainedNode {
         if (leftClass == null) {
             throw new SemanticException("Clase no declarada", leftSide.getToken(), leftToken.getLineNumber());
         }
-        Attribute attr = leftClass.itsAnExisistingAttribute(token);
-        if (attr == null) {
+        attribute = leftClass.itsAnExisistingAttribute(token);
+        if (attribute == null) {
             throw new SemanticException("El atributo no existe en la clase", token, token.getLineNumber());
         }
-        Type attrType = attr.getType();
+        Type attrType = attribute.getType();
         if (chaining != null) {
             return chaining.check(attrType, token);
         }
@@ -48,7 +49,19 @@ public class ChainedVariableNode extends ChainedNode {
 
     @Override
     public void generate() {
+        if (!isLeftSideOfAssign || chaining != null){
+            MainSemantic.ST.getInstructionsList().add("LOADREF " + attribute.getOffset());
+        } else {
+            MainSemantic.ST.getInstructionsList().add("SWAP");
+            MainSemantic.ST.getInstructionsList().add("STOREREF " + attribute.getOffset());
+        }
 
+        if (chaining != null) {
+            if (isLeftSideOfAssign) {
+                chaining.setItsLeftSide(true);
+            }
+            chaining.generate();
+        }
     }
 
     @Override

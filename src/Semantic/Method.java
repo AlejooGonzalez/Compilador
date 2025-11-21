@@ -21,6 +21,8 @@ public class Method {
     private BlockNode block;
     private int offset;
     private boolean inherited = false;
+    private ConcreteClass concreteClass;
+    private ConcreteClass classWhoCreateMethod;
 
     public Method(Token token, Token modifier, Type returnType){
         this.token = token;
@@ -29,6 +31,8 @@ public class Method {
         parameters =  new LinkedHashMap<>();
         offset = 0;
     }
+
+    public Method() { }
 
     public HashMap<String,Parameter> getParameters() {
         return parameters;
@@ -55,6 +59,14 @@ public class Method {
 
     public void setHasBlock(boolean hasBody) {
         this.hasBody = hasBody;
+    }
+
+    public void setClassWhoCreateMethod(ConcreteClass classWhoCreateMethod) {
+        this.classWhoCreateMethod = classWhoCreateMethod;
+    }
+
+    public ConcreteClass getClassWhoCreateMethod() {
+        return classWhoCreateMethod;
     }
 
     public boolean getHasBlock() {
@@ -121,6 +133,7 @@ public class Method {
                 retorno = false;
             }
         }
+        concreteClass = MainSemantic.ST.getCurrentClass();
         return retorno;
     }
 
@@ -209,14 +222,15 @@ public class Method {
 
     public void setParametersOffset(){
         int pamOffsets = 1;
+        int valuePoistion = 1;
         if(isStaticMethod()){
             pamOffsets = 3;
         } else {
             pamOffsets = 4;
         }
         for(Parameter p:parameters.values()){
-            p.setOffset(pamOffsets);
-            pamOffsets++;
+            p.setOffset(parameters.size() + pamOffsets - valuePoistion);
+            valuePoistion++;
         }
     }
 
@@ -235,4 +249,12 @@ public class Method {
     public boolean isDynamic() {
         return modifier == null || (!modifier.getTokenType().equals("pr_static"));
     }
-}
+
+    public ConcreteClass getConcreteClass(){
+        return concreteClass;
+    }
+
+    public String getLabel(){
+        return classWhoCreateMethod.getLexeme()+"_"+token.getLexeme();
+            }
+    }

@@ -5,7 +5,7 @@ class A{
   
     
       void m1(int p1){
-        Object.debugPrint(p1);
+        debugPrint(p1);
     }
     
       int m2(){
@@ -22,7 +22,7 @@ class Init{
         
         var x = new A();
         x.m2();
-        Object.debugPrint(x.m2());
+        debugPrint(x.m2());
     }
 }
 

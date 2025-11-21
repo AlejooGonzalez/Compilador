@@ -2,6 +2,8 @@ package Semantic.Ast.Sentences;
 
 import Exceptions.SemanticException;
 import Main.MainSemantic;
+import Semantic.ConcreteClass;
+import Semantic.Method;
 
 import java.util.*;
 
@@ -10,6 +12,8 @@ public class BlockNode extends SentenceNode {
     private LinkedHashMap<String, LocalVarNode> localVariables;
     private BlockNode parent;
     private boolean itsChecked;
+    private Method method;
+    private ConcreteClass concreteClass;
     private boolean isGenerated;
     private int offset;
 
@@ -18,6 +22,7 @@ public class BlockNode extends SentenceNode {
         this.localVariables = new LinkedHashMap<>();
         this.itsChecked = false;
         this.isGenerated = false;
+
     }
 
     public void addLocalVariables(String string, LocalVarNode localVarNode) throws SemanticException {
@@ -29,6 +34,26 @@ public class BlockNode extends SentenceNode {
 
     public LinkedHashMap<String, LocalVarNode> getLocalVariables() {
         return localVariables;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setParent(BlockNode parent) {
+        this.parent = parent;
+    }
+
+    public ConcreteClass getConcreteClass() {
+        return concreteClass;
+    }
+
+    public void setConcreteClass(ConcreteClass concreteClass) {
+        this.concreteClass = concreteClass;
     }
 
     public LocalVarNode getLocalVar(String idVar) {
@@ -70,11 +95,6 @@ public class BlockNode extends SentenceNode {
         for (SentenceNode sentence : sentences) {
             sentence.generate();
         }
-        /*
-        if (!localVariables.isEmpty()) {
-            int count = localVariables.size();
-            MainSemantic.ST.getInstructionsList().add("FMEM " + count + "   ; Libero memoria variables local");
-        } */
         MainSemantic.ST.setCurrentBlock(parent);
     }
 

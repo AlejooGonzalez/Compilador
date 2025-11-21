@@ -112,29 +112,24 @@ STOREFP
 RET 1
 
 .DATA
-VT_A: DW A_mc ; Etiquetas de metodo de A
+VT_A: DW A_mc,0 ; Etiquetas de metodo de A
 
 .CODE
 A_mc: LOADFP
 LOADSP
 STOREFP
 PUSH 1234
-PUSH Object_debugPrint; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
+PUSH Object_debugPrint
+CALL
 PUSH 33
 LOAD 3
 SWAP
 STOREREF 1
 LOAD 3
 LOADREF 1
-PUSH Object_debugPrint; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
+PUSH Object_debugPrint
+CALL
 FMEM 0
-STOREFP
-RET 1
-A_debugPrint: LOADFP
-LOADSP
-STOREFP
 STOREFP
 RET 1
 Constructor_A: 
@@ -153,7 +148,7 @@ LOADSP
 STOREFP
 RMEM 1
 RMEM 1
-PUSH 1
+PUSH 2
 PUSH simple_malloc
 CALL
 DUP
@@ -171,11 +166,6 @@ CALL
 FMEM 1
 STOREFP
 RET 0
-Init_debugPrint: LOADFP
-LOADSP
-STOREFP
-STOREFP
-RET 1
 Constructor_Init: 
 LOADFP
 LOADSP

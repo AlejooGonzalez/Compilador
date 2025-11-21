@@ -48,14 +48,16 @@ public class UnaryExpressionNode extends CompoundExpressionNode {
         rightSide.generate();
         switch (operator.getLexeme()) {
             case "++" -> {
-                MainSemantic.ST.getInstructionsList().add("ADD;");
+                MainSemantic.ST.getInstructionsList().add("PUSH 1");
+                MainSemantic.ST.getInstructionsList().add("ADD");
             }
             case "+" -> { }
-            case "-" -> MainSemantic.ST.getInstructionsList().add("NEG;");
+            case "-" -> MainSemantic.ST.getInstructionsList().add("NEG");
             case "--" -> {
-                MainSemantic.ST.getInstructionsList().add("SUB;");
+                MainSemantic.ST.getInstructionsList().add("PUSH 1");
+                MainSemantic.ST.getInstructionsList().add("SUB");
             }
-            case "!" -> MainSemantic.ST.getInstructionsList().add("NOT;");
+            case "!" -> MainSemantic.ST.getInstructionsList().add("NOT");
         }
     }
 

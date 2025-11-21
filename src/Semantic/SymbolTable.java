@@ -30,6 +30,7 @@ public class SymbolTable {
         debugPrint.addParameters(new Parameter(new Token("idMetVar", "i", 0), new PrimitiveType(new Token("pr_int", "int", 0))));
         debugPrint.setHasBlock(true);
         objectClass.addMethod(debugPrint);
+        debugPrint.setClassWhoCreateMethod(objectClass);
         classes.put("Object", objectClass);
 
         //String class
@@ -42,59 +43,76 @@ public class SymbolTable {
         Method read = new Method(new Token("idMetVar", "read", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_int", "int", 0)));
         read.setHasBlock(true);
         systemClass.addMethod(read);
+        read.setClassWhoCreateMethod(systemClass);
 
         // static void printB(boolean b)
         Method printB = new Method(new Token("idMetVar", "printB", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         printB.addParameters(new Parameter(new Token("idMetVar", "b", 0), new PrimitiveType(new Token("pr_boolean", "boolean", 0))));
         printB.setHasBlock(true);
         systemClass.addMethod(printB);
+        printB.setClassWhoCreateMethod(systemClass);
 
         // static void printC(char c)
         Method printC = new Method(new Token("idMetVar", "printC", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         printC.addParameters(new Parameter(new Token("idMetVar", "c", 0), new PrimitiveType(new Token("pr_char", "char", 0))));
         printC.setHasBlock(true);
         systemClass.addMethod(printC);
+        printC.setClassWhoCreateMethod(systemClass);
 
         // static void printI(int i)
         Method printI = new Method(new Token("idMetVar", "printI", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         printI.addParameters(new Parameter(new Token("idMetVar", "i", 0), new PrimitiveType(new Token("pr_int", "int", 0))));
         printI.setHasBlock(true);
         systemClass.addMethod(printI);
+        printI.setClassWhoCreateMethod(systemClass);
+
 
         // static void printS(String s)
         Method printS = new Method(new Token("idMetVar", "printS", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         printS.addParameters(new Parameter(new Token("idMetVar", "s", 0), new ReferenceType(new Token("idClase", "String", 0))));
         printS.setHasBlock(true);
         systemClass.addMethod(printS);
+        printS.setClassWhoCreateMethod(systemClass);
+
 
         // static void println()
         Method println = new Method(new Token("idMetVar", "println", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         println.setHasBlock(true);
         systemClass.addMethod(println);
+        println.setClassWhoCreateMethod(systemClass);
+
 
         // static void printBln(boolean b)
         Method printBln = new Method(new Token("idMetVar", "printBln", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         printBln.addParameters(new Parameter(new Token("idMetVar", "b", 0), new PrimitiveType(new Token("pr_boolean", "boolean", 0))));
         printBln.setHasBlock(true);
         systemClass.addMethod(printBln);
+        printBln.setClassWhoCreateMethod(systemClass);
+
 
         // static void printCln(char c)
         Method printCln = new Method(new Token("idMetVar", "printCln", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         printCln.addParameters(new Parameter(new Token("idMetVar", "c", 0), new PrimitiveType(new Token("pr_char", "char", 0))));
         printCln.setHasBlock(true);
         systemClass.addMethod(printCln);
+        printCln.setClassWhoCreateMethod(systemClass);
+
 
         // static void printIln(int i)
         Method printIln = new Method(new Token("idMetVar", "printIln", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         printIln.addParameters(new Parameter(new Token("idMetVar", "i", 0), new PrimitiveType(new Token("pr_int", "int", 0))));
         printIln.setHasBlock(true);
         systemClass.addMethod(printIln);
+        printIln.setClassWhoCreateMethod(systemClass);
+
 
         // static void printSln(String s)
         Method printSln = new Method(new Token("idMetVar", "printSln", 0), new Token("pr_static", "static", 0), new PrimitiveType(new Token("pr_void", "void", 0)));
         printSln.addParameters(new Parameter(new Token("idMetVar", "s", 0), new ReferenceType(new Token("idClase", "String", 0))));
         printSln.setHasBlock(true);
         systemClass.addMethod(printSln);
+        printSln.setClassWhoCreateMethod(systemClass);
+
 
         classes.put("System", systemClass);
     }
@@ -155,6 +173,10 @@ public class SymbolTable {
         }
     }
 
+    public Constructor getCurrentConstructor() {
+        return currentConstructor;
+    }
+
     public void consolidate() throws SemanticException {
         for (ConcreteClass c : classes.values()) {
             c.consolidate();
@@ -197,8 +219,16 @@ public class SymbolTable {
         generateSystemMethods();
 
         for(ConcreteClass classes:classes.values()){
-            if(itIsNotADefaultClass(classes))
+            if(itIsNotADefaultClass(classes)) {
+                classes.setMethodsOffsets();
+                classes.setAttributesOffsets();
+                classes.getConstructor().setParametersOffset();
+            }
+        }
+        for(ConcreteClass classes:classes.values()){
+            if(itIsNotADefaultClass(classes)) {
                 classes.generate();
+            }
         }
     }
 

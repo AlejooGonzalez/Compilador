@@ -15,6 +15,7 @@ public class LocalVarNode extends SentenceNode {
     private ExpressionNode expression;
     private Type type;
     private int offset;
+    private BlockNode block;
 
     public LocalVarNode(Token token) {
         this.token = token;
@@ -29,7 +30,7 @@ public class LocalVarNode extends SentenceNode {
         if(localVarDeclaratedInAttributes()){
             throw new SemanticException("Local Var ya declarada en atributos", token, token.getLineNumber());
         } */
-        checkLocalVarInParentNode();
+        //checkLocalVarInParentNode();
         type = expression.check();
         if(localVarNullValued()){
             throw new SemanticException("Una variable no puede tener un valor nulo",  token, token.getLineNumber());
@@ -78,12 +79,14 @@ public class LocalVarNode extends SentenceNode {
     }
 
     public void checkLocalVarInParentNode() throws SemanticException {
-        BlockNode parentBlock = MainSemantic.ST.getCurrentBlock().getParent();
-        while(parentBlock != null){
-            if(parentBlock.getLocalVar(token.getLexeme()) != null){
-                throw new SemanticException("Variable declarada en un bloque padre", token, token.getLineNumber());
+        if(block!=null) {
+            BlockNode parentBlock = block.getParent();
+            while (parentBlock != null) {
+                if (parentBlock.getLocalVar(token.getLexeme()) != null) {
+                    throw new SemanticException("Variable declarada en un bloque padre", token, token.getLineNumber());
+                }
+                parentBlock = parentBlock.getParent();
             }
-            parentBlock = parentBlock.getParent();
         }
     }
 
@@ -105,5 +108,13 @@ public class LocalVarNode extends SentenceNode {
 
     public boolean localVarVoidValued(){
         return type.itsCompatible(new VoidType(token.getLineNumber()));
+    }
+
+    public BlockNode getBlock() {
+        return block;
+    }
+
+    public void setBlock(BlockNode block) {
+        this.block = block;
     }
 }

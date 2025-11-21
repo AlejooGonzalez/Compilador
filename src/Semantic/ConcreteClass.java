@@ -61,6 +61,9 @@ public class ConcreteClass {
             }
         }
 
+        public Constructor getConstructor() {
+            return constructor;
+        }
         public void setInheritance(Token inheritance) {
             this.inheritance = inheritance;
         }
@@ -265,40 +268,37 @@ public class ConcreteClass {
 
     public void generate() throws SemanticException {
         MainSemantic.ST.setCurrentClass(this);
-        setAttributesOffsets();
-        setMethodsOffsets();
         generateVT();
         generateConstructorAndMethods();
     }
 
     public void generateConstructorAndMethods(){
         MainSemantic.ST.getInstructionsList().add(".CODE");
-            for(Method methods: methods.values()) {
-                methods.generate();
+            for(Method methods: methods.values()){
+                if(methods.getClassWhoCreateMethod() != null && methods.getClassWhoCreateMethod().getLexeme().equals(token.getLexeme()))
+                    methods.generate();
             }
-
         constructor.generate();
     }
 
     private void generateVT() {
         HashMap<Integer, String> methodsLabelByOffset = new HashMap<>();
         for (Method m : methods.values()) {
-            if (!m.isStaticMethod())
-                methodsLabelByOffset.put(m.getOffset(), m.getLexeme());
+            if (m.getModifier()==null || m.getModifier() != null && !m.getModifier().getLexeme().equals("static"))
+                methodsLabelByOffset.put(m.getOffset(), m.getClassWhoCreateMethod().getLexeme()+"_"+m.getLexeme());
         }
+
         if (!methodsLabelByOffset.isEmpty()){
             MainSemantic.ST.getInstructionsList().add(".DATA");
             StringBuilder methodsLabels = new StringBuilder();
             for (int i = 0; i < getLastMethodOffset(); i++) {
-                if (methodsLabelByOffset.get(i) != null) {
-                    methodsLabels.append(token.getLexeme()).append("_");
+                if (methodsLabelByOffset.get(i) != null)
                     methodsLabels.append(methodsLabelByOffset.get(i));
-                }
-                else
-                    methodsLabels.append("0");
+                else methodsLabels.append("0");
                 if (i != getLastMethodOffset()-1)
                     methodsLabels.append(",");
             }
+
             MainSemantic.ST.getInstructionsList().add("VT_"+token.getLexeme()+": DW "+methodsLabels+" ; Etiquetas de metodo de " + token.getLexeme());
         } else {
             MainSemantic.ST.getInstructionsList().add(".DATA");
@@ -307,7 +307,7 @@ public class ConcreteClass {
         MainSemantic.ST.getInstructionsList().add("");
     }
 
-    private void setMethodsOffsets() {
+    public void setMethodsOffsets() {
         int offset = 0;
         if (methodsOffseted)
             return;
@@ -320,14 +320,12 @@ public class ConcreteClass {
         }
         for (Method m : methods.values()) {
             int offsetAux = methodIsInherited(m);
-            if (!m.isStaticMethod()) {
                 if (offsetAux != -1) {
                     m.setOffset(offsetAux);
                 } else {
                     m.setOffset(offset);
                     offset++;
                 }
-            }
         }
         this.lastMethodOffset = offset;
         methodsOffseted = true;
@@ -351,7 +349,7 @@ public class ConcreteClass {
         return toReturn;
     }
 
-    private void setAttributesOffsets() {
+    public void setAttributesOffsets() {
         int nextOffset = 1;
         if (attributesOffseted)
             return;

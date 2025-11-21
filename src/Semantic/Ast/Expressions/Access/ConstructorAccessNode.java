@@ -50,8 +50,9 @@ public class ConstructorAccessNode extends AccessNode {
     @Override
     public void generate() {
         String aux = MainSemantic.ST.itIsAnExistingClass(classToken).getVTable();
+        ConcreteClass aux2 = MainSemantic.ST.itIsAnExistingClass(classToken);
         MainSemantic.ST.getInstructionsList().add("RMEM 1");
-        int auxClass = MainSemantic.ST.getCurrentClass().getAttributes().size() + 1;
+        int auxClass = aux2.getAttributes().size() + 1;
         MainSemantic.ST.getInstructionsList().add("PUSH " + auxClass);
         MainSemantic.ST.getInstructionsList().add("PUSH simple_malloc");
         MainSemantic.ST.getInstructionsList().add("CALL");

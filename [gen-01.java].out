@@ -119,16 +119,11 @@ Init_main: LOADFP
 LOADSP
 STOREFP
 PUSH 1234
-PUSH Object_debugPrint; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
+PUSH Object_debugPrint
+CALL
 FMEM 0
 STOREFP
 RET 0
-Init_debugPrint: LOADFP
-LOADSP
-STOREFP
-STOREFP
-RET 1
 Constructor_Init: 
 LOADFP
 LOADSP

@@ -112,7 +112,7 @@ STOREFP
 RET 1
 
 .DATA
-VT_A: DW A_setall,A_m1 ; Etiquetas de metodo de A
+VT_A: DW A_setall,A_m1,0 ; Etiquetas de metodo de A
 
 .CODE
 A_setall: LOADFP
@@ -144,22 +144,17 @@ LOADSP
 STOREFP
 LOAD 3
 LOADREF 1
-PUSH Object_debugPrint; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
+PUSH Object_debugPrint
+CALL
 LOAD 3
 LOADREF 2
-PUSH Object_debugPrint; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
+PUSH Object_debugPrint
+CALL
 LOAD 3
 LOADREF 3
-PUSH System_printSln; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
+PUSH System_printSln
+CALL
 FMEM 0
-STOREFP
-RET 1
-A_debugPrint: LOADFP
-LOADSP
-STOREFP
 STOREFP
 RET 1
 Constructor_A: 
@@ -170,7 +165,7 @@ STOREFP
 RET 1
 
 .DATA
-VT_B: DW B_setall,B_m1,B_seta4,B_m2 ; Etiquetas de metodo de B
+VT_B: DW A_setall,A_m1,0,B_seta4,B_m2 ; Etiquetas de metodo de B
 
 .CODE
 B_seta4: LOADFP
@@ -192,60 +187,13 @@ LOADSP
 STOREFP
 LOAD 3
 LOADREF 4
-PUSH Object_debugPrint; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
+PUSH Object_debugPrint
+CALL
 LOAD 3
 LOADREF 5
-PUSH Object_debugPrint; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
+PUSH Object_debugPrint
+CALL
 FMEM 0
-STOREFP
-RET 1
-B_setall: LOADFP
-LOADSP
-STOREFP
-LOAD 4
-LOAD 3
-SWAP
-STOREREF 1
-LOAD 3
-LOADREF 1
-PUSH 2
-MUL
-LOAD 3
-SWAP
-STOREREF 2
-.DATA
-lbl_string2: DW "hola", 0
-.CODE
-PUSH lbl_string2
-LOAD 3
-SWAP
-STOREREF 3
-FMEM 0
-STOREFP
-RET 2
-B_m1: LOADFP
-LOADSP
-STOREFP
-LOAD 3
-LOADREF 1
-PUSH Object_debugPrint; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
-LOAD 3
-LOADREF 2
-PUSH Object_debugPrint; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
-LOAD 3
-LOADREF 3
-PUSH System_printSln; Apilo el metodo
-CALL; Llamo al método en el tope de la pila
-FMEM 0
-STOREFP
-RET 1
-B_debugPrint: LOADFP
-LOADSP
-STOREFP
 STOREFP
 RET 1
 Constructor_B: 
@@ -264,7 +212,7 @@ LOADSP
 STOREFP
 RMEM 1
 RMEM 1
-PUSH 1
+PUSH 6
 PUSH simple_malloc
 CALL
 DUP
@@ -277,7 +225,7 @@ STORE 0
 LOAD 0
 DUP ; Duplico this
 LOADREF 0
-LOADREF 2
+LOADREF 3
 CALL
 LOAD 0
 PUSH 1234
@@ -294,16 +242,11 @@ CALL
 LOAD 0
 DUP ; Duplico this
 LOADREF 0
-LOADREF 3
+LOADREF 4
 CALL
 FMEM 1
 STOREFP
 RET 0
-Init_debugPrint: LOADFP
-LOADSP
-STOREFP
-STOREFP
-RET 1
 Constructor_Init: 
 LOADFP
 LOADSP

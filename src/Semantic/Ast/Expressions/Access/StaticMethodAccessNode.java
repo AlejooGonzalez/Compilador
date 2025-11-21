@@ -85,18 +85,20 @@ public class StaticMethodAccessNode extends AccessNode{
         String className = staticClassToken.getLexeme();
         String methodName = staticMethodToken.getLexeme();
         String label = className + "_" + methodName;
-/*
-        if(className.equals("void")){
+        Method met = MainSemantic.ST.itIsAnExistingClass(staticClassToken).itsAnExisistingMethod(staticMethodToken);
+
+        if (met.getReturnType()!=null && !met.getReturnType().getLexeme().equals("void")){
             MainSemantic.ST.getInstructionsList().add("RMEM 1");
-        } */
+        }
+
         if (parameters != null) {
             for (ExpressionNode expr : parameters) {
                 expr.generate();
             }
         }
 
-        MainSemantic.ST.getInstructionsList().add("PUSH " + label + "; Apilo el metodo");
-        MainSemantic.ST.getInstructionsList().add("CALL; Llamo al método en el tope de la pila");
+        MainSemantic.ST.getInstructionsList().add("PUSH " + label);
+        MainSemantic.ST.getInstructionsList().add("CALL");
 
         if (chaining != null) {
             if(this.isLeftSideOfAssign) {

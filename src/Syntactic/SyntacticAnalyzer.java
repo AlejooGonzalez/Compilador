@@ -183,6 +183,7 @@ public class SyntacticAnalyzer {
             Token modifier = modificadorOpcional();
             Method method = new Method(token, modifier ,type);
             MainSemantic.ST.setCurrentMethod(method);
+            method.setClassWhoCreateMethod(MainSemantic.ST.getCurrentClass());
             List<Parameter> params = argsFormales();
             for (Parameter p : params) {
                 MainSemantic.ST.getCurrentMethod().addParameters(p);
@@ -206,11 +207,15 @@ public class SyntacticAnalyzer {
         match("idClase");
         Constructor cons = new Constructor(token);
         MainSemantic.ST.setCurrentConstructor(cons);
+        MainSemantic.ST.setCurrentMethod(cons);
         List<Parameter> params = argsFormales();
         for (Parameter p : params) {
             cons.addParameter(p);
         }
-        bloque();
+        cons.setBlock(bloque());
+        if(cons.getBlockNode() != null) {
+            cons.getBlockNode().setMethod(cons);
+        }
         MainSemantic.ST.getCurrentClass().addConstructor(cons);
     }
 
@@ -280,6 +285,7 @@ public class SyntacticAnalyzer {
             match("idMetVar");
             Method method = new Method(methodName,modifier,new PrimitiveType(new Token("pr_void", "void", actualToken.getLineNumber())));
             MainSemantic.ST.setCurrentMethod(method);
+            method.setClassWhoCreateMethod(MainSemantic.ST.getCurrentClass());
             List<Parameter> params = argsFormales();
             for (Parameter p : params) {
                 method.addParameters(p);
@@ -299,6 +305,7 @@ public class SyntacticAnalyzer {
         match("idMetVar");
         Method method = new Method(name, modifier, type);
         MainSemantic.ST.setCurrentMethod(method);
+        method.setClassWhoCreateMethod(MainSemantic.ST.getCurrentClass());
         List<Parameter> params = argsFormales();
         for (Parameter p : params) {
             method.addParameters(p);
@@ -364,11 +371,13 @@ public class SyntacticAnalyzer {
             MainSemantic.ST.getCurrentMethod().setHasBlock(true);
             block = bloque();
             MainSemantic.ST.getCurrentMethod().setBlockNode(block);
+            MainSemantic.ST.getCurrentMethod().getBlockNode().setMethod(MainSemantic.ST.getCurrentMethod());
+            //MainSemantic.ST.setCurrentBlock(block);
         } else {
             if(Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")){
                 match("pnt_puntoYComa");
                 MainSemantic.ST.getCurrentMethod().setHasBlock(false);
-                MainSemantic.ST.getCurrentMethod().setBlockNode(new NullBlockNode());
+                MainSemantic.ST.getCurrentMethod().setBlockNode(null);
             } else {
                 throw new SyntacticException("bloqueOpcional", actualToken);
             }
@@ -377,11 +386,15 @@ public class SyntacticAnalyzer {
 
     private BlockNode bloque() throws LexicalException, SyntacticException, IOException {
         BlockNode block = new BlockNode();
+        //block.setParent(MainSemantic.ST.getCurrentBlock());
+        MainSemantic.ST.setCurrentBlock(block);
+        block.setConcreteClass(MainSemantic.ST.getCurrentClass());
         if(Objects.equals(actualToken.getTokenType(), "pnt_llaveIzquierda")) {
             match("pnt_llaveIzquierda");
             listaSentencias(block);
             match("pnt_llaveDerecha");
         }
+        MainSemantic.ST.setCurrentBlock(block.getParent());
         return block;
     }
 
@@ -440,6 +453,8 @@ public class SyntacticAnalyzer {
         match("idMetVar");
         match("op_asignacion");
         localVar = new LocalVarNode(token);
+        localVar.setBlock(MainSemantic.ST.getCurrentBlock());
+        localVar.getBlock().setMethod(MainSemantic.ST.getCurrentMethod());
         localVar.setExpression(expresionCompuesta());
         return localVar;
     }
@@ -747,10 +762,11 @@ public class SyntacticAnalyzer {
     }
 
     private AccessNode argsAux(Token tokenIdMetVar) throws LexicalException, SyntacticException, IOException {
+        BlockNode block = MainSemantic.ST.getCurrentBlock();
         if (firsts.isFirst("argsActuales", actualToken.getTokenType())) {
-            return new MethodAccessNode(tokenIdMetVar, argsActuales());
+            return new MethodAccessNode(tokenIdMetVar, argsActuales(), block);
         } else {
-            return new VarAccessNode(tokenIdMetVar);
+            return new VarAccessNode(tokenIdMetVar, block);
         }
     }
 

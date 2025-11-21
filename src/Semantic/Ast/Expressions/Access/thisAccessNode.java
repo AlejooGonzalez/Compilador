@@ -21,7 +21,7 @@ public class thisAccessNode extends AccessNode {
     @Override
     public Type check() throws SemanticException {
         Method currentMethod = MainSemantic.ST.getCurrentMethod();
-        checkIsStaticMethod(currentMethod);
+        //checkIsStaticMethod(currentMethod);
 
         ConcreteClass currentClass = MainSemantic.ST.getCurrentClass();
         Type thisType = new ReferenceType(currentClass.getToken());

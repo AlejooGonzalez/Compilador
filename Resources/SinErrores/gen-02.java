@@ -5,9 +5,9 @@ class A{
     
    
       void mc(){
-        Object.debugPrint(1234);
+        debugPrint(1234);
         x = 33;
-        Object.debugPrint(x);
+        debugPrint(x);
       }
 }
 

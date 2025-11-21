@@ -29,6 +29,10 @@ public class BooleanLiteralNode extends LiteralNode {
 
     @Override
     public void generate() {
-        MainSemantic.ST.getInstructionsList().add("PUSH "+token.getLexeme());
+        if(token.getLexeme().equals("true")) {
+            MainSemantic.ST.getInstructionsList().add("PUSH 1");
+        } else {
+            MainSemantic.ST.getInstructionsList().add("PUSH 0");
+        }
     }
 }

@@ -4,7 +4,7 @@
 class Init{
     static void main()
     { 
-       Object.debugPrint(1234);
+       debugPrint(1234);
     }
 }
 

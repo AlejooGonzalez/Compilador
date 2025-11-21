@@ -7,6 +7,7 @@ import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Sentences.BlockNode;
 import Semantic.Ast.Sentences.LocalVarNode;
 import Semantic.Attribute;
+import Semantic.ConcreteClass;
 import Semantic.Parameter;
 import Semantic.Types.Type;
 
@@ -16,12 +17,14 @@ public class VarAccessNode extends AccessNode {
     private Type returnType;
     private boolean isLeftSideOfAssign = false;
 
-    private Attribute attribute;
-    private Parameter parameter;
-    private LocalVarNode localVar;
+    private Attribute attribute= null;
+    private Parameter parameter= null;
+    private LocalVarNode localVar = null;
+    private BlockNode block;
 
-    public VarAccessNode(Token token) {
+    public VarAccessNode(Token token, BlockNode block) {
         this.token = token;
+        this.block = block;
     }
 
     @Override
@@ -95,40 +98,47 @@ public class VarAccessNode extends AccessNode {
     }
 
     public void varIsParameter(){
-        if(MainSemantic.ST.getCurrentMethod().getParameter(token.getLexeme()) != null) {
-            returnType = MainSemantic.ST.getCurrentMethod().getParameter(token.getLexeme()).getType();
-            parameter = MainSemantic.ST.getCurrentMethod().getParameter(token.getLexeme());
+        if(block!=null) {
+            if (block.getMethod() != null && block.getMethod().getParameter(token.getLexeme()) != null) {
+                returnType = block.getMethod().getParameter(token.getLexeme()).getType();
+                parameter = block.getMethod().getParameter(token.getLexeme());
+            }
         }
     }
 
     public void varIsAttribute() throws SemanticException {
-        if(MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()) != null) {
-            if (MainSemantic.ST.getCurrentMethod().getModifier() != null) {
-                if (!MainSemantic.ST.getCurrentMethod().getModifier().getLexeme().equals("static")) {
-                    returnType = MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()).getType();
-                    attribute = MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme());
+        if(block!=null) {
+            if (block.getConcreteClass() != null && block.getConcreteClass().getAttribute(token.getLexeme()) != null) {
+                if (block.getMethod() != null && block.getMethod().getModifier() != null) {
+                    if (!block.getMethod().getModifier().getLexeme().equals("static")) {
+                        returnType = block.getConcreteClass().getAttribute(token.getLexeme()).getType();
+                        attribute = block.getConcreteClass().getAttribute(token.getLexeme());
+                    } else {
+                        throw new SemanticException("No se puede acceder a un atributo de instancia en un metodo estatico", token, token.getLineNumber());
+                    }
                 } else {
-                    throw new SemanticException("No se puede acceder a un atributo de instancia en un metodo estatico", token, token.getLineNumber());
+                    returnType = block.getConcreteClass().getAttribute(token.getLexeme()).getType();
+                    attribute = block.getConcreteClass().getAttribute(token.getLexeme());
                 }
-            } else {
-                returnType = MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme()).getType();
-                attribute = MainSemantic.ST.getCurrentClass().getAttribute(token.getLexeme());
             }
         }
     }
 
     public void varIsLocalVar() {
-        if(MainSemantic.ST.getCurrentBlock().getLocalVar(token.getLexeme()) != null) {
-            returnType = MainSemantic.ST.getCurrentBlock().getLocalVar(token.getLexeme()).getType();
-            localVar =  MainSemantic.ST.getCurrentBlock().getLocalVar(token.getLexeme());
-        }
-        BlockNode parentBlock = MainSemantic.ST.getCurrentBlock().getParent();
-        while(parentBlock != null){
-            if(parentBlock.getLocalVar(token.getLexeme()) != null){
-                returnType =  parentBlock.getLocalVar(token.getLexeme()).getType();
-                localVar =   parentBlock.getLocalVar(token.getLexeme());
+        if (block != null) {
+            if (block.getLocalVar(token.getLexeme()) != null) {
+                returnType = block.getLocalVar(token.getLexeme()).getType();
+                localVar = block.getLocalVar(token.getLexeme());
+            } else {
+                BlockNode parentBlock = block.getParent();
+                while (parentBlock != null) {
+                    if (parentBlock.getLocalVar(token.getLexeme()) != null) {
+                        returnType = parentBlock.getLocalVar(token.getLexeme()).getType();
+                        localVar = parentBlock.getLocalVar(token.getLexeme());
+                    }
+                    parentBlock = parentBlock.getParent();
+                }
             }
-            parentBlock = parentBlock.getParent();
         }
     }
 }

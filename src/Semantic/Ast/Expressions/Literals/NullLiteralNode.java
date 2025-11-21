@@ -19,7 +19,7 @@ public class NullLiteralNode extends LiteralNode {
 
     @Override
     public void generate() {
-        MainSemantic.ST.getInstructionsList().add("PUSH "+token.getLexeme());
+        MainSemantic.ST.getInstructionsList().add("PUSH 0");
     }
 
     public Type getType() {

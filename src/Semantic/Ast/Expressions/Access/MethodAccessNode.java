@@ -5,6 +5,7 @@ import Lexical.Token;
 import Main.MainSemantic;
 import Semantic.Ast.Chained.ChainedNode;
 import Semantic.Ast.Expressions.ExpressionNode;
+import Semantic.Ast.Sentences.BlockNode;
 import Semantic.Method;
 import Semantic.Types.Type;
 
@@ -14,11 +15,13 @@ public class MethodAccessNode extends AccessNode {
     private List<ExpressionNode> currentParamList;
     private Token tokenIdMetVar;
     private ChainedNode chaining;
+    private BlockNode block;
     private boolean isLeftSideOfAssign= false;
 
-    public MethodAccessNode(Token tokenIdMetVar, List<ExpressionNode> currentParamList) {
+    public MethodAccessNode(Token tokenIdMetVar, List<ExpressionNode> currentParamList, BlockNode block) {
         this.tokenIdMetVar = tokenIdMetVar;
         this.currentParamList = currentParamList;
+        this.block = block;
     }
 
     @Override
@@ -51,24 +54,45 @@ public class MethodAccessNode extends AccessNode {
     @Override
     public void generate() {
         Method m = MainSemantic.ST.getCurrentClass().itsAnExisistingMethod(tokenIdMetVar);
-        if (currentParamList != null) {
-            for (ExpressionNode exp : currentParamList) {
-                exp.generate();
+            if (m.isStaticMethod()) {
+                generateStaticMethod(m);
+            } else {
+                generateDynamicMethod(m);
             }
-        }
-        MainSemantic.ST.getInstructionsList().add("LOAD 3");
-        int offset = m.getOffset();
-        MainSemantic.ST.getInstructionsList().add("LOAD 3");
-        MainSemantic.ST.getInstructionsList().add("LOADREF 0");
-        MainSemantic.ST.getInstructionsList().add("LOADREF " + offset + "  ; cargo dirección del método dinámico");
-        MainSemantic.ST.getInstructionsList().add("CALL; llamada dinámica");
 
-        if (chaining != null) {
-            if(this.isLeftSideOfAssign) {
-                chaining.setItsLeftSide(true);
+            if (chaining != null) {
+                if (isLeftSideOfAssign) {
+                    chaining.setItsLeftSide(true);
+                }
+                chaining.generate();
             }
-            chaining.generate();
+    }
+
+    public void generateDynamicMethod(Method m) {
+        MainSemantic.ST.getInstructionsList().add("LOAD 3");
+        if(!m.getReturnType().getLexeme().equals("void")){
+            MainSemantic.ST.getInstructionsList().add("RMEM 1");
+            MainSemantic.ST.getInstructionsList().add("SWAP");
         }
+        for(ExpressionNode e : currentParamList) {
+            e.generate();
+            MainSemantic.ST.getInstructionsList().add("SWAP");
+        }
+        MainSemantic.ST.getInstructionsList().add("DUP");
+        MainSemantic.ST.getInstructionsList().add("LOADREF 0");
+        MainSemantic.ST.getInstructionsList().add("LOADREF " + m.getOffset());
+        MainSemantic.ST.getInstructionsList().add("CALL");
+    }
+
+    public void generateStaticMethod(Method m) {
+        if(m.getReturnType() != null && !m.getReturnType().getLexeme().equals("void")){
+            MainSemantic.ST.getInstructionsList().add("RMEM 1");
+        }
+        for (ExpressionNode p : currentParamList){
+            p.generate();
+        }
+        MainSemantic.ST.getInstructionsList().add("PUSH " + m.getLabel());
+        MainSemantic.ST.getInstructionsList().add("CALL");
     }
 
     public void setChaining(ChainedNode chaining) {

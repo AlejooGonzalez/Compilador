@@ -76,15 +76,15 @@ public class ChainedCallNode extends ChainedNode {
             MainSemantic.ST.getInstructionsList().add("LOADREF " + methodAux.getOffset());
             MainSemantic.ST.getInstructionsList().add("CALL");
         }
-
-                if (chaining != null) {
-                    if (isLeftSideOfAssign) {
-                        chaining.setItsLeftSide(true);
-                    }
-                    chaining.generate();
-                }
+        if (chaining != null) {
+            if (isLeftSideOfAssign) {
+                chaining.setItsLeftSide(true);
+            }
+            chaining.generate();
         }
+    }
 
+        //---------------------------------------------
     @Override
     public void setItsLeftSide(boolean leftSide) {
         this.isLeftSideOfAssign = leftSide;

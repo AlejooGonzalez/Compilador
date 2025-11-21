@@ -8,8 +8,11 @@ import Semantic.Ast.Sentences.BlockNode;
 import Semantic.Ast.Sentences.LocalVarNode;
 import Semantic.Attribute;
 import Semantic.ConcreteClass;
+import Semantic.Method;
 import Semantic.Parameter;
 import Semantic.Types.Type;
+
+import java.util.LinkedHashMap;
 
 public class VarAccessNode extends AccessNode {
     private Token token;
@@ -29,6 +32,7 @@ public class VarAccessNode extends AccessNode {
 
     @Override
     public Type check() throws SemanticException {
+        setBlock(MainSemantic.ST.getCurrentBlock());
         varIsLocalVar();
         varIsParameter();
         varIsAttribute();
@@ -44,6 +48,10 @@ public class VarAccessNode extends AccessNode {
     @Override
     public int getLine() {
         return token.getLineNumber();
+    }
+
+    public void setBlock(BlockNode block) {
+        this.block = block;
     }
 
     @Override

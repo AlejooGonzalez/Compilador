@@ -243,6 +243,9 @@ public class ConcreteClass {
     public void sentenceCheck() throws SemanticException {
         MainSemantic.ST.setCurrentClass(this);
         for(Method m : methods.values()){
+            if(m.getLexeme().equals("main")){
+                MainSemantic.ST.setClassMainMethod(this.getLexeme());
+            }
             m.sentenceCheck();
         }
         if(constructor!=null){

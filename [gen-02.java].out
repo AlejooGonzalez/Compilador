@@ -159,7 +159,7 @@ PUSH Constructor_A
 CALL
 STORE 0
 LOAD 0
-DUP ; Duplico this
+DUP
 LOADREF 0
 LOADREF 0
 CALL

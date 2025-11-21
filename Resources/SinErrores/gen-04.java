@@ -14,7 +14,7 @@ class A{
     }
     
       void m1(){
-         debugPrint(a1);
+        debugPrint(a1);
         debugPrint(a2);
         System.printSln(a3);
         
@@ -32,8 +32,8 @@ class B extends A{
     }
     
       void m2(){
-          debugPrint(a4);
-          debugPrint(a5);
+        debugPrint(a4);
+        debugPrint(a5);
     }
 }
 

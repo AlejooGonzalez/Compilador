@@ -71,7 +71,7 @@ public class ChainedCallNode extends ChainedNode {
                 exp.generate();
                 MainSemantic.ST.getInstructionsList().add("SWAP");
             }
-            MainSemantic.ST.getInstructionsList().add("DUP ; Duplico this");
+            MainSemantic.ST.getInstructionsList().add("DUP");
             MainSemantic.ST.getInstructionsList().add("LOADREF 0");
             MainSemantic.ST.getInstructionsList().add("LOADREF " + methodAux.getOffset());
             MainSemantic.ST.getInstructionsList().add("CALL");
@@ -84,7 +84,6 @@ public class ChainedCallNode extends ChainedNode {
         }
     }
 
-        //---------------------------------------------
     @Override
     public void setItsLeftSide(boolean leftSide) {
         this.isLeftSideOfAssign = leftSide;

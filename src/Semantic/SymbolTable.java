@@ -19,6 +19,7 @@ public class SymbolTable {
     private ArrayList<String> instructionsList;
     private int stringNumber = 0;
     private int ifWhileCounter = 0;
+    private String classMainMethod;
 
     public SymbolTable() throws SyntacticException, SemanticException {
         classes = new HashMap<>();
@@ -193,7 +194,7 @@ public class SymbolTable {
 
     public void generate() throws SemanticException {
         instructionsList.add(".CODE");
-        instructionsList.add("PUSH Init_main");
+        instructionsList.add("PUSH "+classMainMethod+"_main");
         instructionsList.add("CALL");
         instructionsList.add("HALT");
         instructionsList.add("");
@@ -350,5 +351,9 @@ public class SymbolTable {
     public int getIfWhileCounter(){
         ifWhileCounter++;
         return ifWhileCounter;
+    }
+
+    public void setClassMainMethod(String s){
+        this.classMainMethod = s;
     }
 }

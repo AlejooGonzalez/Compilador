@@ -370,8 +370,8 @@ public class SyntacticAnalyzer {
         if (firsts.isFirst("bloque", actualToken.getTokenType())){
             MainSemantic.ST.getCurrentMethod().setHasBlock(true);
             block = bloque();
+            block.setMethod(MainSemantic.ST.getCurrentMethod());
             MainSemantic.ST.getCurrentMethod().setBlockNode(block);
-            MainSemantic.ST.getCurrentMethod().getBlockNode().setMethod(MainSemantic.ST.getCurrentMethod());
             //MainSemantic.ST.setCurrentBlock(block);
         } else {
             if(Objects.equals(actualToken.getTokenType(), "pnt_puntoYComa")){
@@ -386,7 +386,8 @@ public class SyntacticAnalyzer {
 
     private BlockNode bloque() throws LexicalException, SyntacticException, IOException {
         BlockNode block = new BlockNode();
-        //block.setParent(MainSemantic.ST.getCurrentBlock());
+        block.setParent(MainSemantic.ST.getCurrentBlock());
+        block.setMethod(MainSemantic.ST.getCurrentMethod());
         MainSemantic.ST.setCurrentBlock(block);
         block.setConcreteClass(MainSemantic.ST.getCurrentClass());
         if(Objects.equals(actualToken.getTokenType(), "pnt_llaveIzquierda")) {

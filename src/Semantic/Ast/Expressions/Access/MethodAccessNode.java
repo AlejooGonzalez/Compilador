@@ -26,6 +26,7 @@ public class MethodAccessNode extends AccessNode {
 
     @Override
     public Type check() throws SemanticException {
+        setBlock(MainSemantic.ST.getCurrentBlock());
         Method method = MainSemantic.ST.getCurrentClass().itsAnExisistingMethod(tokenIdMetVar);
         if (method == null) {
             throw new SemanticException("El metodo no existe", tokenIdMetVar, tokenIdMetVar.getLineNumber());
@@ -49,6 +50,10 @@ public class MethodAccessNode extends AccessNode {
     @Override
     public Token getToken() {
         return tokenIdMetVar;
+    }
+
+    public void setBlock(BlockNode block) {
+        this.block = block;
     }
 
     @Override
